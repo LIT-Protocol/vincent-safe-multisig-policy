@@ -1,11 +1,20 @@
 import { createVincentTool, createVincentToolPolicy, supportedPoliciesForTool, } from "@lit-protocol/vincent-tool-sdk";
 import "@lit-protocol/vincent-tool-sdk/internal";
-import { bundledVincentPolicy } from "../../../../policies/send-counter-limit/dist/index.js";
+import { bundledVincentPolicy as sendCounterLimitPolicy } from "../../../../policies/send-counter-limit/dist/index.js";
+import { bundledVincentPolicy as safeMultisigPolicy } from "../../../../policies/safe-multisig/dist/index.js";
 import { executeFailSchema, executeSuccessSchema, precheckFailSchema, precheckSuccessSchema, toolParamsSchema, } from "./schemas";
 import { laUtils } from "@lit-protocol/vincent-scaffold-sdk";
 const SendLimitPolicy = createVincentToolPolicy({
     toolParamsSchema,
-    bundledVincentPolicy,
+    bundledVincentPolicy: sendCounterLimitPolicy,
+    toolParameterMappings: {
+        to: "to",
+        amount: "amount",
+    },
+});
+const SafeMultisigPolicy = createVincentToolPolicy({
+    toolParamsSchema,
+    bundledVincentPolicy: safeMultisigPolicy,
     toolParameterMappings: {
         to: "to",
         amount: "amount",
@@ -14,7 +23,10 @@ const SendLimitPolicy = createVincentToolPolicy({
 export const vincentTool = createVincentTool({
     packageName: "@lit-protocol/vincent-tool-native-send",
     toolParamsSchema,
-    supportedPolicies: supportedPoliciesForTool([SendLimitPolicy]),
+    supportedPolicies: supportedPoliciesForTool([
+        SendLimitPolicy,
+        SafeMultisigPolicy,
+    ]),
     precheckSuccessSchema,
     precheckFailSchema,
     executeSuccessSchema,

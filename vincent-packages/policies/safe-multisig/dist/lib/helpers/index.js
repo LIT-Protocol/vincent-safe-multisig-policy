@@ -73,20 +73,35 @@ export function createParametersHash(toolIpfsCid, toolParams, agentWalletAddress
     };
     return keccak256(toUtf8Bytes(JSON.stringify(data)));
 }
-export async function verifySafeThreshold(provider, safeAddress, requiredThreshold) {
+/**
+ * Get Safe threshold from contract
+ */
+export async function getSafeThreshold(provider, safeAddress) {
     try {
         const safeContract = new ethers.Contract(safeAddress, ["function getThreshold() view returns (uint256)"], provider);
         const threshold = await safeContract.getThreshold();
-        const actualThreshold = threshold.toNumber();
-        return {
-            valid: actualThreshold >= requiredThreshold,
-            actualThreshold,
-        };
+        return threshold.toNumber();
     }
     catch (error) {
-        console.error("Error verifying Safe threshold:", error);
-        return { valid: false };
+        console.error("Error getting Safe threshold:", error);
+        throw new Error(`Failed to get Safe threshold: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
+}
+/**
+ * Generate a unique nonce based on current timestamp and random value
+ */
+export function generateNonce() {
+    const timestamp = BigInt(Date.now());
+    const random = BigInt(Math.floor(Math.random() * 1000000));
+    return timestamp * 1000000n + random;
+}
+/**
+ * Generate expiry timestamp (default: 1 hour from now)
+ */
+export function generateExpiry(hoursFromNow = 1) {
+    const now = Math.floor(Date.now() / 1000);
+    const expiry = now + (hoursFromNow * 3600);
+    return BigInt(expiry);
 }
 export function buildEIP712Signature(confirmations) {
     const signatures = confirmations

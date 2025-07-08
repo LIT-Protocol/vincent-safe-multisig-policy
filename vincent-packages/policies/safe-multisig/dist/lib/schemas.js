@@ -5,9 +5,6 @@ export const toolParamsSchema = z.object({
 });
 export const userParamsSchema = z.object({
     safeAddress: z.string().describe("The Safe multisig contract address"),
-    threshold: z.number().min(1).describe("Required number of signatures"),
-    expiry: z.bigint().describe("Expiry timestamp for the message"),
-    nonce: z.bigint().describe("Unique nonce for the message"),
 });
 export const EIP712_DOMAIN = {
     name: "Vincent Safe Policy",
@@ -42,7 +39,8 @@ export const precheckResultSchema = z.discriminatedUnion("allowed", [
             safeAddress: z.string(),
             threshold: z.number(),
             messageHash: z.string(),
-            expiry: z.bigint(),
+            generatedExpiry: z.bigint(),
+            generatedNonce: z.bigint(),
         }),
     }),
     z.object({
@@ -52,6 +50,9 @@ export const precheckResultSchema = z.discriminatedUnion("allowed", [
             safeAddress: z.string().optional(),
             currentSignatures: z.number().optional(),
             requiredSignatures: z.number().optional(),
+            generatedExpiry: z.bigint().optional(),
+            generatedNonce: z.bigint().optional(),
+            messageHash: z.string().optional(),
         }),
     }),
 ]);
@@ -80,7 +81,7 @@ export const commitResultSchema = z.discriminatedUnion("allowed", [
         allowed: z.literal(true),
         context: z.object({
             message: z.string(),
-            nonce: z.bigint(),
+            txHash: z.string().optional(),
         }),
     }),
     z.object({

@@ -7,7 +7,6 @@ import {
   precheckResultSchema,
   toolParamsSchema,
   userParamsSchema,
-  vincentToolExecutionSchema,
 } from "./schemas";
 import {
   checkSafeMessage,
@@ -15,7 +14,9 @@ import {
   createParametersHash,
   generateSafeMessageHash,
   isValidSafeSignature,
-  verifySafeThreshold,
+  getSafeThreshold,
+  generateNonce,
+  generateExpiry,
   buildEIP712Signature,
 } from "./helpers";
 
@@ -54,29 +55,19 @@ export const vincentPolicy = createVincentPolicy({
       const rpcUrl = process.env.SEPOLIA_RPC_URL!;
       const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
 
+      // Get Safe threshold from contract
+      const threshold = await getSafeThreshold(provider, userParams.safeAddress);
+      
+      // Generate expiry and nonce internally
+      const expiry = generateExpiry(1); // 1 hour from now
+      const nonce = generateNonce();
+
       const currentTime = BigInt(Math.floor(Date.now() / 1000));
-      if (userParams.expiry <= currentTime) {
+      if (expiry <= currentTime) {
         return deny({
           context: {
-            reason: "Message has expired",
+            reason: "Generated expiry is invalid",
             safeAddress: userParams.safeAddress,
-          },
-        });
-      }
-
-      const thresholdCheck = await verifySafeThreshold(
-        provider,
-        userParams.safeAddress,
-        userParams.threshold
-      );
-
-      if (!thresholdCheck.valid) {
-        return deny({
-          context: {
-            reason: "Safe threshold requirement not met",
-            safeAddress: userParams.safeAddress,
-            currentSignatures: thresholdCheck.actualThreshold,
-            requiredSignatures: userParams.threshold,
           },
         });
       }
@@ -87,15 +78,15 @@ export const vincentPolicy = createVincentPolicy({
         delegatorPkpInfo.ethAddress
       );
 
-      const vincentExecution = vincentToolExecutionSchema.parse({
+      const vincentExecution = {
         appId,
         appVersion,
         toolIpfsCid,
         cbor2EncodedParametersHash: parametersHash,
         agentWalletAddress: delegatorPkpInfo.ethAddress,
-        expiry: userParams.expiry,
-        nonce: userParams.nonce,
-      });
+        expiry,
+        nonce,
+      };
 
       const eip712Message = createEIP712Message(vincentExecution);
       const messageString = JSON.stringify(eip712Message);
@@ -113,20 +104,27 @@ export const vincentPolicy = createVincentPolicy({
           context: {
             reason: "Safe message not found or not proposed",
             safeAddress: userParams.safeAddress,
-            requiredSignatures: userParams.threshold,
+            requiredSignatures: threshold,
             currentSignatures: 0,
+            // Expose the generated values for testing
+            generatedExpiry: expiry,
+            generatedNonce: nonce,
+            messageHash,
           },
         });
       }
 
       const confirmationsCount = safeMessage.confirmations.length;
-      if (confirmationsCount < userParams.threshold) {
+      if (confirmationsCount < threshold) {
         return deny({
           context: {
             reason: "Insufficient signatures",
             safeAddress: userParams.safeAddress,
             currentSignatures: confirmationsCount,
-            requiredSignatures: userParams.threshold,
+            requiredSignatures: threshold,
+            generatedExpiry: expiry,
+            generatedNonce: nonce,
+            messageHash,
           },
         });
       }
@@ -134,9 +132,10 @@ export const vincentPolicy = createVincentPolicy({
       return allow({
         context: {
           safeAddress: userParams.safeAddress,
-          threshold: userParams.threshold,
+          threshold,
           messageHash,
-          expiry: userParams.expiry,
+          generatedExpiry: expiry,
+          generatedNonce: nonce,
         },
       });
     } catch (error) {
@@ -156,11 +155,18 @@ export const vincentPolicy = createVincentPolicy({
       const rpcUrl = await Lit.Actions.getRpcUrl({ chain: "sepolia" });
       const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
 
+      // Get Safe threshold from contract
+      const threshold = await getSafeThreshold(provider, userParams.safeAddress);
+      
+      // Generate expiry and nonce internally (same as precheck)
+      const expiry = generateExpiry(1); // 1 hour from now
+      const nonce = generateNonce();
+
       const currentTime = BigInt(Math.floor(Date.now() / 1000));
-      if (userParams.expiry <= currentTime) {
+      if (expiry <= currentTime) {
         return deny({
           context: {
-            reason: "Message has expired",
+            reason: "Generated expiry is invalid",
             safeAddress: userParams.safeAddress,
           },
         });
@@ -181,15 +187,15 @@ export const vincentPolicy = createVincentPolicy({
         context.agentWalletAddress
       );
 
-      const vincentExecution = vincentToolExecutionSchema.parse({
+      const vincentExecution = {
         appId: context.appId,
         appVersion: context.appVersion,
         toolIpfsCid: context.toolIpfsCid,
         cbor2EncodedParametersHash: parametersHash,
         agentWalletAddress: context.agentWalletAddress,
-        expiry: userParams.expiry,
-        nonce: userParams.nonce,
-      });
+        expiry,
+        nonce,
+      };
 
       const eip712Message = createEIP712Message(vincentExecution);
       const messageString = JSON.stringify(eip712Message);
@@ -204,14 +210,14 @@ export const vincentPolicy = createVincentPolicy({
 
       if (
         !safeMessage ||
-        safeMessage.confirmations.length < userParams.threshold
+        safeMessage.confirmations.length < threshold
       ) {
         return deny({
           context: {
             reason: "Insufficient signatures in Lit Action environment",
             safeAddress: userParams.safeAddress,
             currentSignatures: safeMessage?.confirmations.length || 0,
-            requiredSignatures: userParams.threshold,
+            requiredSignatures: threshold,
           },
         });
       }
@@ -236,7 +242,7 @@ export const vincentPolicy = createVincentPolicy({
       return allow({
         context: {
           safeAddress: userParams.safeAddress,
-          threshold: userParams.threshold,
+          threshold,
           messageHash,
           isValidSignature: true,
         },
@@ -255,14 +261,14 @@ export const vincentPolicy = createVincentPolicy({
     console.log("SafeMultisigPolicy commit");
 
     try {
-      const { txHash, userParams } = commitParams as any;
+      const { txHash } = commitParams as any;
       console.log(`Tool execution completed with txHash: ${txHash}`);
-      console.log(`Nonce ${userParams.nonce} has been consumed`);
+      console.log(`Safe multisig execution recorded`);
 
       return allow({
         context: {
           message: "Safe multisig execution recorded",
-          nonce: userParams.nonce,
+          txHash,
         },
       });
     } catch (error) {
