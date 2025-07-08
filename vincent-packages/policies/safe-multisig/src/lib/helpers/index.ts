@@ -50,15 +50,24 @@ export async function checkSafeMessage(
   provider: ethers.providers.Provider,
   safeAddress: string,
   messageHash: string,
-  serviceUrl: string
+  safeApiKey: string
 ): Promise<SafeMessageResponse | null> {
   try {
+    console.log(`🔍 Checking Safe message with hash: ${messageHash}`);
+    
+    const serviceUrl = "https://safe-transaction-sepolia.safe.global";
     const url = `${serviceUrl}/api/v1/safes/${safeAddress}/messages/${messageHash}/`;
-    const response = await fetch(url, {
-      headers: {
-        Accept: "application/json",
-      },
-    });
+    
+    const headers: Record<string, string> = {
+      Accept: "application/json",
+    };
+    
+    // Add API key if provided
+    if (safeApiKey) {
+      headers["Authorization"] = `Bearer ${safeApiKey}`;
+    }
+    
+    const response = await fetch(url, { headers });
 
     if (!response.ok) {
       if (response.status === 404) {
@@ -68,7 +77,10 @@ export async function checkSafeMessage(
       throw new Error(`Failed to fetch Safe message: ${response.statusText}`);
     }
 
-    return await response.json();
+    const message = await response.json();
+    console.log(`✅ Found Safe message:`, message);
+    
+    return message;
   } catch (error) {
     console.error("Error checking Safe message:", error);
     return null;

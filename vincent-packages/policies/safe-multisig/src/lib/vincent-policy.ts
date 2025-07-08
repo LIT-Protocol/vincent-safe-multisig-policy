@@ -1,5 +1,4 @@
 import { createVincentPolicy } from "@lit-protocol/vincent-tool-sdk";
-import { laUtils } from "@lit-protocol/vincent-scaffold-sdk";
 import { ethers } from "ethers";
 import {
   commitAllowResultSchema,
@@ -22,9 +21,6 @@ import {
   generateExpiry,
   buildEIP712Signature,
 } from "./helpers";
-
-const SAFE_TRANSACTION_SERVICE_URL =
-  "https://safe-transaction-sepolia.safe.global";
 
 export const vincentPolicy = createVincentPolicy({
   packageName: "@lit-protocol/vincent-policy-safe-multisig" as const,
@@ -100,7 +96,7 @@ export const vincentPolicy = createVincentPolicy({
         provider,
         userParams.safeAddress,
         messageHash,
-        SAFE_TRANSACTION_SERVICE_URL
+        toolParams.safeApiKey
       );
 
       if (!safeMessage) {
@@ -203,7 +199,7 @@ export const vincentPolicy = createVincentPolicy({
         provider,
         userParams.safeAddress,
         messageHash,
-        SAFE_TRANSACTION_SERVICE_URL
+        userParams.safeApiKey
       );
 
       console.log("🔍 Safe message:", safeMessage);

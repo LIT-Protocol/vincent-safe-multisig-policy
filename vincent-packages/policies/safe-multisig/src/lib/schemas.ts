@@ -1,8 +1,9 @@
 import { z } from "zod";
 
 export const toolParamsSchema = z.object({
-  to: z.string().describe("The address to send to"),
-  amount: z.string().describe("The amount to send"),
+  safeApiKey: z
+    .string()
+    .describe("The Safe API key for Transaction Service access"),
 });
 
 export type ToolParams = z.infer<typeof toolParamsSchema>;

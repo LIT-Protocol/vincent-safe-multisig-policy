@@ -47,6 +47,11 @@ import SafeApiKit from "@safe-global/api-kit";
     throw new Error("SAFE_WALLET_ADDRESS environment variable is required");
   }
 
+  const safeApiKey = process.env.SAFE_API_KEY;
+  if (!safeApiKey) {
+    throw new Error("SAFE_API_KEY environment variable is required");
+  }
+
   const rpcUrl = process.env.SEPOLIA_RPC_URL;
   if (!rpcUrl) {
     throw new Error("SEPOLIA_RPC_URL environment variable is required");
@@ -100,6 +105,7 @@ import SafeApiKit from "@safe-global/api-kit";
     to: accounts.delegatee.ethersWallet.address,
     amount: "0.000001",
     rpcUrl,
+    safeApiKey,
   };
 
   // We'll get the actual agent wallet address after minting the PKP
@@ -118,11 +124,11 @@ import SafeApiKit from "@safe-global/api-kit";
       toolIpfsCids: [nativeSendTool.ipfsCid],
       toolPolicies: [
         [
-          safeMultisigPolicyMetadata.ipfsCid, // Enable safe-multisig policy for native-send tool
+          safeMultisigPolicyMetadata.ipfsCid, // Enable safe-multisig policy for safe multisig tool
         ],
       ],
       toolPolicyParameterNames: [
-        ["safeAddress"], // Policy parameter names for nativeSendTool
+        ["safeAddress"], // Policy parameter names for safe multisig
       ],
       toolPolicyParameterTypes: [
         [PARAMETER_TYPE.STRING], // types for safeAddress
