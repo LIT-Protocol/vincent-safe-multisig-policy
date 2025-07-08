@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { keccak256, toUtf8Bytes } from "ethers/lib/utils";
-import { EIP712_DOMAIN, EIP712_MESSAGE_TYPES } from "../schemas";
+import { EIP712_DOMAIN, EIP712_MESSAGE_TYPES, } from "../schemas";
 const SAFE_MESSAGE_TYPE_HASH = "0x60b3cbf8b4a223d68d641b3b6ddf9a298e7f33710cf3d3a9d1146b5a6150fbca";
 export function createEIP712Message(params) {
     return {
@@ -29,13 +29,15 @@ export function hashToolParameters(params) {
 }
 export async function checkSafeMessage(provider, safeAddress, messageHash, serviceUrl) {
     try {
-        const response = await fetch(`${serviceUrl}/api/v1/safes/${safeAddress}/messages/${messageHash}/`, {
+        const url = `${serviceUrl}/api/v1/safes/${safeAddress}/messages/${messageHash}/`;
+        const response = await fetch(url, {
             headers: {
-                "Accept": "application/json",
+                Accept: "application/json",
             },
         });
         if (!response.ok) {
             if (response.status === 404) {
+                console.log(`🔍 Safe message not found at ${url}`);
                 return null;
             }
             throw new Error(`Failed to fetch Safe message: ${response.statusText}`);
@@ -84,7 +86,7 @@ export async function getSafeThreshold(provider, safeAddress) {
     }
     catch (error) {
         console.error("Error getting Safe threshold:", error);
-        throw new Error(`Failed to get Safe threshold: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        throw new Error(`Failed to get Safe threshold: ${error instanceof Error ? error.message : "Unknown error"}`);
     }
 }
 /**
@@ -100,13 +102,13 @@ export function generateNonce() {
  */
 export function generateExpiry(hoursFromNow = 1) {
     const now = Math.floor(Date.now() / 1000);
-    const expiry = now + (hoursFromNow * 3600);
+    const expiry = now + hoursFromNow * 3600;
     return BigInt(expiry);
 }
 export function buildEIP712Signature(confirmations) {
     const signatures = confirmations
-        .filter(conf => conf.signature)
-        .map(conf => conf.signature.slice(2))
+        .filter((conf) => conf.signature)
+        .map((conf) => conf.signature.slice(2))
         .sort()
         .join("");
     return "0x" + signatures;

@@ -206,6 +206,8 @@ export const vincentPolicy = createVincentPolicy({
         SAFE_TRANSACTION_SERVICE_URL
       );
 
+      console.log("🔍 Safe message:", safeMessage);
+
       if (!safeMessage || safeMessage.confirmations.length < threshold) {
         return deny({
           reason: "Insufficient signatures in Lit Action environment",

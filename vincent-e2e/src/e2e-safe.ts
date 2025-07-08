@@ -438,7 +438,6 @@ import SafeApiKit from "@safe-global/api-kit";
     });
 
     console.log("✅ Message successfully proposed to Safe Transaction Service");
-    console.log("📋 Proposal response:", proposalResponse);
 
     // Wait a moment for the message to be processed
     console.log("⏳ Waiting for message to be processed...");
