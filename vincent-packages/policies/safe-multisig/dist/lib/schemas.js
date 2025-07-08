@@ -32,65 +32,41 @@ export const vincentToolExecutionSchema = z.object({
     expiry: z.bigint(),
     nonce: z.bigint(),
 });
-export const precheckResultSchema = z.discriminatedUnion("allowed", [
-    z.object({
-        allowed: z.literal(true),
-        context: z.object({
-            safeAddress: z.string(),
-            threshold: z.number(),
-            messageHash: z.string(),
-            generatedExpiry: z.bigint(),
-            generatedNonce: z.bigint(),
-        }),
-    }),
-    z.object({
-        allowed: z.literal(false),
-        context: z.object({
-            reason: z.string(),
-            safeAddress: z.string().optional(),
-            currentSignatures: z.number().optional(),
-            requiredSignatures: z.number().optional(),
-            generatedExpiry: z.bigint().optional(),
-            generatedNonce: z.bigint().optional(),
-            messageHash: z.string().optional(),
-        }),
-    }),
-]);
-export const evaluateResultSchema = z.discriminatedUnion("allowed", [
-    z.object({
-        allowed: z.literal(true),
-        context: z.object({
-            safeAddress: z.string(),
-            threshold: z.number(),
-            messageHash: z.string(),
-            isValidSignature: z.boolean(),
-        }),
-    }),
-    z.object({
-        allowed: z.literal(false),
-        context: z.object({
-            reason: z.string(),
-            safeAddress: z.string().optional(),
-            currentSignatures: z.number().optional(),
-            requiredSignatures: z.number().optional(),
-        }),
-    }),
-]);
-export const commitResultSchema = z.discriminatedUnion("allowed", [
-    z.object({
-        allowed: z.literal(true),
-        context: z.object({
-            message: z.string(),
-            txHash: z.string().optional(),
-        }),
-    }),
-    z.object({
-        allowed: z.literal(false),
-        context: z.object({
-            reason: z.string(),
-        }),
-    }),
-]);
+export const precheckAllowResultSchema = z.object({
+    safeAddress: z.string(),
+    threshold: z.number(),
+    messageHash: z.string(),
+    generatedExpiry: z.bigint(),
+    generatedNonce: z.bigint(),
+});
+export const precheckDenyResultSchema = z.object({
+    reason: z.string(),
+    safeAddress: z.string().optional(),
+    currentSignatures: z.number().optional(),
+    requiredSignatures: z.number().optional(),
+    generatedExpiry: z.bigint().optional(),
+    generatedNonce: z.bigint().optional(),
+    messageHash: z.string().optional(),
+});
+export const evalAllowResultSchema = z.object({
+    safeAddress: z.string(),
+    threshold: z.number(),
+    messageHash: z.string(),
+    isValidSignature: z.boolean(),
+});
+export const evalDenyResultSchema = z.object({
+    reason: z.string(),
+    safeAddress: z.string().optional(),
+    currentSignatures: z.number().optional(),
+    requiredSignatures: z.number().optional(),
+});
+export const commitAllowResultSchema = z.object({
+    message: z.string(),
+    txHash: z.string().optional(),
+});
+export const commitDenyResultSchema = z.object({
+    reason: z.string(),
+});
 export const safeMessageResponseSchema = z.object({
     created: z.string(),
     modified: z.string(),

@@ -2,9 +2,12 @@ import { createVincentPolicy } from "@lit-protocol/vincent-tool-sdk";
 import { laUtils } from "@lit-protocol/vincent-scaffold-sdk";
 import { ethers } from "ethers";
 import {
-  commitResultSchema,
-  evaluateResultSchema,
-  precheckResultSchema,
+  commitAllowResultSchema,
+  commitDenyResultSchema,
+  evalAllowResultSchema,
+  evalDenyResultSchema,
+  precheckAllowResultSchema,
+  precheckDenyResultSchema,
   toolParamsSchema,
   userParamsSchema,
 } from "./schemas";
@@ -29,14 +32,14 @@ export const vincentPolicy = createVincentPolicy({
   toolParamsSchema,
   userParamsSchema,
 
-  precheckAllowResultSchema: precheckResultSchema._def.options[0],
-  precheckDenyResultSchema: precheckResultSchema._def.options[1],
+  precheckAllowResultSchema,
+  precheckDenyResultSchema,
 
-  evalAllowResultSchema: evaluateResultSchema._def.options[0],
-  evalDenyResultSchema: evaluateResultSchema._def.options[1],
+  evalAllowResultSchema,
+  evalDenyResultSchema,
 
-  commitAllowResultSchema: commitResultSchema._def.options[0],
-  commitDenyResultSchema: commitResultSchema._def.options[1],
+  commitAllowResultSchema,
+  commitDenyResultSchema,
 
   precheck: async (
     { toolParams, userParams },
@@ -65,10 +68,8 @@ export const vincentPolicy = createVincentPolicy({
       const currentTime = BigInt(Math.floor(Date.now() / 1000));
       if (expiry <= currentTime) {
         return deny({
-          context: {
-            reason: "Generated expiry is invalid",
-            safeAddress: userParams.safeAddress,
-          },
+          reason: "Generated expiry is invalid",
+          safeAddress: userParams.safeAddress,
         });
       }
 
@@ -101,49 +102,41 @@ export const vincentPolicy = createVincentPolicy({
 
       if (!safeMessage) {
         return deny({
-          context: {
-            reason: "Safe message not found or not proposed",
-            safeAddress: userParams.safeAddress,
-            requiredSignatures: threshold,
-            currentSignatures: 0,
-            // Expose the generated values for testing
-            generatedExpiry: expiry,
-            generatedNonce: nonce,
-            messageHash,
-          },
+          reason: "Safe message not found or not proposed",
+          safeAddress: userParams.safeAddress,
+          requiredSignatures: threshold,
+          currentSignatures: 0,
+          // Expose the generated values for testing
+          generatedExpiry: expiry,
+          generatedNonce: nonce,
+          messageHash,
         });
       }
 
       const confirmationsCount = safeMessage.confirmations.length;
       if (confirmationsCount < threshold) {
         return deny({
-          context: {
-            reason: "Insufficient signatures",
-            safeAddress: userParams.safeAddress,
-            currentSignatures: confirmationsCount,
-            requiredSignatures: threshold,
-            generatedExpiry: expiry,
-            generatedNonce: nonce,
-            messageHash,
-          },
+          reason: "Insufficient signatures",
+          safeAddress: userParams.safeAddress,
+          currentSignatures: confirmationsCount,
+          requiredSignatures: threshold,
+          generatedExpiry: expiry,
+          generatedNonce: nonce,
+          messageHash,
         });
       }
 
       return allow({
-        context: {
-          safeAddress: userParams.safeAddress,
-          threshold,
-          messageHash,
-          generatedExpiry: expiry,
-          generatedNonce: nonce,
-        },
+        safeAddress: userParams.safeAddress,
+        threshold,
+        messageHash,
+        generatedExpiry: expiry,
+        generatedNonce: nonce,
       });
     } catch (error) {
       console.error("Precheck error:", error);
       return deny({
-        context: {
-          reason: error instanceof Error ? error.message : "Unknown error",
-        },
+        reason: error instanceof Error ? error.message : "Unknown error",
       });
     }
   },
@@ -165,10 +158,8 @@ export const vincentPolicy = createVincentPolicy({
       const currentTime = BigInt(Math.floor(Date.now() / 1000));
       if (expiry <= currentTime) {
         return deny({
-          context: {
-            reason: "Generated expiry is invalid",
-            safeAddress: userParams.safeAddress,
-          },
+          reason: "Generated expiry is invalid",
+          safeAddress: userParams.safeAddress,
         });
       }
 
@@ -213,12 +204,10 @@ export const vincentPolicy = createVincentPolicy({
         safeMessage.confirmations.length < threshold
       ) {
         return deny({
-          context: {
-            reason: "Insufficient signatures in Lit Action environment",
-            safeAddress: userParams.safeAddress,
-            currentSignatures: safeMessage?.confirmations.length || 0,
-            requiredSignatures: threshold,
-          },
+          reason: "Insufficient signatures in Lit Action environment",
+          safeAddress: userParams.safeAddress,
+          currentSignatures: safeMessage?.confirmations.length || 0,
+          requiredSignatures: threshold,
         });
       }
 
@@ -232,27 +221,21 @@ export const vincentPolicy = createVincentPolicy({
 
       if (!isValid) {
         return deny({
-          context: {
-            reason: "Invalid Safe signature",
-            safeAddress: userParams.safeAddress,
-          },
+          reason: "Invalid Safe signature",
+          safeAddress: userParams.safeAddress,
         });
       }
 
       return allow({
-        context: {
-          safeAddress: userParams.safeAddress,
-          threshold,
-          messageHash,
-          isValidSignature: true,
-        },
+        safeAddress: userParams.safeAddress,
+        threshold,
+        messageHash,
+        isValidSignature: true,
       });
     } catch (error) {
       console.error("Evaluate error:", error);
       return deny({
-        context: {
-          reason: error instanceof Error ? error.message : "Unknown error",
-        },
+        reason: error instanceof Error ? error.message : "Unknown error",
       });
     }
   },
@@ -266,17 +249,13 @@ export const vincentPolicy = createVincentPolicy({
       console.log(`Safe multisig execution recorded`);
 
       return allow({
-        context: {
-          message: "Safe multisig execution recorded",
-          txHash,
-        },
+        message: "Safe multisig execution recorded",
+        txHash,
       });
     } catch (error) {
       console.error("Commit error:", error);
       return deny({
-        context: {
-          reason: error instanceof Error ? error.message : "Unknown error",
-        },
+        reason: error instanceof Error ? error.message : "Unknown error",
       });
     }
   },

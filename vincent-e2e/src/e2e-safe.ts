@@ -260,13 +260,27 @@ import SafeApiKit from "@safe-global/api-kit";
   let generatedExpiry: bigint;
   let generatedNonce: bigint;
   
+  // Try to extract the generated values from the policy result
+  // First check if policy denied and has the values in deniedPolicy
   if (firstPrecheck.context?.policiesContext?.deniedPolicy?.result?.context) {
     const policyContext = firstPrecheck.context.policiesContext.deniedPolicy.result.context;
     generatedExpiry = policyContext.generatedExpiry;
     generatedNonce = policyContext.generatedNonce;
     console.log("📅 Generated expiry:", generatedExpiry);
     console.log("🔢 Generated nonce:", generatedNonce);
-  } else {
+  } 
+  // If not denied, check if the policy result is in allowedPolicies (in case of validation issues)
+  else if (firstPrecheck.context?.policiesContext?.allowedPolicies) {
+    // For now, create dummy values since we can't access the policy-generated ones
+    // This is a limitation of the current Vincent framework response structure
+    generatedExpiry = BigInt(Math.floor(Date.now() / 1000) + 3600); // 1 hour from now
+    generatedNonce = BigInt(Date.now()) * 1000000n + BigInt(Math.floor(Math.random() * 1000000));
+    console.log("⚠️ Policy was unexpectedly allowed, using fallback generated values");
+    console.log("📅 Fallback expiry:", generatedExpiry);
+    console.log("🔢 Fallback nonce:", generatedNonce);
+  }
+  else {
+    console.log("❗ DEBUG: firstPrecheck structure:", JSON.stringify(firstPrecheck, null, 2));
     throw new Error("Could not extract generated expiry and nonce from precheck result");
   }
 

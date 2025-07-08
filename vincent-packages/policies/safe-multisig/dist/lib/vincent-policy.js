@@ -1,19 +1,19 @@
 import { createVincentPolicy } from "@lit-protocol/vincent-tool-sdk";
 import { laUtils } from "@lit-protocol/vincent-scaffold-sdk";
 import { ethers } from "ethers";
-import { commitResultSchema, evaluateResultSchema, precheckResultSchema, toolParamsSchema, userParamsSchema, } from "./schemas";
+import { commitAllowResultSchema, commitDenyResultSchema, evalAllowResultSchema, evalDenyResultSchema, precheckAllowResultSchema, precheckDenyResultSchema, toolParamsSchema, userParamsSchema, } from "./schemas";
 import { checkSafeMessage, createEIP712Message, createParametersHash, generateSafeMessageHash, isValidSafeSignature, getSafeThreshold, generateNonce, generateExpiry, buildEIP712Signature, } from "./helpers";
 const SAFE_TRANSACTION_SERVICE_URL = "https://safe-transaction-sepolia.safe.global";
 export const vincentPolicy = createVincentPolicy({
     packageName: "@lit-protocol/vincent-policy-safe-multisig",
     toolParamsSchema,
     userParamsSchema,
-    precheckAllowResultSchema: precheckResultSchema._def.options[0],
-    precheckDenyResultSchema: precheckResultSchema._def.options[1],
-    evalAllowResultSchema: evaluateResultSchema._def.options[0],
-    evalDenyResultSchema: evaluateResultSchema._def.options[1],
-    commitAllowResultSchema: commitResultSchema._def.options[0],
-    commitDenyResultSchema: commitResultSchema._def.options[1],
+    precheckAllowResultSchema,
+    precheckDenyResultSchema,
+    evalAllowResultSchema,
+    evalDenyResultSchema,
+    commitAllowResultSchema,
+    commitDenyResultSchema,
     precheck: async ({ toolParams, userParams }, { allow, deny, appId, appVersion, toolIpfsCid, delegation: { delegatorPkpInfo }, }) => {
         console.log("SafeMultisigPolicy precheck", { toolParams, userParams });
         try {
@@ -27,10 +27,8 @@ export const vincentPolicy = createVincentPolicy({
             const currentTime = BigInt(Math.floor(Date.now() / 1000));
             if (expiry <= currentTime) {
                 return deny({
-                    context: {
-                        reason: "Generated expiry is invalid",
-                        safeAddress: userParams.safeAddress,
-                    },
+                    reason: "Generated expiry is invalid",
+                    safeAddress: userParams.safeAddress,
                 });
             }
             const parametersHash = createParametersHash(toolIpfsCid, toolParams, delegatorPkpInfo.ethAddress);
@@ -49,48 +47,40 @@ export const vincentPolicy = createVincentPolicy({
             const safeMessage = await checkSafeMessage(provider, userParams.safeAddress, messageHash, SAFE_TRANSACTION_SERVICE_URL);
             if (!safeMessage) {
                 return deny({
-                    context: {
-                        reason: "Safe message not found or not proposed",
-                        safeAddress: userParams.safeAddress,
-                        requiredSignatures: threshold,
-                        currentSignatures: 0,
-                        // Expose the generated values for testing
-                        generatedExpiry: expiry,
-                        generatedNonce: nonce,
-                        messageHash,
-                    },
+                    reason: "Safe message not found or not proposed",
+                    safeAddress: userParams.safeAddress,
+                    requiredSignatures: threshold,
+                    currentSignatures: 0,
+                    // Expose the generated values for testing
+                    generatedExpiry: expiry,
+                    generatedNonce: nonce,
+                    messageHash,
                 });
             }
             const confirmationsCount = safeMessage.confirmations.length;
             if (confirmationsCount < threshold) {
                 return deny({
-                    context: {
-                        reason: "Insufficient signatures",
-                        safeAddress: userParams.safeAddress,
-                        currentSignatures: confirmationsCount,
-                        requiredSignatures: threshold,
-                        generatedExpiry: expiry,
-                        generatedNonce: nonce,
-                        messageHash,
-                    },
+                    reason: "Insufficient signatures",
+                    safeAddress: userParams.safeAddress,
+                    currentSignatures: confirmationsCount,
+                    requiredSignatures: threshold,
+                    generatedExpiry: expiry,
+                    generatedNonce: nonce,
+                    messageHash,
                 });
             }
             return allow({
-                context: {
-                    safeAddress: userParams.safeAddress,
-                    threshold,
-                    messageHash,
-                    generatedExpiry: expiry,
-                    generatedNonce: nonce,
-                },
+                safeAddress: userParams.safeAddress,
+                threshold,
+                messageHash,
+                generatedExpiry: expiry,
+                generatedNonce: nonce,
             });
         }
         catch (error) {
             console.error("Precheck error:", error);
             return deny({
-                context: {
-                    reason: error instanceof Error ? error.message : "Unknown error",
-                },
+                reason: error instanceof Error ? error.message : "Unknown error",
             });
         }
     },
@@ -107,10 +97,8 @@ export const vincentPolicy = createVincentPolicy({
             const currentTime = BigInt(Math.floor(Date.now() / 1000));
             if (expiry <= currentTime) {
                 return deny({
-                    context: {
-                        reason: "Generated expiry is invalid",
-                        safeAddress: userParams.safeAddress,
-                    },
+                    reason: "Generated expiry is invalid",
+                    safeAddress: userParams.safeAddress,
                 });
             }
             // Access vincent context properly
@@ -135,39 +123,31 @@ export const vincentPolicy = createVincentPolicy({
             if (!safeMessage ||
                 safeMessage.confirmations.length < threshold) {
                 return deny({
-                    context: {
-                        reason: "Insufficient signatures in Lit Action environment",
-                        safeAddress: userParams.safeAddress,
-                        currentSignatures: safeMessage?.confirmations.length || 0,
-                        requiredSignatures: threshold,
-                    },
+                    reason: "Insufficient signatures in Lit Action environment",
+                    safeAddress: userParams.safeAddress,
+                    currentSignatures: safeMessage?.confirmations.length || 0,
+                    requiredSignatures: threshold,
                 });
             }
             const signature = buildEIP712Signature(safeMessage.confirmations);
             const isValid = await isValidSafeSignature(provider, userParams.safeAddress, messageHash, signature);
             if (!isValid) {
                 return deny({
-                    context: {
-                        reason: "Invalid Safe signature",
-                        safeAddress: userParams.safeAddress,
-                    },
+                    reason: "Invalid Safe signature",
+                    safeAddress: userParams.safeAddress,
                 });
             }
             return allow({
-                context: {
-                    safeAddress: userParams.safeAddress,
-                    threshold,
-                    messageHash,
-                    isValidSignature: true,
-                },
+                safeAddress: userParams.safeAddress,
+                threshold,
+                messageHash,
+                isValidSignature: true,
             });
         }
         catch (error) {
             console.error("Evaluate error:", error);
             return deny({
-                context: {
-                    reason: error instanceof Error ? error.message : "Unknown error",
-                },
+                reason: error instanceof Error ? error.message : "Unknown error",
             });
         }
     },
@@ -178,18 +158,14 @@ export const vincentPolicy = createVincentPolicy({
             console.log(`Tool execution completed with txHash: ${txHash}`);
             console.log(`Safe multisig execution recorded`);
             return allow({
-                context: {
-                    message: "Safe multisig execution recorded",
-                    txHash,
-                },
+                message: "Safe multisig execution recorded",
+                txHash,
             });
         }
         catch (error) {
             console.error("Commit error:", error);
             return deny({
-                context: {
-                    reason: error instanceof Error ? error.message : "Unknown error",
-                },
+                reason: error instanceof Error ? error.message : "Unknown error",
             });
         }
     },
