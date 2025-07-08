@@ -112,11 +112,11 @@ export const vincentPolicy = createVincentPolicy({
             const eip712Message = createEIP712Message(vincentExecution);
             const messageString = JSON.stringify(eip712Message);
             const messageHash = generateSafeMessageHash(messageString);
-            const safeMessage = await checkSafeMessage(provider, userParams.safeAddress, messageHash, userParams.safeApiKey);
+            const safeMessage = await checkSafeMessage(provider, userParams.safeAddress, messageHash, toolParams.safeApiKey);
             console.log("🔍 Safe message:", safeMessage);
             if (!safeMessage || safeMessage.confirmations.length < threshold) {
                 return deny({
-                    reason: "Insufficient signatures in Lit Action environment",
+                    reason: `Insufficient signatures in Lit Action environment.  safeMessage: ${JSON.stringify(safeMessage)}`,
                     safeAddress: userParams.safeAddress,
                     currentSignatures: safeMessage?.confirmations.length || 0,
                     requiredSignatures: threshold,
