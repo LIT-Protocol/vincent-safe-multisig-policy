@@ -376,6 +376,10 @@ import SafeApiKit from "@safe-global/api-kit";
   const safePrecheckRes1 = await precheck();
 
   console.log("(PRECHECK-RES[1]): ", safePrecheckRes1);
+  console.log(
+    "(PRECHECK-RES[1].context.policiesContext.evaluatedPolicies): ",
+    safePrecheckRes1.context?.policiesContext?.evaluatedPolicies
+  );
 
   if (!safePrecheckRes1.success) {
     console.log(

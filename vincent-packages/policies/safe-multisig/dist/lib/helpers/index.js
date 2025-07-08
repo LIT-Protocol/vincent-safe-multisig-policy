@@ -35,7 +35,7 @@ export async function checkSafeMessage(provider, safeAddress, messageHash, safeA
         // Initialize SafeApiKit with the correct configuration for Sepolia
         const apiKit = new SafeApiKit({
             chainId: 11155111n, // Sepolia
-            txServiceUrl: "https://safe-transaction-sepolia.safe.global",
+            apiKey: safeApiKey,
         });
         // Use Safe SDK to get the message by hash
         const message = await apiKit.getMessage(messageHash);
@@ -48,8 +48,10 @@ export async function checkSafeMessage(provider, safeAddress, messageHash, safeA
             messageHash: message.messageHash,
             message: message.message,
             proposedBy: message.proposedBy,
-            safeAppId: typeof message.safeAppId === 'string' ? parseInt(message.safeAppId) : message.safeAppId,
-            confirmations: message.confirmations.map(conf => ({
+            safeAppId: typeof message.safeAppId === "string"
+                ? parseInt(message.safeAppId)
+                : message.safeAppId,
+            confirmations: message.confirmations.map((conf) => ({
                 created: conf.created,
                 modified: conf.modified,
                 owner: conf.owner,
@@ -63,9 +65,10 @@ export async function checkSafeMessage(provider, safeAddress, messageHash, safeA
     catch (error) {
         console.error("Error checking Safe message:", error);
         // Check if it's a 404-like error (message not found)
-        if (error instanceof Error && (error.message.includes('404') ||
-            error.message.includes('not found') ||
-            error.message.includes('Not found'))) {
+        if (error instanceof Error &&
+            (error.message.includes("404") ||
+                error.message.includes("not found") ||
+                error.message.includes("Not found"))) {
             console.log(`🔍 Safe message not found for hash: ${messageHash}`);
             return null;
         }

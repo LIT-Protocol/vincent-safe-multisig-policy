@@ -1,7 +1,6 @@
 import { ethers } from "ethers";
 import { keccak256, toUtf8Bytes } from "ethers/lib/utils";
 import SafeApiKit from "@safe-global/api-kit";
-import Safe from "@safe-global/protocol-kit";
 import {
   EIP712_DOMAIN,
   EIP712_MESSAGE_TYPES,
