@@ -1,5 +1,4 @@
 import { createVincentPolicy } from "@lit-protocol/vincent-tool-sdk";
-import { laUtils } from "@lit-protocol/vincent-scaffold-sdk";
 import { ethers } from "ethers";
 import { commitAllowResultSchema, commitDenyResultSchema, evalAllowResultSchema, evalDenyResultSchema, precheckAllowResultSchema, precheckDenyResultSchema, toolParamsSchema, userParamsSchema, } from "./schemas";
 import { checkSafeMessage, createEIP712Message, createParametersHash, generateSafeMessageHash, isValidSafeSignature, getSafeThreshold, generateNonce, generateExpiry, buildEIP712Signature, } from "./helpers";
@@ -84,7 +83,7 @@ export const vincentPolicy = createVincentPolicy({
             });
         }
     },
-    evaluate: async ({ toolParams, userParams }, { allow, deny }) => {
+    evaluate: async ({ toolParams, userParams }, { allow, deny, appId, appVersion, toolIpfsCid, delegation: { delegatorPkpInfo }, }) => {
         console.log("SafeMultisigPolicy evaluate");
         try {
             const rpcUrl = await Lit.Actions.getRpcUrl({ chain: "sepolia" });
@@ -101,18 +100,13 @@ export const vincentPolicy = createVincentPolicy({
                     safeAddress: userParams.safeAddress,
                 });
             }
-            // Access vincent context properly
-            const context = laUtils.vincentContext || laUtils.context;
-            if (!context) {
-                throw new Error("Vincent context not available in Lit Action environment");
-            }
-            const parametersHash = createParametersHash(context.toolIpfsCid, toolParams, context.agentWalletAddress);
+            const parametersHash = createParametersHash(toolIpfsCid, toolParams, delegatorPkpInfo.ethAddress);
             const vincentExecution = {
-                appId: context.appId,
-                appVersion: context.appVersion,
-                toolIpfsCid: context.toolIpfsCid,
+                appId: appId,
+                appVersion: appVersion,
+                toolIpfsCid: toolIpfsCid,
                 cbor2EncodedParametersHash: parametersHash,
-                agentWalletAddress: context.agentWalletAddress,
+                agentWalletAddress: delegatorPkpInfo.ethAddress,
                 expiry,
                 nonce,
             };
@@ -120,8 +114,7 @@ export const vincentPolicy = createVincentPolicy({
             const messageString = JSON.stringify(eip712Message);
             const messageHash = generateSafeMessageHash(messageString);
             const safeMessage = await checkSafeMessage(provider, userParams.safeAddress, messageHash, SAFE_TRANSACTION_SERVICE_URL);
-            if (!safeMessage ||
-                safeMessage.confirmations.length < threshold) {
+            if (!safeMessage || safeMessage.confirmations.length < threshold) {
                 return deny({
                     reason: "Insufficient signatures in Lit Action environment",
                     safeAddress: userParams.safeAddress,

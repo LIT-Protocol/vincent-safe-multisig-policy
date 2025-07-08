@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "vincent:hardreset": "node vincent-scripts/hardReset.js",
-    "vincent:build": "node vincent-scripts/buildPackages.js",
+    "vincent:build": "node vincent-scripts/buildPackages.js && npm run vincent:e2e:reset",
     "vincent:e2e:reset": "node vincent-scripts/resetE2E.js",
     "vincent:e2e": "dotenv -e .env -- tsx vincent-e2e/src/e2e.ts",
     "vincent:e2e:safe": "dotenv -e .env -- tsx vincent-e2e/src/e2e-safe.ts"
