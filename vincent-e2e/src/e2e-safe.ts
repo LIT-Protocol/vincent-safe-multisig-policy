@@ -125,14 +125,10 @@ import SafeApiKit from "@safe-global/api-kit";
         ["safeAddress"], // Policy parameter names for nativeSendTool
       ],
       toolPolicyParameterTypes: [
-        [
-          PARAMETER_TYPE.STRING,
-        ], // types for safeAddress
+        [PARAMETER_TYPE.STRING], // types for safeAddress
       ],
       toolPolicyParameterValues: [
-        [
-          safeAddress,
-        ], // values for safe multisig policy
+        [safeAddress], // values for safe multisig policy
       ],
     },
 
@@ -246,42 +242,53 @@ import SafeApiKit from "@safe-global/api-kit";
    * Create and sign Safe message for testing
    * ====================================
    */
-  
+
   // First, we need to run a precheck to get the expiry and nonce values that the policy will generate
-  console.log("🔍 Running precheck to get generated expiry and nonce values...");
-  
+  console.log(
+    "🔍 Running precheck to get generated expiry and nonce values..."
+  );
+
   const firstPrecheck = await nativeSendToolClient.precheck(TEST_TOOL_PARAMS, {
     delegatorPkpEthAddress: agentWalletAddress,
   });
-  
+
   console.log("First precheck result:", firstPrecheck);
-  
+
   // Extract the generated values from the precheck result
   let generatedExpiry: bigint;
   let generatedNonce: bigint;
-  
+
   // Try to extract the generated values from the policy result
   // First check if policy denied and has the values in deniedPolicy
   if (firstPrecheck.context?.policiesContext?.deniedPolicy?.result?.context) {
-    const policyContext = firstPrecheck.context.policiesContext.deniedPolicy.result.context;
+    const policyContext =
+      firstPrecheck.context.policiesContext.deniedPolicy.result.context;
     generatedExpiry = policyContext.generatedExpiry;
     generatedNonce = policyContext.generatedNonce;
     console.log("📅 Generated expiry:", generatedExpiry);
     console.log("🔢 Generated nonce:", generatedNonce);
-  } 
+  }
   // If not denied, check if the policy result is in allowedPolicies (in case of validation issues)
   else if (firstPrecheck.context?.policiesContext?.allowedPolicies) {
     // For now, create dummy values since we can't access the policy-generated ones
     // This is a limitation of the current Vincent framework response structure
     generatedExpiry = BigInt(Math.floor(Date.now() / 1000) + 3600); // 1 hour from now
-    generatedNonce = BigInt(Date.now()) * 1000000n + BigInt(Math.floor(Math.random() * 1000000));
-    console.log("⚠️ Policy was unexpectedly allowed, using fallback generated values");
+    generatedNonce =
+      BigInt(Date.now()) * 1000000n +
+      BigInt(Math.floor(Math.random() * 1000000));
+    console.log(
+      "⚠️ Policy was unexpectedly allowed, using fallback generated values"
+    );
     console.log("📅 Fallback expiry:", generatedExpiry);
     console.log("🔢 Fallback nonce:", generatedNonce);
-  }
-  else {
-    console.log("❗ DEBUG: firstPrecheck structure:", JSON.stringify(firstPrecheck, null, 2));
-    throw new Error("Could not extract generated expiry and nonce from precheck result");
+  } else {
+    console.log(
+      "❗ DEBUG: firstPrecheck structure:",
+      JSON.stringify(firstPrecheck, null, 2)
+    );
+    throw new Error(
+      "Could not extract generated expiry and nonce from precheck result"
+    );
   }
 
   const parametersHash = createParametersHash(
@@ -320,7 +327,7 @@ import SafeApiKit from "@safe-global/api-kit";
 
   const apiKit = new SafeApiKit({
     chainId: 11155111n, // Sepolia
-    txServiceUrl: "https://safe-transaction-sepolia.safe.global",
+    apiKey: process.env.SAFE_API_KEY,
   });
 
   console.log("🔗 Safe SDK initialized");
@@ -357,7 +364,9 @@ import SafeApiKit from "@safe-global/api-kit";
   // ----------------------------------------
   // Test 1: Execute with Safe multisig policy (no signatures - should fail)
   // ----------------------------------------
-  console.log("(PRECHECK-TEST-1) Safe multisig execution test - no signatures (should fail)");
+  console.log(
+    "(PRECHECK-TEST-1) Safe multisig execution test - no signatures (should fail)"
+  );
   const safePrecheckRes1 = await precheck();
 
   console.log("(PRECHECK-RES[1]): ", safePrecheckRes1);
@@ -379,9 +388,7 @@ import SafeApiKit from "@safe-global/api-kit";
     console.log("(EXECUTE-RES[1]): ", executeRes1);
 
     if (executeRes1.success) {
-      console.log(
-        "❌ (EXECUTE-TEST-1) Execution unexpectedly succeeded"
-      );
+      console.log("❌ (EXECUTE-TEST-1) Execution unexpectedly succeeded");
       console.log("🎉 Transaction hash:", executeRes1.result?.txHash);
 
       // Collect transaction hash if successful
@@ -411,29 +418,31 @@ import SafeApiKit from "@safe-global/api-kit";
     // Sign the message using Safe SDK
     const signedMessage = await protocolKit.signMessage(safeMessage);
     console.log("✍️ Message signed by Safe signer:", safeSigner.address);
-    
+
     // Get the signature for the current signer
-    const signerSignature = signedMessage.signatures.get(safeSigner.address.toLowerCase());
+    const signerSignature = signedMessage.signatures.get(
+      safeSigner.address.toLowerCase()
+    );
     if (!signerSignature) {
       throw new Error("Failed to get signature for signer");
     }
-    
+
     console.log("📝 Signature data:", signerSignature.data);
 
     // Propose the message to Safe Transaction Service
     console.log("📤 Proposing message to Safe Transaction Service...");
-    
+
     const proposalResponse = await apiKit.addMessage(safeAddress, {
       message: messageString,
       signature: signerSignature.data,
     });
-    
+
     console.log("✅ Message successfully proposed to Safe Transaction Service");
     console.log("📋 Proposal response:", proposalResponse);
 
     // Wait a moment for the message to be processed
     console.log("⏳ Waiting for message to be processed...");
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     // ----------------------------------------
     // Test 3: Execute with real Safe signatures
@@ -442,15 +451,15 @@ import SafeApiKit from "@safe-global/api-kit";
     console.log("🧪 TESTING WITH REAL SAFE SIGNATURES");
     console.log("=".repeat(60));
 
-    console.log("(PRECHECK-TEST-2) Safe multisig execution test - with real signatures");
+    console.log(
+      "(PRECHECK-TEST-2) Safe multisig execution test - with real signatures"
+    );
     const safePrecheckRes2 = await precheck();
 
     console.log("(PRECHECK-RES[2]): ", safePrecheckRes2);
 
     if (!safePrecheckRes2.success) {
-      console.log(
-        "⚠️ (PRECHECK-TEST-2) Precheck failed even with signatures:"
-      );
+      console.log("⚠️ (PRECHECK-TEST-2) Precheck failed even with signatures:");
       console.log("📄 Error:", safePrecheckRes2.error);
       console.log(
         "💡 This might be due to threshold not being met or message not being found in Transaction Service"
@@ -478,13 +487,16 @@ import SafeApiKit from "@safe-global/api-kit";
           "⚠️ (EXECUTE-TEST-2) Execution was blocked by policy despite signatures"
         );
         console.log("📄 Error:", executeRes2.error);
-        console.log("💡 This might indicate insufficient signatures or other policy constraints");
+        console.log(
+          "💡 This might indicate insufficient signatures or other policy constraints"
+        );
       }
     }
-
   } catch (error) {
     console.error("❌ Safe SDK integration error:", error);
-    console.log("💡 This is expected if the Safe configuration or network connectivity has issues");
+    console.log(
+      "💡 This is expected if the Safe configuration or network connectivity has issues"
+    );
   }
 
   // Print all collected transaction hashes
@@ -507,8 +519,12 @@ import SafeApiKit from "@safe-global/api-kit";
   console.log("🎉 SAFE MULTISIG POLICY TEST COMPLETED!");
   console.log("=".repeat(50));
   console.log("📝 Test Summary:");
-  console.log("   ✅ Test 1: Policy correctly blocks execution without signatures");
-  console.log("   ✅ Test 2: Safe SDK integration - message signing and proposal");
+  console.log(
+    "   ✅ Test 1: Policy correctly blocks execution without signatures"
+  );
+  console.log(
+    "   ✅ Test 2: Safe SDK integration - message signing and proposal"
+  );
   console.log("   ✅ Test 3: Policy validation with real Safe signatures");
   console.log("");
   console.log("📋 Features Tested:");
