@@ -14,7 +14,7 @@ import {
   checkSafeMessage,
   createEIP712Message,
   createParametersHash,
-  generateSafeMessageHashWithSDK,
+  generateSafeMessageHash,
   isValidSafeSignature,
   getSafeThreshold,
   generateNonce,
@@ -90,11 +90,7 @@ export const vincentPolicy = createVincentPolicy({
 
       const eip712Message = createEIP712Message(vincentExecution);
       const messageString = JSON.stringify(eip712Message);
-      const messageHash = await generateSafeMessageHashWithSDK(
-        process.env.SEPOLIA_RPC_URL!,
-        userParams.safeAddress,
-        messageString
-      );
+      const messageHash = generateSafeMessageHash(messageString);
 
       const safeMessage = await checkSafeMessage(
         provider,
@@ -197,11 +193,7 @@ export const vincentPolicy = createVincentPolicy({
 
       const eip712Message = createEIP712Message(vincentExecution);
       const messageString = JSON.stringify(eip712Message);
-      const messageHash = await generateSafeMessageHashWithSDK(
-        rpcUrl,
-        userParams.safeAddress,
-        messageString
-      );
+      const messageHash = generateSafeMessageHash(messageString);
 
       const safeMessage = await checkSafeMessage(
         provider,

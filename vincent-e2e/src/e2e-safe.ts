@@ -381,7 +381,10 @@ import SafeApiKit from "@safe-global/api-kit";
     safePrecheckRes1.context?.policiesContext?.evaluatedPolicies
   );
 
-  if (!safePrecheckRes1.success) {
+  if (
+    !safePrecheckRes1.success ||
+    safePrecheckRes1.context?.policiesContext?.allow === false
+  ) {
     console.log(
       "✅ (PRECHECK-TEST-1) Precheck correctly failed (expected - no valid Safe signatures available):"
     );

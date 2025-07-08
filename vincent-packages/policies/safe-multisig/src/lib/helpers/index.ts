@@ -1,6 +1,5 @@
 import { ethers } from "ethers";
 import { keccak256, toUtf8Bytes } from "ethers/lib/utils";
-import SafeApiKit from "@safe-global/api-kit";
 import {
   EIP712_DOMAIN,
   EIP712_MESSAGE_TYPES,
@@ -56,54 +55,45 @@ export async function checkSafeMessage(
   try {
     console.log(`🔍 Checking Safe message with hash: ${messageHash}`);
     console.log(`🔍 Using Safe address: ${safeAddress}`);
-
-    // Initialize SafeApiKit with the correct configuration for Sepolia
-    const apiKit = new SafeApiKit({
-      chainId: 11155111n, // Sepolia
-      apiKey: safeApiKey,
-    });
-
-    // Use Safe SDK to get the message by hash
-    const message = await apiKit.getMessage(messageHash);
-    console.log(`✅ Found Safe message:`, message);
-
-    // Transform the response to match our schema expectations
-    const transformedMessage: SafeMessageResponse = {
-      created: message.created,
-      modified: message.modified,
-      safe: message.safe,
-      messageHash: message.messageHash,
-      message: message.message,
-      proposedBy: message.proposedBy,
-      safeAppId:
-        typeof message.safeAppId === "string"
-          ? parseInt(message.safeAppId)
-          : message.safeAppId,
-      confirmations: message.confirmations.map((conf) => ({
-        created: conf.created,
-        modified: conf.modified,
-        owner: conf.owner,
-        signature: conf.signature,
-        signatureType: conf.signatureType,
-      })),
-      preparedSignature: message.preparedSignature,
+    
+    // Use the messages endpoint with just the hash (not safe-specific)
+    const serviceUrl = "https://safe-transaction-sepolia.safe.global";
+    const url = `${serviceUrl}/api/v1/messages/${messageHash}/`;
+    
+    console.log(`🔍 Fetching from URL: ${url}`);
+    
+    const headers: Record<string, string> = {
+      "Accept": "application/json",
+      "content-type": "application/json",
     };
+    
+    // Add API key if provided
+    if (safeApiKey) {
+      headers["Authorization"] = `Bearer ${safeApiKey}`;
+    }
+    
+    const response = await fetch(url, { headers });
 
-    return transformedMessage;
-  } catch (error) {
-    console.error("Error checking Safe message:", error);
-
-    // Check if it's a 404-like error (message not found)
-    if (
-      error instanceof Error &&
-      (error.message.includes("404") ||
-        error.message.includes("not found") ||
-        error.message.includes("Not found"))
-    ) {
-      console.log(`🔍 Safe message not found for hash: ${messageHash}`);
-      return null;
+    if (!response.ok) {
+      if (response.status === 404) {
+        console.log(`🔍 Safe message not found for hash: ${messageHash}`);
+        return null;
+      }
+      throw new Error(`Failed to fetch Safe message: ${response.status} ${response.statusText}`);
     }
 
+    const message = await response.json();
+    console.log(`✅ Found Safe message:`, message);
+    
+    // Verify the message is for the correct Safe
+    if (message.safe && message.safe.toLowerCase() !== safeAddress.toLowerCase()) {
+      console.log(`⚠️ Message found but for different Safe. Expected: ${safeAddress}, Got: ${message.safe}`);
+      return null;
+    }
+    
+    return message;
+  } catch (error) {
+    console.error("Error checking Safe message:", error);
     return null;
   }
 }
@@ -145,28 +135,6 @@ export function generateSafeMessageHash(message: string): string {
   return safeMessageHash;
 }
 
-export async function generateSafeMessageHashWithSDK(
-  rpcUrl: string,
-  safeAddress: string,
-  message: string
-): Promise<string> {
-  try {
-    console.log(
-      `🔏 Generating Safe message hash for: ${message.substring(0, 100)}...`
-    );
-
-    // For now, use the original method since Safe SDK has complex type requirements
-    // The original method generates the correct Safe message hash format
-    const messageHash = generateSafeMessageHash(message);
-    console.log(`🔏 Generated Safe message hash: ${messageHash}`);
-
-    return messageHash;
-  } catch (error) {
-    console.error("Error generating Safe message hash:", error);
-    // Fallback to the original method
-    return generateSafeMessageHash(message);
-  }
-}
 
 export function createParametersHash(
   toolIpfsCid: string,

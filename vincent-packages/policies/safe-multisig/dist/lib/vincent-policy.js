@@ -1,7 +1,7 @@
 import { createVincentPolicy } from "@lit-protocol/vincent-tool-sdk";
 import { ethers } from "ethers";
 import { commitAllowResultSchema, commitDenyResultSchema, evalAllowResultSchema, evalDenyResultSchema, precheckAllowResultSchema, precheckDenyResultSchema, toolParamsSchema, userParamsSchema, } from "./schemas";
-import { checkSafeMessage, createEIP712Message, createParametersHash, generateSafeMessageHashWithSDK, isValidSafeSignature, getSafeThreshold, generateNonce, generateExpiry, buildEIP712Signature, } from "./helpers";
+import { checkSafeMessage, createEIP712Message, createParametersHash, generateSafeMessageHash, isValidSafeSignature, getSafeThreshold, generateNonce, generateExpiry, buildEIP712Signature, } from "./helpers";
 export const vincentPolicy = createVincentPolicy({
     packageName: "@lit-protocol/vincent-policy-safe-multisig",
     toolParamsSchema,
@@ -41,7 +41,7 @@ export const vincentPolicy = createVincentPolicy({
             };
             const eip712Message = createEIP712Message(vincentExecution);
             const messageString = JSON.stringify(eip712Message);
-            const messageHash = await generateSafeMessageHashWithSDK(process.env.SEPOLIA_RPC_URL, userParams.safeAddress, messageString);
+            const messageHash = generateSafeMessageHash(messageString);
             const safeMessage = await checkSafeMessage(provider, userParams.safeAddress, messageHash, toolParams.safeApiKey);
             if (!safeMessage) {
                 return deny({
@@ -111,7 +111,7 @@ export const vincentPolicy = createVincentPolicy({
             };
             const eip712Message = createEIP712Message(vincentExecution);
             const messageString = JSON.stringify(eip712Message);
-            const messageHash = await generateSafeMessageHashWithSDK(rpcUrl, userParams.safeAddress, messageString);
+            const messageHash = generateSafeMessageHash(messageString);
             const safeMessage = await checkSafeMessage(provider, userParams.safeAddress, messageHash, toolParams.safeApiKey);
             console.log("🔍 Safe message:", safeMessage);
             if (!safeMessage || safeMessage.confirmations.length < threshold) {
