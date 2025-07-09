@@ -266,21 +266,33 @@ import SafeApiKit from "@safe-global/api-kit";
 
   /**
    * ====================================
-   * 💰 Fund the PKP wallet with ETH for gas
+   * 💰 Fund the PKP wallet with ETH for gas (if needed)
    * ====================================
    */
-  console.log("💰 Funding PKP wallet with ETH for gas...");
-  const fundingTx = await safeSigner.sendTransaction({
-    to: agentWalletAddress,
-    value: ethers.utils.parseEther("0.00001"), // 0.00001 ETH
-  });
-  await fundingTx.wait();
-  console.log("✅ PKP wallet funded with 0.00001 ETH");
-  console.log("   Transaction hash:", fundingTx.hash);
-
-  // Check PKP balance
+  // Check PKP balance first
   const pkpBalance = await provider.getBalance(agentWalletAddress);
-  console.log("   PKP balance:", ethers.utils.formatEther(pkpBalance), "ETH");
+  const minRequiredBalance = ethers.utils.parseEther("0.000001"); // 0.000001 ETH threshold
+  
+  console.log("💰 Checking PKP wallet balance...");
+  console.log("   Current PKP balance:", ethers.utils.formatEther(pkpBalance), "ETH");
+  console.log("   Required minimum:", ethers.utils.formatEther(minRequiredBalance), "ETH");
+
+  if (pkpBalance.lt(minRequiredBalance)) {
+    console.log("💰 PKP balance is below minimum, funding with ETH for gas...");
+    const fundingTx = await safeSigner.sendTransaction({
+      to: agentWalletAddress,
+      value: ethers.utils.parseEther("0.00001"), // 0.00001 ETH
+    });
+    await fundingTx.wait();
+    console.log("✅ PKP wallet funded with 0.00001 ETH");
+    console.log("   Transaction hash:", fundingTx.hash);
+
+    // Check new balance
+    const newPkpBalance = await provider.getBalance(agentWalletAddress);
+    console.log("   New PKP balance:", ethers.utils.formatEther(newPkpBalance), "ETH");
+  } else {
+    console.log("✅ PKP wallet has sufficient balance, skipping funding");
+  }
 
   /**
    * ====================================
