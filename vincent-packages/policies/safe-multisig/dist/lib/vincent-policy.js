@@ -1,7 +1,7 @@
 import { createVincentPolicy } from "@lit-protocol/vincent-tool-sdk";
 import { ethers } from "ethers";
 import { commitAllowResultSchema, commitDenyResultSchema, evalAllowResultSchema, evalDenyResultSchema, precheckAllowResultSchema, precheckDenyResultSchema, toolParamsSchema, userParamsSchema, } from "./schemas";
-import { checkSafeMessage, createEIP712Message, createParametersHash, generateSafeMessageHash, isValidSafeSignature, getSafeThreshold, generateNonce, generateExpiry, buildEIP712Signature, } from "./helpers";
+import { checkSafeMessage, createEIP712Message, createParametersHash, generateSafeMessageHash, isValidSafeSignature, getSafeThreshold, generateNonce, generateExpiry, buildEIP712Signature, parseAndValidateEIP712Message, } from "./helpers";
 export const vincentPolicy = createVincentPolicy({
     packageName: "@lit-protocol/vincent-policy-safe-multisig",
     toolParamsSchema,
@@ -18,70 +18,45 @@ export const vincentPolicy = createVincentPolicy({
             const rpcUrl = process.env.SEPOLIA_RPC_URL;
             const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
             const safeMessage = await checkSafeMessage(provider, userParams.safeAddress, toolParams.safeMessageHash, toolParams.safeApiKey);
-            console.log("🔍 Safe message:", safeMessage);
+            console.log("[SafeMultisigPolicy precheck] Retrieved Safe message:", safeMessage);
+            if (safeMessage === null) {
+                return deny({
+                    reason: "Safe message not found or not proposed",
+                    safeAddress: userParams.safeAddress,
+                    messageHash: toolParams.safeMessageHash,
+                });
+            }
+            // Parse and validate the EIP712 message using helper function
+            const eip712ValidationResult = parseAndValidateEIP712Message({
+                messageString: safeMessage.message,
+                expectedToolIpfsCid: toolIpfsCid,
+                expectedAgentAddress: delegatorPkpInfo.ethAddress,
+                expectedAppId: appId,
+                expectedAppVersion: appVersion,
+            });
+            if (!eip712ValidationResult.success) {
+                return deny({
+                    reason: eip712ValidationResult.error || "EIP712 validation failed",
+                    safeAddress: userParams.safeAddress,
+                    messageHash: toolParams.safeMessageHash,
+                    expected: eip712ValidationResult.expected,
+                    received: eip712ValidationResult.received,
+                });
+            }
+            const eip712Data = eip712ValidationResult.data;
+            console.log("[SafeMultisigPolicy precheck] EIP712 message validation passed");
+            console.log("[SafeMultisigPolicy precheck] EIP712 message data:", eip712Data.message);
             // Get Safe threshold from contract
-            // const threshold = await getSafeThreshold(
-            //   provider,
-            //   userParams.safeAddress
-            // );
-            // const currentTime = BigInt(Math.floor(Date.now() / 1000));
-            // if (expiry <= currentTime) {
-            //   return deny({
-            //     reason: "Generated expiry is invalid",
-            //     safeAddress: userParams.safeAddress,
-            //   });
-            // }
-            // const parametersHash = createParametersHash(
-            //   toolIpfsCid,
-            //   {},
-            //   delegatorPkpInfo.ethAddress
-            // );
-            // const vincentExecution = {
-            //   appId,
-            //   appVersion,
-            //   toolIpfsCid,
-            //   cbor2EncodedParametersHash: parametersHash,
-            //   agentWalletAddress: delegatorPkpInfo.ethAddress,
-            //   expiry,
-            //   nonce,
-            // };
-            // const eip712Message = createEIP712Message(vincentExecution);
-            // const messageString = JSON.stringify(eip712Message);
-            // const messageHash = generateSafeMessageHash(
-            //   messageString,
-            //   userParams.safeAddress,
-            //   "11155111"
-            // );
-            // const safeMessage = await checkSafeMessage(
-            //   provider,
-            //   userParams.safeAddress,
-            //   messageHash,
-            //   toolParams.safeApiKey
-            // );
-            // if (!safeMessage) {
-            //   return deny({
-            //     reason: "Safe message not found or not proposed",
-            //     safeAddress: userParams.safeAddress,
-            //     requiredSignatures: threshold,
-            //     currentSignatures: 0,
-            //     // Expose the generated values for testing
-            //     generatedExpiry: expiry,
-            //     generatedNonce: nonce,
-            //     messageHash,
-            //   });
-            // }
-            // const confirmationsCount = safeMessage.confirmations.length;
-            // if (confirmationsCount < threshold) {
-            //   return deny({
-            //     reason: "Insufficient signatures",
-            //     safeAddress: userParams.safeAddress,
-            //     currentSignatures: confirmationsCount,
-            //     requiredSignatures: threshold,
-            //     generatedExpiry: expiry,
-            //     generatedNonce: nonce,
-            //     messageHash,
-            //   });
-            // }
+            const threshold = await getSafeThreshold(provider, userParams.safeAddress);
+            console.log("[SafeMultisigPolicy precheck] Safe threshold:", threshold);
+            if (safeMessage.confirmations.length < threshold) {
+                return deny({
+                    reason: "Insufficient signatures",
+                    safeAddress: userParams.safeAddress,
+                    // currentSignatures: safeMessage.confirmations.length,
+                    // requiredSignatures: threshold,
+                });
+            }
             return allow({
                 safeAddress: userParams.safeAddress,
                 messageHash: toolParams.safeMessageHash,
