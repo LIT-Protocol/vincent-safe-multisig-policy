@@ -48,6 +48,7 @@ export function hashToolParameters(params: any): string {
 
 export async function checkSafeMessage(
   provider: ethers.providers.Provider,
+  safeTransactionServiceUrl: string,
   safeAddress: string,
   messageHash: string,
   safeApiKey: string
@@ -55,10 +56,10 @@ export async function checkSafeMessage(
   try {
     console.log(`🔍 Checking Safe message with hash: ${messageHash}`);
     console.log(`🔍 Using Safe address: ${safeAddress}`);
+    console.log(`🔍 Using Safe transaction service URL: ${safeTransactionServiceUrl}`);
 
     // Use the messages endpoint with just the hash (not safe-specific)
-    const serviceUrl = "https://safe-transaction-sepolia.safe.global";
-    const url = `${serviceUrl}/api/v1/messages/${messageHash}/`;
+    const url = `${safeTransactionServiceUrl}/api/v1/messages/${messageHash}/`;
 
     console.log(`🔍 Fetching from URL: ${url}`);
 

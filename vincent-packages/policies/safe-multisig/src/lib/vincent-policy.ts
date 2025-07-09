@@ -54,9 +54,11 @@ export const vincentPolicy = createVincentPolicy({
     try {
       const rpcUrl = process.env.SEPOLIA_RPC_URL!;
       const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+      const safeTransactionServiceUrl = "https://safe-transaction-sepolia.safe.global";
 
       const safeMessage = await checkSafeMessage(
         provider,
+        safeTransactionServiceUrl,
         userParams.safeAddress,
         toolParams.safeMessageHash,
         toolParams.safeApiKey
@@ -134,94 +136,73 @@ export const vincentPolicy = createVincentPolicy({
       delegation: { delegatorPkpInfo },
     }
   ) => {
-    console.log("SafeMultisigPolicy evaluate");
+    console.log("SafeMultisigPolicy evaluate", { toolParams, userParams });
 
     try {
-      const rpcUrl = await Lit.Actions.getRpcUrl({ chain: "sepolia" });
+      const rpcUrl = process.env.SEPOLIA_RPC_URL!;
       const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+      const safeTransactionServiceUrl = "https://safe-transaction-sepolia.safe.global";
+
+      const safeMessage = await checkSafeMessage(
+        provider,
+        safeTransactionServiceUrl,
+        userParams.safeAddress,
+        toolParams.safeMessageHash,
+        toolParams.safeApiKey
+      );
+      console.log("[SafeMultisigPolicy evaluate] Retrieved Safe message:", safeMessage);
+
+      if (safeMessage === null) {
+        return deny({
+          reason: "Safe message not found or not proposed",
+          safeAddress: userParams.safeAddress,
+          messageHash: toolParams.safeMessageHash,
+        });
+      }
+
+      // Parse and validate the EIP712 message using helper function
+      const eip712ValidationResult = parseAndValidateEIP712Message({
+        messageString: safeMessage.message as string,
+        expectedToolIpfsCid: toolIpfsCid,
+        expectedAgentAddress: delegatorPkpInfo.ethAddress,
+        expectedAppId: appId,
+        expectedAppVersion: appVersion,
+      });
+
+      if (!eip712ValidationResult.success) {
+        return deny({
+          reason: eip712ValidationResult.error || "EIP712 validation failed",
+          safeAddress: userParams.safeAddress,
+          messageHash: toolParams.safeMessageHash,
+          expected: eip712ValidationResult.expected,
+          received: eip712ValidationResult.received,
+        });
+      }
+
+      const eip712Data = eip712ValidationResult.data!;
+
+      console.log("[SafeMultisigPolicy evaluate] EIP712 message validation passed");
+      console.log("[SafeMultisigPolicy evaluate] EIP712 message data:", eip712Data.message);
 
       // Get Safe threshold from contract
       const threshold = await getSafeThreshold(
         provider,
         userParams.safeAddress
       );
+      console.log("[SafeMultisigPolicy evaluate] Safe threshold:", threshold);
 
-      // Generate expiry and nonce internally (same as precheck)
-      const expiry = generateExpiry(1); // 1 hour from now
-      const nonce = generateNonce();
-
-      const currentTime = BigInt(Math.floor(Date.now() / 1000));
-      if (expiry <= currentTime) {
+      if (safeMessage.confirmations.length < threshold) {
         return deny({
-          reason: "Generated expiry is invalid",
+          reason: "Insufficient signatures",
           safeAddress: userParams.safeAddress,
-        });
-      }
-
-      const parametersHash = createParametersHash(
-        toolIpfsCid,
-        {},
-        delegatorPkpInfo.ethAddress
-      );
-
-      const vincentExecution = {
-        appId: appId,
-        appVersion: appVersion,
-        toolIpfsCid: toolIpfsCid,
-        cbor2EncodedParametersHash: parametersHash,
-        agentWalletAddress: delegatorPkpInfo.ethAddress,
-        expiry,
-        nonce,
-      };
-
-      const eip712Message = createEIP712Message(vincentExecution);
-      const messageString = JSON.stringify(eip712Message);
-      const messageHash = generateSafeMessageHash(
-        messageString,
-        userParams.safeAddress,
-        "11155111"
-      );
-
-      const safeMessage = await checkSafeMessage(
-        provider,
-        userParams.safeAddress,
-        messageHash,
-        toolParams.safeApiKey
-      );
-
-      console.log("🔍 Safe message:", safeMessage);
-
-      if (!safeMessage || safeMessage.confirmations.length < threshold) {
-        return deny({
-          reason: `Insufficient signatures in Lit Action environment.  safeMessage: ${JSON.stringify(
-            safeMessage
-          )}`,
-          safeAddress: userParams.safeAddress,
-          currentSignatures: safeMessage?.confirmations.length || 0,
-          requiredSignatures: threshold,
-        });
-      }
-
-      const signature = buildEIP712Signature(safeMessage.confirmations);
-      const isValid = await isValidSafeSignature(
-        provider,
-        userParams.safeAddress,
-        messageHash,
-        signature
-      );
-
-      if (!isValid) {
-        return deny({
-          reason: "Invalid Safe signature",
-          safeAddress: userParams.safeAddress,
+          currentNumberOfSignatures: safeMessage.confirmations.length,
+          requiredNumberOfSignatures: threshold,
         });
       }
 
       return allow({
         safeAddress: userParams.safeAddress,
-        threshold,
-        messageHash,
-        isValidSignature: true,
+        messageHash: toolParams.safeMessageHash,
       });
     } catch (error) {
       console.error("Evaluate error:", error);
@@ -237,10 +218,10 @@ export const vincentPolicy = createVincentPolicy({
     try {
       const { txHash } = commitParams as any;
       console.log(`Tool execution completed with txHash: ${txHash}`);
-      console.log(`Safe multisig execution recorded`);
+      console.log(`Safe message should be recorded as executed`);
 
       return allow({
-        message: "Safe multisig execution recorded",
+        message: "Safe message should be recorded as executed",
         txHash,
       });
     } catch (error) {

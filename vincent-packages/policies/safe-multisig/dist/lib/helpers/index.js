@@ -27,13 +27,13 @@ export function hashToolParameters(params) {
     }, {});
     return keccak256(toUtf8Bytes(JSON.stringify(sortedParams)));
 }
-export async function checkSafeMessage(provider, safeAddress, messageHash, safeApiKey) {
+export async function checkSafeMessage(provider, safeTransactionServiceUrl, safeAddress, messageHash, safeApiKey) {
     try {
         console.log(`🔍 Checking Safe message with hash: ${messageHash}`);
         console.log(`🔍 Using Safe address: ${safeAddress}`);
+        console.log(`🔍 Using Safe transaction service URL: ${safeTransactionServiceUrl}`);
         // Use the messages endpoint with just the hash (not safe-specific)
-        const serviceUrl = "https://safe-transaction-sepolia.safe.global";
-        const url = `${serviceUrl}/api/v1/messages/${messageHash}/`;
+        const url = `${safeTransactionServiceUrl}/api/v1/messages/${messageHash}/`;
         console.log(`🔍 Fetching from URL: ${url}`);
         const headers = {
             Accept: "application/json",

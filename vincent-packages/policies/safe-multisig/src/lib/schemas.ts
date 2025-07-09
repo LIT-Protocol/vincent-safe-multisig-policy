@@ -49,8 +49,6 @@ export type VincentToolExecution = z.infer<typeof vincentToolExecutionSchema>;
 export const precheckAllowResultSchema = z.object({
   safeAddress: z.string(),
   messageHash: z.string(),
-  // currentSignatures: z.number().optional(),
-  // requiredSignatures: z.number().optional(),
 });
 
 export const precheckDenyResultSchema = z.object({
@@ -65,16 +63,17 @@ export const precheckDenyResultSchema = z.object({
 
 export const evalAllowResultSchema = z.object({
   safeAddress: z.string(),
-  threshold: z.number(),
   messageHash: z.string(),
-  isValidSignature: z.boolean(),
 });
 
 export const evalDenyResultSchema = z.object({
   reason: z.string(),
   safeAddress: z.string().optional(),
-  currentSignatures: z.number().optional(),
-  requiredSignatures: z.number().optional(),
+  messageHash: z.string().optional(),
+  expected: z.any().optional(),
+  received: z.any().optional(),
+  currentNumberOfSignatures: z.number().optional(),
+  requiredNumberOfSignatures: z.number().optional(),
 });
 
 export const commitAllowResultSchema = z.object({

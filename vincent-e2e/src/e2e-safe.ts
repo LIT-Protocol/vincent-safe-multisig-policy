@@ -6,7 +6,7 @@ import {
 } from "@lit-protocol/vincent-scaffold-sdk/e2e";
 
 // Apply log suppression FIRST, before any imports that might trigger logs
-suppressLitLogs(false);
+suppressLitLogs(true);
 
 import { getVincentToolClient } from "@lit-protocol/vincent-app-sdk";
 import { vincentPolicyMetadata as safeMultisigPolicyMetadata } from "../../vincent-packages/policies/safe-multisig/dist/index.js";
@@ -62,20 +62,26 @@ import SafeApiKit from "@safe-global/api-kit";
 
   /**
    * ====================================
-   * Set up Safe signing with TEST_FUNDER_PRIVATE_KEY
+   * Set up Safe signing with SAFE_SIGNER_PRIVATE_KEY_1
    * ====================================
    */
   const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
 
-  // Get the funder private key from env
-  const funderPrivateKey = process.env.TEST_FUNDER_PRIVATE_KEY;
-  if (!funderPrivateKey) {
-    throw new Error("TEST_FUNDER_PRIVATE_KEY environment variable is required");
+  // Create Safe signer - use SAFE_SIGNER_PRIVATE_KEY_1 as one of the signers on the Safe
+  const safeSignerPrivateKey_1 = process.env.SAFE_SIGNER_PRIVATE_KEY_1;
+  if (!safeSignerPrivateKey_1) {
+    throw new Error("SAFE_SIGNER_PRIVATE_KEY_1 environment variable is required");
   }
+  const safeSigner_1 = new ethers.Wallet(safeSignerPrivateKey_1, provider);
+  console.log("🔑 Safe signer address:", safeSigner_1.address);
 
-  // Create Safe signer - use funder as the signer on the Safe
-  const safeSigner = new ethers.Wallet(funderPrivateKey, provider);
-  console.log("🔑 Safe signer address:", safeSigner.address);
+  // Create Safe signer - use SAFE_SIGNER_PRIVATE_KEY_2 as one of the signers on the Safe
+  const safeSignerPrivateKey_2 = process.env.SAFE_SIGNER_PRIVATE_KEY_2;
+  if (!safeSignerPrivateKey_2) {
+    throw new Error("SAFE_SIGNER_PRIVATE_KEY_2 environment variable is required");
+  }
+  const safeSigner_2 = new ethers.Wallet(safeSignerPrivateKey_2, provider);
+  console.log("🔑 Safe signer address:", safeSigner_2.address);
 
   // Get Safe threshold
   const safeContract = new ethers.Contract(
@@ -92,6 +98,7 @@ import SafeApiKit from "@safe-global/api-kit";
    * ====================================
    */
   const nativeSendToolClient = getVincentToolClient({
+    // @ts-expect-error - TODO: Property '[__bundledToolBrand]' is missing in type
     bundledVincentTool: nativeSendTool,
     ethersSigner: accounts.delegatee.ethersWallet,
   });
@@ -284,7 +291,7 @@ import SafeApiKit from "@safe-global/api-kit";
    */
   const protocolKit = await Safe.init({
     provider: rpcUrl,
-    signer: funderPrivateKey,
+    signer: safeSignerPrivateKey_1,
     safeAddress,
   });
 
@@ -306,10 +313,10 @@ import SafeApiKit from "@safe-global/api-kit";
   console.log("📡 Connected to Safe Transaction Service");
 
   // ----------------------------------------
-  // Sign and propose message via Safe SDK
+  // Sign and propose message via Safe SDK using safeSigner_1
   // ----------------------------------------
   console.log("\n" + "=".repeat(60));
-  console.log("🔐 SIGN AND PROPOSE MESSAGE VIA SAFE SDK");
+  console.log("🔐 SIGN AND PROPOSE MESSAGE VIA SAFE SDK USING safeSigner_1");
   console.log("=".repeat(60));
 
   // Create Safe message using Safe SDK
@@ -318,11 +325,11 @@ import SafeApiKit from "@safe-global/api-kit";
 
   // Sign the message using Safe SDK
   const signedMessage = await protocolKit.signMessage(safeMessage);
-  console.log("✍️ Message signed by Safe signer:", safeSigner.address);
+  console.log("✍️ Message signed by Safe signer 1:", safeSigner_1.address);
 
   // Get the signature for the current signer
   const signerSignature = signedMessage.signatures.get(
-    safeSigner.address.toLowerCase()
+    safeSigner_1.address.toLowerCase()
   );
   if (!signerSignature) {
     throw new Error("Failed to get signature for signer");
@@ -361,9 +368,6 @@ import SafeApiKit from "@safe-global/api-kit";
    */
   console.log("🧪 Testing Safe multisig policy");
 
-  // Array to collect transaction hashes from successful executions
-  const transactionHashes: string[] = [];
-
   const precheck = async () => {
     return await nativeSendToolClient.precheck({
       ...TEST_TOOL_PARAMS,
@@ -374,7 +378,10 @@ import SafeApiKit from "@safe-global/api-kit";
   };
 
   const execute = async () => {
-    return await nativeSendToolClient.execute(TEST_TOOL_PARAMS, {
+    return await nativeSendToolClient.execute({
+      ...TEST_TOOL_PARAMS,
+      safeMessageHash,
+    }, {
       delegatorPkpEthAddress: agentWalletPkp.ethAddress,
     });
   };
@@ -383,7 +390,7 @@ import SafeApiKit from "@safe-global/api-kit";
   // Test 1: Execute Safe multisig policy Precheck method (1 out of 2 signatures - should fail)
   // ----------------------------------------
   console.log(
-    "(PRECHECK-TEST-1) Safe multisig execution test - no signatures (should fail)"
+    "(PRECHECK-TEST-1) Execute Safe multisig policy Precheck method (1 out of 2 signatures - should fail)"
   );
   const safePrecheckRes1 = await precheck();
 
@@ -399,7 +406,7 @@ import SafeApiKit from "@safe-global/api-kit";
     console.log(
       "✅ (PRECHECK-TEST-1) Precheck correctly failed (expected - 1 out of 2 valid Safe signatures available):"
     );
-    console.log("📄 Error:", safePrecheckRes1.error);
+    console.log("📄 Error:", safePrecheckRes1.error!);
     console.log(
       "💡 This is expected because the policy only found 1 out of 2 valid Safe signatures via the Transaction Service API"
     );
@@ -410,74 +417,132 @@ import SafeApiKit from "@safe-global/api-kit";
   }
 
   // ----------------------------------------
-  // Test 3: Execute with real Safe signatures
+  // Test 2: Execute Safe multisig policy Execute method (1 out of 2 signatures - should fail)
   // ----------------------------------------
-  // console.log("\n" + "=".repeat(60));
-  // console.log("🧪 TESTING WITH REAL SAFE SIGNATURES");
-  // console.log("=".repeat(60));
+  console.log(
+    "(EXECUTE-TEST-1) Execute Safe multisig policy Execute method (1 out of 2 signatures - should fail)"
+  );
+  const safeExecuteRes1 = await execute();
 
+  console.log("(EXECUTE-RES[1]): ", safeExecuteRes1);
+  console.log(
+    "(EXECUTE-RES[1].context.policiesContext.evaluatedPolicies): ",
+    safeExecuteRes1.context?.policiesContext?.evaluatedPolicies
+  );
+
+  if (
+    safeExecuteRes1.context?.policiesContext?.allow === false
+  ) {
+    console.log(
+      "✅ (EXECUTE-TEST-1) Execute correctly failed (expected - 1 out of 2 valid Safe signatures available):"
+    );
+    console.log("📄 Error:", safeExecuteRes1.error!);
+    console.log(
+      "💡 This is expected because the policy only found 1 out of 2 valid Safe signatures via the Transaction Service API"
+    );
+  } else {
+    console.log(
+      "❌ (EXECUTE-TEST-1) Execute unexpectedly succeeded - it should have failed because it only found 1 out of 2 valid Safe signatures"
+    );
+  }
+
+  // ----------------------------------------
+  // Sign and propose message via Safe SDK using safeSigner_2
+  // ----------------------------------------
+  console.log("\n" + "=".repeat(60));
+  console.log("🔐 SIGN AND PROPOSE MESSAGE VIA SAFE SDK USING safeSigner_2");
+  console.log("=".repeat(60));
+
+  // Sign the message using Safe SDK
+  const signedMessage_2 = await protocolKit.signMessage(safeMessage);
+  console.log("✍️ Message signed by Safe signer 2:", safeSigner_2.address);
+
+  // Get the signature for the current signer
+  const signerSignature_2 = signedMessage_2.signatures.get(
+    safeSigner_2.address.toLowerCase()
+  );
+  if (!signerSignature) {
+    throw new Error("Failed to get signature for signer");
+  }
+
+  console.log("📝 Signature data:", signerSignature_2!.data);
+
+  // Propose the message to Safe Transaction Service
+  console.log("📤 Proposing message to Safe Transaction Service...");
+
+  try {
+    await apiKit.addMessage(safeAddress, {
+      message: messageString,
+      signature: signerSignature_2!.data,
+    });
+
+    console.log("⏳ Waiting for message to be processed...");
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    console.log("✅ Message successfully proposed to Safe Transaction Service");
+  } catch (error) {
+    console.error("❌ Error proposing message:", error);
+    throw error;
+  }
+
+  // ----------------------------------------
+  // Test 3: Execute Safe multisig policy Precheck method (2 out of 2 signatures - should succeed)
+  // ----------------------------------------
+  console.log(
+    "(PRECHECK-TEST-2) Execute Safe multisig policy Precheck method (2 out of 2 signatures - should succeed)"
+  );
+  const safePrecheckRes2 = await precheck();
+
+  console.log("(PRECHECK-RES[2]): ", safePrecheckRes2);
+  console.log(
+    "(PRECHECK-RES[2].context.policiesContext.evaluatedPolicies): ",
+    safePrecheckRes2.context?.policiesContext?.evaluatedPolicies
+  );
+
+  if (
+    safePrecheckRes2.context?.policiesContext?.allow === false
+  ) {
+    console.log(
+      "❌ (PRECHECK-TEST-2) Precheck unexpectedly failed - it should have succeeded because it found 2 out of 2 valid Safe signatures"
+    );
+  } else {
+    console.log(
+      "✅ (PRECHECK-TEST-2) Precheck correctly succeeded (expected - 2 out of 2 valid Safe signatures available):"
+    );
+    console.log("📄 Error:", safePrecheckRes2.error!);
+    console.log(
+      "💡 This is expected because the policy found 2 out of 2 valid Safe signatures via the Transaction Service API"
+    );
+  }
+
+  // ----------------------------------------
+  // Test 4: Execute Safe multisig policy Execute method (2 out of 2 signatures - should succeed)
+  // ----------------------------------------
   // console.log(
-  //   "(PRECHECK-TEST-2) Safe multisig execution test - with real signatures"
+  //   "(EXECUTE-TEST-2) Safe multisig execution test - 2 out of 2 signatures (should succeed)"
   // );
-  // const safePrecheckRes2 = await precheck();
+  // const safeExecuteRes2 = await execute();
 
-  // console.log("(PRECHECK-RES[2]): ", safePrecheckRes2);
+  // console.log("(EXECUTE-RES[2]): ", safeExecuteRes2);
+  // console.log(
+  //   "(EXECUTE-RES[2].context.policiesContext.evaluatedPolicies): ",
+  //   safeExecuteRes2.context?.policiesContext?.evaluatedPolicies
+  // );
 
-  // if (!safePrecheckRes2.success) {
-  //   console.log("⚠️ (PRECHECK-TEST-2) Precheck failed even with signatures:");
-  //   console.log("📄 Error:", safePrecheckRes2.error);
+  // if (
+  //   safeExecuteRes2.context?.policiesContext?.allow === false
+  // ) {
   //   console.log(
-  //     "💡 This might be due to threshold not being met or message not being found in Transaction Service"
+  //     "✅ (EXECUTE-TEST-2) Execute correctly failed (expected - 1 out of 2 valid Safe signatures available):"
+  //   );
+  //   console.log("📄 Error:", safeExecuteRes2.error!);
+  //   console.log(
+  //     "💡 This is expected because the policy only found 1 out of 2 valid Safe signatures via the Transaction Service API"
   //   );
   // } else {
   //   console.log(
-  //     "✅ (PRECHECK-TEST-2) Precheck succeeded with Safe signatures - attempting execution"
+  //     "❌ (EXECUTE-TEST-2) Execute unexpectedly succeeded - it should have failed because it only found 1 out of 2 valid Safe signatures"
   //   );
-
-  //   const executeRes2 = await execute();
-  //   console.log("(EXECUTE-RES[2]): ", executeRes2);
-
-  //   if (executeRes2.success) {
-  //     console.log(
-  //       "🎉 (EXECUTE-TEST-2) Execution succeeded with Safe multisig policy and real signatures!"
-  //     );
-  //     console.log("🎉 Transaction hash:", executeRes2.result?.txHash);
-
-  //     // Collect transaction hash if successful
-  //     if (executeRes2.result?.txHash) {
-  //       transactionHashes.push(executeRes2.result.txHash);
-  //     }
-  //   } else {
-  //     console.log(
-  //       "⚠️ (EXECUTE-TEST-2) Execution was blocked by policy despite signatures"
-  //     );
-  //     console.log("📄 Error:", executeRes2.error);
-  //     console.log(
-  //       "💡 This might indicate insufficient signatures or other policy constraints"
-  //     );
-  //   }
-  // }
-  // } catch (error) {
-  //   console.error("❌ Safe SDK integration error:", error);
-  //   console.log(
-  //     "💡 This is expected if the Safe configuration or network connectivity has issues"
-  //   );
-  // }
-
-  // Print all collected transaction hashes
-  // console.log("\n" + "=".repeat(50));
-  // console.log("📋 SUMMARY: COLLECTED TRANSACTION HASHES");
-  // console.log("=".repeat(50));
-
-  // if (transactionHashes.length > 0) {
-  //   transactionHashes.forEach((hash, index) => {
-  //     console.log(`${index + 1}. ${hash}`);
-  //   });
-  //   console.log(
-  //     `\n✅ Total successful transactions: ${transactionHashes.length}`
-  //   );
-  // } else {
-  //   console.log("❌ No transaction hashes collected");
   // }
 
   // console.log("=".repeat(50));
