@@ -6,7 +6,7 @@ import {
 } from "@lit-protocol/vincent-scaffold-sdk/e2e";
 
 // Apply log suppression FIRST, before any imports that might trigger logs
-suppressLitLogs(false);
+suppressLitLogs(true);
 
 import { getVincentToolClient } from "@lit-protocol/vincent-app-sdk";
 import { vincentPolicyMetadata as safeMultisigPolicyMetadata } from "../../vincent-packages/policies/safe-multisig/dist/index.js";
@@ -272,10 +272,18 @@ import SafeApiKit from "@safe-global/api-kit";
   // Check PKP balance first
   const pkpBalance = await provider.getBalance(agentWalletAddress);
   const minRequiredBalance = ethers.utils.parseEther("0.000001"); // 0.000001 ETH threshold
-  
+
   console.log("💰 Checking PKP wallet balance...");
-  console.log("   Current PKP balance:", ethers.utils.formatEther(pkpBalance), "ETH");
-  console.log("   Required minimum:", ethers.utils.formatEther(minRequiredBalance), "ETH");
+  console.log(
+    "   Current PKP balance:",
+    ethers.utils.formatEther(pkpBalance),
+    "ETH"
+  );
+  console.log(
+    "   Required minimum:",
+    ethers.utils.formatEther(minRequiredBalance),
+    "ETH"
+  );
 
   if (pkpBalance.lt(minRequiredBalance)) {
     console.log("💰 PKP balance is below minimum, funding with ETH for gas...");
@@ -289,7 +297,11 @@ import SafeApiKit from "@safe-global/api-kit";
 
     // Check new balance
     const newPkpBalance = await provider.getBalance(agentWalletAddress);
-    console.log("   New PKP balance:", ethers.utils.formatEther(newPkpBalance), "ETH");
+    console.log(
+      "   New PKP balance:",
+      ethers.utils.formatEther(newPkpBalance),
+      "ETH"
+    );
   } else {
     console.log("✅ PKP wallet has sufficient balance, skipping funding");
   }
@@ -472,10 +484,6 @@ import SafeApiKit from "@safe-global/api-kit";
       "   Precheck result:",
       safePrecheckRes1.success ? "SUCCESS" : "FAILED"
     );
-    console.log(
-      "   Policy context:",
-      safePrecheckRes1.context?.policiesContext?.evaluatedPolicies
-    );
 
     if (
       !safePrecheckRes1.success ||
@@ -484,7 +492,12 @@ import SafeApiKit from "@safe-global/api-kit";
       console.log(
         "   ✅ Policy correctly denied execution (no Safe signatures found)"
       );
-      console.log("   📄 Expected error:", safePrecheckRes1.error);
+      const errorReturned =
+        safePrecheckRes1.context?.policiesContext?.deniedPolicy?.result;
+      console.log(
+        "   📄 Expected error returned by precheck failure:",
+        errorReturned
+      );
     } else {
       console.log("   ⚠️ Precheck unexpectedly succeeded - testing execution");
 
