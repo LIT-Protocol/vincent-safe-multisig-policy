@@ -85,18 +85,22 @@ export const vincentPolicy = createVincentPolicy({
         nonce: toolParams.safeNonce,
       };
 
-      const eip712Message = createEIP712Message(vincentExecution);
+      const eip712Message = createEIP712Message({
+        ...vincentExecution,
+        chainId: toolParams.chainId,
+      });
       const messageString = JSON.stringify(eip712Message);
       const messageHash = generateSafeMessageHash(
         messageString,
         userParams.safeAddress,
-        "11155111"
+        toolParams.chainId
       );
 
       const safeMessage = await checkSafeMessage(
         userParams.safeAddress,
         messageHash,
-        toolParams.safeApiKey
+        toolParams.safeApiKey,
+        toolParams.chainId
       );
 
       if (!safeMessage) {
@@ -124,6 +128,7 @@ export const vincentPolicy = createVincentPolicy({
         safeAddress: userParams.safeAddress,
         threshold,
         messageHash,
+        chainId: toolParams.chainId,
       });
     } catch (error) {
       console.error("Precheck error:", error);
@@ -183,18 +188,22 @@ export const vincentPolicy = createVincentPolicy({
         nonce: toolParams.safeNonce,
       };
 
-      const eip712Message = createEIP712Message(vincentExecution);
+      const eip712Message = createEIP712Message({
+        ...vincentExecution,
+        chainId: toolParams.chainId,
+      });
       const messageString = JSON.stringify(eip712Message);
       const messageHash = generateSafeMessageHash(
         messageString,
         userParams.safeAddress,
-        "11155111"
+        toolParams.chainId
       );
 
       const safeMessage = await checkSafeMessage(
         userParams.safeAddress,
         messageHash,
-        toolParams.safeApiKey
+        toolParams.safeApiKey,
+        toolParams.chainId
       );
 
       console.log("🔍 Safe message:", safeMessage);

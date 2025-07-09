@@ -200,6 +200,7 @@ import SafeApiKit from "@safe-global/api-kit";
     safeApiKey,
     safeNonce: testNonce.toString(),
     safeExpiry: testExpiry.toString(),
+    chainId: "11155111", // Sepolia chain ID
   };
 
   // We'll get the actual agent wallet address after minting the PKP
@@ -409,12 +410,15 @@ import SafeApiKit from "@safe-global/api-kit";
 
   console.log(`vincentExecution in e2e: ${JSON.stringify(vincentExecution)}`);
 
-  const eip712Message = createEIP712Message(vincentExecution);
+  const eip712Message = createEIP712Message({
+    ...vincentExecution,
+    chainId: TEST_TOOL_PARAMS.chainId,
+  });
   const messageString = JSON.stringify(eip712Message);
   const messageHash = generateSafeMessageHash(
     messageString,
     safeAddress,
-    "11155111"
+    TEST_TOOL_PARAMS.chainId
   );
 
   console.log("📝 EIP712 message:", eip712Message);

@@ -38,10 +38,13 @@ export const vincentPolicy = createVincentPolicy({
                 expiry: toolParams.safeExpiry,
                 nonce: toolParams.safeNonce,
             };
-            const eip712Message = createEIP712Message(vincentExecution);
+            const eip712Message = createEIP712Message({
+                ...vincentExecution,
+                chainId: toolParams.chainId,
+            });
             const messageString = JSON.stringify(eip712Message);
-            const messageHash = generateSafeMessageHash(messageString, userParams.safeAddress, "11155111");
-            const safeMessage = await checkSafeMessage(userParams.safeAddress, messageHash, toolParams.safeApiKey);
+            const messageHash = generateSafeMessageHash(messageString, userParams.safeAddress, toolParams.chainId);
+            const safeMessage = await checkSafeMessage(userParams.safeAddress, messageHash, toolParams.safeApiKey, toolParams.chainId);
             if (!safeMessage) {
                 return deny({
                     reason: "Safe message not found or not proposed",
@@ -65,6 +68,7 @@ export const vincentPolicy = createVincentPolicy({
                 safeAddress: userParams.safeAddress,
                 threshold,
                 messageHash,
+                chainId: toolParams.chainId,
             });
         }
         catch (error) {
@@ -100,10 +104,13 @@ export const vincentPolicy = createVincentPolicy({
                 expiry: toolParams.safeExpiry,
                 nonce: toolParams.safeNonce,
             };
-            const eip712Message = createEIP712Message(vincentExecution);
+            const eip712Message = createEIP712Message({
+                ...vincentExecution,
+                chainId: toolParams.chainId,
+            });
             const messageString = JSON.stringify(eip712Message);
-            const messageHash = generateSafeMessageHash(messageString, userParams.safeAddress, "11155111");
-            const safeMessage = await checkSafeMessage(userParams.safeAddress, messageHash, toolParams.safeApiKey);
+            const messageHash = generateSafeMessageHash(messageString, userParams.safeAddress, toolParams.chainId);
+            const safeMessage = await checkSafeMessage(userParams.safeAddress, messageHash, toolParams.safeApiKey, toolParams.chainId);
             console.log("🔍 Safe message:", safeMessage);
             if (!safeMessage || safeMessage.confirmations.length < threshold) {
                 return deny({
