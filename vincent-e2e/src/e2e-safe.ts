@@ -380,7 +380,7 @@ import SafeApiKit from "@safe-global/api-kit";
   };
 
   // ----------------------------------------
-  // Test 1: Execute with Safe multisig policy (no signatures - should fail)
+  // Test 1: Execute Safe multisig policy Precheck method (1 out of 2 signatures - should fail)
   // ----------------------------------------
   console.log(
     "(PRECHECK-TEST-1) Safe multisig execution test - no signatures (should fail)"
@@ -393,40 +393,21 @@ import SafeApiKit from "@safe-global/api-kit";
     safePrecheckRes1.context?.policiesContext?.evaluatedPolicies
   );
 
-  // if (
-  //   !safePrecheckRes1.success ||
-  //   safePrecheckRes1.context?.policiesContext?.allow === false
-  // ) {
-  //   console.log(
-  //     "✅ (PRECHECK-TEST-1) Precheck correctly failed (expected - no valid Safe signatures available):"
-  //   );
-  //   console.log("📄 Error:", safePrecheckRes1.error);
-  //   console.log(
-  //     "💡 This is expected because the policy cannot find valid Safe signatures via the Transaction Service API"
-  //   );
-  // } else {
-  //   console.log(
-  //     "⚠️ (PRECHECK-TEST-1) Precheck unexpectedly succeeded - attempting execution"
-  //   );
-
-  //   const executeRes1 = await execute();
-  //   console.log("(EXECUTE-RES[1]): ", executeRes1);
-
-  //   if (executeRes1.success) {
-  //     console.log("❌ (EXECUTE-TEST-1) Execution unexpectedly succeeded");
-  //     console.log("🎉 Transaction hash:", executeRes1.result?.txHash);
-
-  //     // Collect transaction hash if successful
-  //     if (executeRes1.result?.txHash) {
-  //       transactionHashes.push(executeRes1.result.txHash);
-  //     }
-  //   } else {
-  //     console.log(
-  //       "✅ (EXECUTE-TEST-1) Execution was correctly blocked by policy"
-  //     );
-  //     console.log("📄 Error:", executeRes1.error);
-  //   }
-  // }
+  if (
+    safePrecheckRes1.context?.policiesContext?.allow === false
+  ) {
+    console.log(
+      "✅ (PRECHECK-TEST-1) Precheck correctly failed (expected - 1 out of 2 valid Safe signatures available):"
+    );
+    console.log("📄 Error:", safePrecheckRes1.error);
+    console.log(
+      "💡 This is expected because the policy only found 1 out of 2 valid Safe signatures via the Transaction Service API"
+    );
+  } else {
+    console.log(
+      "❌ (PRECHECK-TEST-1) Precheck unexpectedly succeeded - it should have failed because it only found 1 out of 2 valid Safe signatures"
+    );
+  }
 
   // ----------------------------------------
   // Test 3: Execute with real Safe signatures

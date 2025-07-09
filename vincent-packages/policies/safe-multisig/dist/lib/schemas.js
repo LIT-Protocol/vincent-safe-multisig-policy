@@ -46,8 +46,8 @@ export const precheckDenyResultSchema = z.object({
     messageHash: z.string().optional(),
     expected: z.any().optional(),
     received: z.any().optional(),
-    // currentSignatures: z.number().optional(),
-    // requiredSignatures: z.number().optional(),
+    currentNumberOfSignatures: z.number().optional(),
+    requiredNumberOfSignatures: z.number().optional(),
 });
 export const evalAllowResultSchema = z.object({
     safeAddress: z.string(),

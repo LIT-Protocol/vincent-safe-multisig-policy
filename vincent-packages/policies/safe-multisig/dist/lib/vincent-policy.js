@@ -53,8 +53,8 @@ export const vincentPolicy = createVincentPolicy({
                 return deny({
                     reason: "Insufficient signatures",
                     safeAddress: userParams.safeAddress,
-                    // currentSignatures: safeMessage.confirmations.length,
-                    // requiredSignatures: threshold,
+                    currentNumberOfSignatures: safeMessage.confirmations.length,
+                    requiredNumberOfSignatures: threshold,
                 });
             }
             return allow({
