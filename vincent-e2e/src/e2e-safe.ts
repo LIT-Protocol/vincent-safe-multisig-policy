@@ -28,54 +28,73 @@ import SafeApiKit from "@safe-global/api-kit";
 
 (async () => {
   // Test tracking system
-  const testResults: { name: string; status: 'passed' | 'failed'; error?: string; duration?: number }[] = [];
+  const testResults: {
+    name: string;
+    status: "passed" | "failed";
+    error?: string;
+    duration?: number;
+  }[] = [];
   const overallStartTime = Date.now();
-  
+
   const runTest = async (testName: string, testFn: () => Promise<void>) => {
     const testStartTime = Date.now();
     console.log(`\n🧪 Running: ${testName}`);
     try {
       await testFn();
       const testDuration = Date.now() - testStartTime;
-      testResults.push({ name: testName, status: 'passed', duration: testDuration });
+      testResults.push({
+        name: testName,
+        status: "passed",
+        duration: testDuration,
+      });
       console.log(`✅ PASSED: ${testName} (${testDuration}ms)`);
     } catch (error) {
       const testDuration = Date.now() - testStartTime;
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      testResults.push({ name: testName, status: 'failed', error: errorMessage, duration: testDuration });
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      testResults.push({
+        name: testName,
+        status: "failed",
+        error: errorMessage,
+        duration: testDuration,
+      });
       console.error(`❌ FAILED: ${testName} (${testDuration}ms)`);
       console.error(`   Error: ${errorMessage}`);
-      
+
       // Print summary before exiting
       printTestSummary();
       process.exit(1);
     }
   };
-  
+
   const printTestSummary = () => {
     const overallDuration = Date.now() - overallStartTime;
-    
+
     console.log("\n" + "=".repeat(70));
     console.log("📊 SAFE MULTISIG POLICY TEST SUMMARY");
     console.log("=".repeat(70));
-    
-    const passed = testResults.filter(t => t.status === 'passed').length;
-    const failed = testResults.filter(t => t.status === 'failed').length;
+
+    const passed = testResults.filter((t) => t.status === "passed").length;
+    const failed = testResults.filter((t) => t.status === "failed").length;
     const total = testResults.length;
-    
-    console.log(`\n📈 Overall Results: ${passed}/${total} passed${failed > 0 ? ` (${failed} failed)` : ''}`);
+
+    console.log(
+      `\n📈 Overall Results: ${passed}/${total} passed${
+        failed > 0 ? ` (${failed} failed)` : ""
+      }`
+    );
     console.log(`⏱️  Total Duration: ${(overallDuration / 1000).toFixed(2)}s`);
-    
+
     console.log("\n📋 Individual Test Results:");
     testResults.forEach((result, index) => {
-      const icon = result.status === 'passed' ? '✅' : '❌';
-      const duration = result.duration ? `${result.duration}ms` : 'N/A';
+      const icon = result.status === "passed" ? "✅" : "❌";
+      const duration = result.duration ? `${result.duration}ms` : "N/A";
       console.log(`   ${index + 1}. ${icon} ${result.name} (${duration})`);
       if (result.error) {
         console.log(`      └─ Error: ${result.error}`);
       }
     });
-    
+
     console.log("\n🔍 Features Tested:");
     console.log("   🔐 EIP712 message creation and signing");
     console.log("   📡 Safe Transaction Service API integration");
@@ -84,10 +103,12 @@ import SafeApiKit from "@safe-global/api-kit";
     console.log("   ⏰ Message expiry validation");
     console.log("   💰 PKP wallet funding and gas management");
     console.log("   🔗 Transaction confirmation verification");
-    
+
     console.log("\n" + "=".repeat(70));
     if (failed === 0) {
-      console.log("🎉 ALL TESTS PASSED! Safe multisig policy is working correctly.");
+      console.log(
+        "🎉 ALL TESTS PASSED! Safe multisig policy is working correctly."
+      );
     } else {
       console.log("💥 TEST SUITE FAILED! Check the errors above for details.");
     }
@@ -435,14 +456,22 @@ import SafeApiKit from "@safe-global/api-kit";
   await runTest("Policy blocks execution without signatures", async () => {
     const safePrecheckRes1 = await precheck();
 
-    console.log("   Precheck result:", safePrecheckRes1.success ? "SUCCESS" : "FAILED");
-    console.log("   Policy context:", safePrecheckRes1.context?.policiesContext?.evaluatedPolicies);
+    console.log(
+      "   Precheck result:",
+      safePrecheckRes1.success ? "SUCCESS" : "FAILED"
+    );
+    console.log(
+      "   Policy context:",
+      safePrecheckRes1.context?.policiesContext?.evaluatedPolicies
+    );
 
     if (
       !safePrecheckRes1.success ||
       safePrecheckRes1.context?.policiesContext?.allow === false
     ) {
-      console.log("   ✅ Policy correctly denied execution (no Safe signatures found)");
+      console.log(
+        "   ✅ Policy correctly denied execution (no Safe signatures found)"
+      );
       console.log("   📄 Expected error:", safePrecheckRes1.error);
     } else {
       console.log("   ⚠️ Precheck unexpectedly succeeded - testing execution");
@@ -452,10 +481,12 @@ import SafeApiKit from "@safe-global/api-kit";
 
       if (executeRes1.success) {
         throw new Error(
-          "Execution should have failed without Safe signatures but succeeded. This indicates a policy failure."
+          "Precheck succeeded erronously and Execution also succeeded! Execution should have failed without Safe signatures but succeeded. This indicates a policy failure."
         );
       } else {
-        console.log("   ✅ Execution was correctly blocked by policy");
+        throw new Error(
+          "Precheck succeeded erronously but Execution failed. This indicates an issue with the precheck in the policy"
+        );
       }
     }
   });
@@ -488,7 +519,9 @@ import SafeApiKit from "@safe-global/api-kit";
       signature: signerSignature.data,
     });
 
-    console.log("   ✅ Message successfully proposed to Safe Transaction Service");
+    console.log(
+      "   ✅ Message successfully proposed to Safe Transaction Service"
+    );
 
     // Wait a moment for the message to be processed
     console.log("   ⏳ Waiting for message to be processed...");
@@ -499,7 +532,10 @@ import SafeApiKit from "@safe-global/api-kit";
   await runTest("Policy allows execution with valid signatures", async () => {
     const safePrecheckRes2 = await precheck();
 
-    console.log("   Precheck result:", safePrecheckRes2.success ? "SUCCESS" : "FAILED");
+    console.log(
+      "   Precheck result:",
+      safePrecheckRes2.success ? "SUCCESS" : "FAILED"
+    );
 
     if (!safePrecheckRes2.success) {
       throw new Error(
@@ -507,10 +543,15 @@ import SafeApiKit from "@safe-global/api-kit";
       );
     }
 
-    console.log("   ✅ Precheck succeeded with Safe signatures - attempting execution");
+    console.log(
+      "   ✅ Precheck succeeded with Safe signatures - attempting execution"
+    );
 
     const executeRes2 = await execute();
-    console.log("   Execute result:", executeRes2.success ? "SUCCESS" : "FAILED");
+    console.log(
+      "   Execute result:",
+      executeRes2.success ? "SUCCESS" : "FAILED"
+    );
 
     if (!executeRes2.success) {
       throw new Error(
@@ -518,14 +559,18 @@ import SafeApiKit from "@safe-global/api-kit";
       );
     }
 
-    console.log("   🎉 Execution succeeded with Safe multisig policy and real signatures!");
+    console.log(
+      "   🎉 Execution succeeded with Safe multisig policy and real signatures!"
+    );
     console.log("   🎉 Transaction hash:", executeRes2.result?.txHash);
 
     // Collect transaction hash if successful
     if (executeRes2.result?.txHash) {
       transactionHashes.push(executeRes2.result.txHash);
     } else {
-      throw new Error("Execution succeeded but no transaction hash was returned");
+      throw new Error(
+        "Execution succeeded but no transaction hash was returned"
+      );
     }
   });
 
@@ -535,25 +580,31 @@ import SafeApiKit from "@safe-global/api-kit";
       throw new Error("No transaction hashes were collected during the tests");
     }
 
-    console.log(`   📋 Verifying ${transactionHashes.length} transaction(s)...`);
-    
+    console.log(
+      `   📋 Verifying ${transactionHashes.length} transaction(s)...`
+    );
+
     for (let i = 0; i < transactionHashes.length; i++) {
       const hash = transactionHashes[i];
       console.log(`   ${i + 1}. Transaction: ${hash}`);
-      
+
       // Wait for transaction confirmation and check status
       console.log(`      ⏳ Waiting for confirmation...`);
       const receipt = await provider.waitForTransaction(hash);
-      
+
       if (receipt.status === 0) {
-        throw new Error(`Transaction ${hash} reverted! Check the transaction on Etherscan for details.`);
+        throw new Error(
+          `Transaction ${hash} reverted! Check the transaction on Etherscan for details.`
+        );
       }
-      
+
       console.log(`      ✅ Confirmed in block ${receipt.blockNumber}`);
       console.log(`      ⛽ Gas used: ${receipt.gasUsed.toString()}`);
     }
-    
-    console.log(`   ✅ All ${transactionHashes.length} transaction(s) confirmed successfully`);
+
+    console.log(
+      `   ✅ All ${transactionHashes.length} transaction(s) confirmed successfully`
+    );
   });
 
   // Print final test summary
