@@ -17,6 +17,7 @@ const SafeMultisigPolicy = createVincentToolPolicy({
     bundledVincentPolicy: safeMultisigPolicy,
     toolParameterMappings: {
         safeApiKey: "safeApiKey",
+        safeMessageHash: "safeMessageHash",
     },
 });
 export const vincentTool = createVincentTool({

@@ -31,6 +31,7 @@ const SafeMultisigPolicy = createVincentToolPolicy({
   bundledVincentPolicy: safeMultisigPolicy,
   toolParameterMappings: {
     safeApiKey: "safeApiKey",
+    safeMessageHash: "safeMessageHash",
   },
 });
 
@@ -170,7 +171,7 @@ export const vincentTool = createVincentTool({
         // Use the correct pattern from the reference code
         const sendLimitPolicyContext =
           policiesContext.allowedPolicies[
-            "@lit-protocol/vincent-policy-send-counter-limit"
+          "@lit-protocol/vincent-policy-send-counter-limit"
           ];
 
         if (

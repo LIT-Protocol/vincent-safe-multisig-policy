@@ -54,87 +54,88 @@ export const vincentPolicy = createVincentPolicy({
       const rpcUrl = process.env.SEPOLIA_RPC_URL!;
       const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
 
-      // Get Safe threshold from contract
-      const threshold = await getSafeThreshold(
-        provider,
-        userParams.safeAddress
-      );
-
-      // Generate expiry and nonce internally
-      const expiry = generateExpiry(1); // 1 hour from now
-      const nonce = generateNonce();
-
-      const currentTime = BigInt(Math.floor(Date.now() / 1000));
-      if (expiry <= currentTime) {
-        return deny({
-          reason: "Generated expiry is invalid",
-          safeAddress: userParams.safeAddress,
-        });
-      }
-
-      const parametersHash = createParametersHash(
-        toolIpfsCid,
-        {},
-        delegatorPkpInfo.ethAddress
-      );
-
-      const vincentExecution = {
-        appId,
-        appVersion,
-        toolIpfsCid,
-        cbor2EncodedParametersHash: parametersHash,
-        agentWalletAddress: delegatorPkpInfo.ethAddress,
-        expiry,
-        nonce,
-      };
-
-      const eip712Message = createEIP712Message(vincentExecution);
-      const messageString = JSON.stringify(eip712Message);
-      const messageHash = generateSafeMessageHash(
-        messageString,
-        userParams.safeAddress,
-        "11155111"
-      );
-
       const safeMessage = await checkSafeMessage(
         provider,
         userParams.safeAddress,
-        messageHash,
+        toolParams.safeMessageHash,
         toolParams.safeApiKey
       );
+      console.log("🔍 Safe message:", safeMessage);
 
-      if (!safeMessage) {
-        return deny({
-          reason: "Safe message not found or not proposed",
-          safeAddress: userParams.safeAddress,
-          requiredSignatures: threshold,
-          currentSignatures: 0,
-          // Expose the generated values for testing
-          generatedExpiry: expiry,
-          generatedNonce: nonce,
-          messageHash,
-        });
-      }
+      // Get Safe threshold from contract
+      // const threshold = await getSafeThreshold(
+      //   provider,
+      //   userParams.safeAddress
+      // );
 
-      const confirmationsCount = safeMessage.confirmations.length;
-      if (confirmationsCount < threshold) {
-        return deny({
-          reason: "Insufficient signatures",
-          safeAddress: userParams.safeAddress,
-          currentSignatures: confirmationsCount,
-          requiredSignatures: threshold,
-          generatedExpiry: expiry,
-          generatedNonce: nonce,
-          messageHash,
-        });
-      }
+      // const currentTime = BigInt(Math.floor(Date.now() / 1000));
+      // if (expiry <= currentTime) {
+      //   return deny({
+      //     reason: "Generated expiry is invalid",
+      //     safeAddress: userParams.safeAddress,
+      //   });
+      // }
+
+      // const parametersHash = createParametersHash(
+      //   toolIpfsCid,
+      //   {},
+      //   delegatorPkpInfo.ethAddress
+      // );
+
+      // const vincentExecution = {
+      //   appId,
+      //   appVersion,
+      //   toolIpfsCid,
+      //   cbor2EncodedParametersHash: parametersHash,
+      //   agentWalletAddress: delegatorPkpInfo.ethAddress,
+      //   expiry,
+      //   nonce,
+      // };
+
+      // const eip712Message = createEIP712Message(vincentExecution);
+      // const messageString = JSON.stringify(eip712Message);
+      // const messageHash = generateSafeMessageHash(
+      //   messageString,
+      //   userParams.safeAddress,
+      //   "11155111"
+      // );
+
+      // const safeMessage = await checkSafeMessage(
+      //   provider,
+      //   userParams.safeAddress,
+      //   messageHash,
+      //   toolParams.safeApiKey
+      // );
+
+      // if (!safeMessage) {
+      //   return deny({
+      //     reason: "Safe message not found or not proposed",
+      //     safeAddress: userParams.safeAddress,
+      //     requiredSignatures: threshold,
+      //     currentSignatures: 0,
+      //     // Expose the generated values for testing
+      //     generatedExpiry: expiry,
+      //     generatedNonce: nonce,
+      //     messageHash,
+      //   });
+      // }
+
+      // const confirmationsCount = safeMessage.confirmations.length;
+      // if (confirmationsCount < threshold) {
+      //   return deny({
+      //     reason: "Insufficient signatures",
+      //     safeAddress: userParams.safeAddress,
+      //     currentSignatures: confirmationsCount,
+      //     requiredSignatures: threshold,
+      //     generatedExpiry: expiry,
+      //     generatedNonce: nonce,
+      //     messageHash,
+      //   });
+      // }
 
       return allow({
         safeAddress: userParams.safeAddress,
-        threshold,
-        messageHash,
-        generatedExpiry: expiry,
-        generatedNonce: nonce,
+        messageHash: toolParams.safeMessageHash,
       });
     } catch (error) {
       console.error("Precheck error:", error);

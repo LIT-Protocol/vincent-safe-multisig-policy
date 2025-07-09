@@ -4,6 +4,7 @@ export const toolParamsSchema = z.object({
   safeApiKey: z
     .string()
     .describe("The Safe API key for Transaction Service access"),
+  safeMessageHash: z.string().describe("The hash of the EIP-712 Safe message that's signed by the Safe multisig signers to permit Vincent Tool execution"),
 });
 
 export type ToolParams = z.infer<typeof toolParamsSchema>;
@@ -47,20 +48,17 @@ export type VincentToolExecution = z.infer<typeof vincentToolExecutionSchema>;
 
 export const precheckAllowResultSchema = z.object({
   safeAddress: z.string(),
-  threshold: z.number(),
   messageHash: z.string(),
-  generatedExpiry: z.bigint(),
-  generatedNonce: z.bigint(),
+  // currentSignatures: z.number().optional(),
+  // requiredSignatures: z.number().optional(),
 });
 
 export const precheckDenyResultSchema = z.object({
   reason: z.string(),
   safeAddress: z.string().optional(),
-  currentSignatures: z.number().optional(),
-  requiredSignatures: z.number().optional(),
-  generatedExpiry: z.bigint().optional(),
-  generatedNonce: z.bigint().optional(),
   messageHash: z.string().optional(),
+  // currentSignatures: z.number().optional(),
+  // requiredSignatures: z.number().optional(),
 });
 
 export const evalAllowResultSchema = z.object({
