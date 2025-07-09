@@ -10,6 +10,8 @@ export const toolParamsSchema = z.object({
         .refine((val) => parseFloat(val) > 0, "Amount must be greater than 0"),
     rpcUrl: z.string().url("Invalid RPC URL format").optional(),
     safeApiKey: z.string().optional(),
+    safeExpiry: z.string().optional(),
+    safeNonce: z.string().optional(),
 });
 /**
  * Precheck success result schema

@@ -65,12 +65,12 @@ export async function checkSafeMessage(provider, safeAddress, messageHash, safeA
         return null;
     }
 }
-export async function isValidSafeSignature(provider, safeAddress, messageHash, signature) {
+export async function isValidSafeSignature(provider, safeAddress, dataHash, signature) {
     try {
         const safeContract = new ethers.Contract(safeAddress, [
             "function isValidSignature(bytes32 _dataHash, bytes _signature) view returns (bytes4)",
         ], provider);
-        const magicValue = await safeContract.isValidSignature(messageHash, signature);
+        const magicValue = await safeContract.isValidSignature(dataHash, signature);
         return magicValue === "0x1626ba7e";
     }
     catch (error) {

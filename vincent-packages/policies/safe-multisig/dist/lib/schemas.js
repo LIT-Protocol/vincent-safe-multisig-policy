@@ -3,6 +3,10 @@ export const toolParamsSchema = z.object({
     safeApiKey: z
         .string()
         .describe("The Safe API key for Transaction Service access"),
+    safeNonce: z.string().describe("The nonce value for the Vincent execution"),
+    safeExpiry: z
+        .string()
+        .describe("The expiry timestamp for the Vincent execution"),
 });
 export const userParamsSchema = z.object({
     safeAddress: z.string().describe("The Safe multisig contract address"),
@@ -37,16 +41,12 @@ export const precheckAllowResultSchema = z.object({
     safeAddress: z.string(),
     threshold: z.number(),
     messageHash: z.string(),
-    generatedExpiry: z.bigint(),
-    generatedNonce: z.bigint(),
 });
 export const precheckDenyResultSchema = z.object({
     reason: z.string(),
     safeAddress: z.string().optional(),
     currentSignatures: z.number().optional(),
     requiredSignatures: z.number().optional(),
-    generatedExpiry: z.bigint().optional(),
-    generatedNonce: z.bigint().optional(),
     messageHash: z.string().optional(),
 });
 export const evalAllowResultSchema = z.object({

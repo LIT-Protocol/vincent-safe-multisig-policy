@@ -101,11 +101,17 @@ import SafeApiKit from "@safe-global/api-kit";
    * Prepare test parameters
    * ====================================
    */
+  // Generate nonce and expiry for the test
+  const testNonce = generateNonce();
+  const testExpiry = generateExpiry(1); // 1 hour from now
+
   const TEST_TOOL_PARAMS = {
     to: accounts.delegatee.ethersWallet.address,
     amount: "0.000001",
     rpcUrl,
     safeApiKey,
+    safeNonce: testNonce.toString(),
+    safeExpiry: testExpiry.toString(),
   };
 
   // We'll get the actual agent wallet address after minting the PKP
@@ -249,53 +255,9 @@ import SafeApiKit from "@safe-global/api-kit";
    * ====================================
    */
 
-  // First, we need to run a precheck to get the expiry and nonce values that the policy will generate
-  console.log(
-    "🔍 Running precheck to get generated expiry and nonce values..."
-  );
-
-  const firstPrecheck = await nativeSendToolClient.precheck(TEST_TOOL_PARAMS, {
-    delegatorPkpEthAddress: agentWalletAddress,
-  });
-
-  console.log("First precheck result:", firstPrecheck);
-
-  // Extract the generated values from the precheck result
-  let generatedExpiry: bigint;
-  let generatedNonce: bigint;
-
-  // Try to extract the generated values from the policy result
-  // First check if policy denied and has the values in deniedPolicy
-  if (firstPrecheck.context?.policiesContext?.deniedPolicy?.result?.context) {
-    const policyContext =
-      firstPrecheck.context.policiesContext.deniedPolicy.result.context;
-    generatedExpiry = policyContext.generatedExpiry;
-    generatedNonce = policyContext.generatedNonce;
-    console.log("📅 Generated expiry:", generatedExpiry);
-    console.log("🔢 Generated nonce:", generatedNonce);
-  }
-  // If not denied, check if the policy result is in allowedPolicies (in case of validation issues)
-  else if (firstPrecheck.context?.policiesContext?.allowedPolicies) {
-    // For now, create dummy values since we can't access the policy-generated ones
-    // This is a limitation of the current Vincent framework response structure
-    generatedExpiry = BigInt(Math.floor(Date.now() / 1000) + 3600); // 1 hour from now
-    generatedNonce =
-      BigInt(Date.now()) * 1000000n +
-      BigInt(Math.floor(Math.random() * 1000000));
-    console.log(
-      "⚠️ Policy was unexpectedly allowed, using fallback generated values"
-    );
-    console.log("📅 Fallback expiry:", generatedExpiry);
-    console.log("🔢 Fallback nonce:", generatedNonce);
-  } else {
-    console.log(
-      "❗ DEBUG: firstPrecheck structure:",
-      JSON.stringify(firstPrecheck, null, 2)
-    );
-    throw new Error(
-      "Could not extract generated expiry and nonce from precheck result"
-    );
-  }
+  // Use the nonce and expiry values we generated for the test
+  console.log("📅 Test expiry:", testExpiry);
+  console.log("🔢 Test nonce:", testNonce);
 
   const parametersHash = createParametersHash(
     nativeSendTool.ipfsCid,
@@ -311,8 +273,8 @@ import SafeApiKit from "@safe-global/api-kit";
     toolIpfsCid: nativeSendTool.ipfsCid,
     cbor2EncodedParametersHash: parametersHash,
     agentWalletAddress,
-    expiry: generatedExpiry.toString(),
-    nonce: generatedNonce.toString(),
+    expiry: testExpiry.toString(),
+    nonce: testNonce.toString(),
   };
 
   console.log(`vincentExecution in e2e: ${JSON.stringify(vincentExecution)}`);

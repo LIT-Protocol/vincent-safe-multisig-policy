@@ -17,8 +17,6 @@ import {
   generateSafeMessageHash,
   isValidSafeSignature,
   getSafeThreshold,
-  generateNonce,
-  generateExpiry,
   buildEIP712Signature,
 } from "./helpers";
 
@@ -60,14 +58,14 @@ export const vincentPolicy = createVincentPolicy({
         userParams.safeAddress
       );
 
-      // Generate expiry and nonce internally
-      const expiry = generateExpiry(1); // 1 hour from now
-      const nonce = generateNonce();
+      // Use expiry and nonce from toolParams
+      const expiry = BigInt(toolParams.safeExpiry);
+      const nonce = BigInt(toolParams.safeNonce);
 
       const currentTime = BigInt(Math.floor(Date.now() / 1000));
       if (expiry <= currentTime) {
         return deny({
-          reason: "Generated expiry is invalid",
+          reason: "Provided expiry has already passed",
           safeAddress: userParams.safeAddress,
         });
       }
@@ -84,8 +82,8 @@ export const vincentPolicy = createVincentPolicy({
         toolIpfsCid,
         cbor2EncodedParametersHash: parametersHash,
         agentWalletAddress: delegatorPkpInfo.ethAddress,
-        expiry: expiry.toString(),
-        nonce: nonce.toString(),
+        expiry: toolParams.safeExpiry,
+        nonce: toolParams.safeNonce,
       };
       console.log(
         `vincentExecution in precheck: ${JSON.stringify(vincentExecution)}`
@@ -112,9 +110,6 @@ export const vincentPolicy = createVincentPolicy({
           safeAddress: userParams.safeAddress,
           requiredSignatures: threshold,
           currentSignatures: 0,
-          // Expose the generated values for testing
-          generatedExpiry: expiry,
-          generatedNonce: nonce,
           messageHash,
         });
       }
@@ -126,8 +121,6 @@ export const vincentPolicy = createVincentPolicy({
           safeAddress: userParams.safeAddress,
           currentSignatures: confirmationsCount,
           requiredSignatures: threshold,
-          generatedExpiry: expiry,
-          generatedNonce: nonce,
           messageHash,
         });
       }
@@ -136,8 +129,6 @@ export const vincentPolicy = createVincentPolicy({
         safeAddress: userParams.safeAddress,
         threshold,
         messageHash,
-        generatedExpiry: expiry,
-        generatedNonce: nonce,
       });
     } catch (error) {
       console.error("Precheck error:", error);
@@ -170,14 +161,13 @@ export const vincentPolicy = createVincentPolicy({
         userParams.safeAddress
       );
 
-      // Generate expiry and nonce internally (same as precheck)
-      const expiry = generateExpiry(1); // 1 hour from now
-      const nonce = generateNonce();
+      // Use expiry and nonce from toolParams (same as precheck)
+      const expiry = BigInt(toolParams.safeExpiry);
 
       const currentTime = BigInt(Math.floor(Date.now() / 1000));
       if (expiry <= currentTime) {
         return deny({
-          reason: "Generated expiry is invalid",
+          reason: "Provided expiry has already passed",
           safeAddress: userParams.safeAddress,
         });
       }
@@ -194,8 +184,8 @@ export const vincentPolicy = createVincentPolicy({
         toolIpfsCid: toolIpfsCid,
         cbor2EncodedParametersHash: parametersHash,
         agentWalletAddress: delegatorPkpInfo.ethAddress,
-        expiry: expiry.toString(),
-        nonce: nonce.toString(),
+        expiry: toolParams.safeExpiry,
+        nonce: toolParams.safeNonce,
       };
       console.log(
         `vincentExecution in evaluate: ${JSON.stringify(vincentExecution)}`
@@ -228,12 +218,21 @@ export const vincentPolicy = createVincentPolicy({
           requiredSignatures: threshold,
         });
       }
-
+      console.log(
+        `safeMessage.confirmations in evaluate: ${JSON.stringify(
+          safeMessage.confirmations
+        )}`
+      );
       const signature = buildEIP712Signature(safeMessage.confirmations);
+      console.log(`signature in evaluate: ${signature}`);
+      const dataHash = ethers.utils.hashMessage(
+        ethers.utils.toUtf8Bytes(messageString)
+      );
+      console.log(`dataHash in evaluate: ${dataHash}`);
       const isValid = await isValidSafeSignature(
         provider,
         userParams.safeAddress,
-        messageHash,
+        dataHash,
         signature
       );
 

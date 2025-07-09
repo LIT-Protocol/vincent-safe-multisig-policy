@@ -105,7 +105,7 @@ export async function checkSafeMessage(
 export async function isValidSafeSignature(
   provider: ethers.providers.Provider,
   safeAddress: string,
-  messageHash: string,
+  dataHash: string,
   signature: string
 ): Promise<boolean> {
   try {
@@ -117,10 +117,7 @@ export async function isValidSafeSignature(
       provider
     );
 
-    const magicValue = await safeContract.isValidSignature(
-      messageHash,
-      signature
-    );
+    const magicValue = await safeContract.isValidSignature(dataHash, signature);
     return magicValue === "0x1626ba7e";
   } catch (error) {
     console.error("Error validating Safe signature:", error);
