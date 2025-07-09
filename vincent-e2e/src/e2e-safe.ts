@@ -508,15 +508,27 @@ import SafeApiKit from "@safe-global/api-kit";
     );
   }
 
-  // Print all collected transaction hashes
+  // Print all collected transaction hashes and verify them
   console.log("\n" + "=".repeat(50));
   console.log("📋 SUMMARY: COLLECTED TRANSACTION HASHES");
   console.log("=".repeat(50));
 
   if (transactionHashes.length > 0) {
-    transactionHashes.forEach((hash, index) => {
-      console.log(`${index + 1}. ${hash}`);
-    });
+    for (let i = 0; i < transactionHashes.length; i++) {
+      const hash = transactionHashes[i];
+      console.log(`${i + 1}. ${hash}`);
+      
+      // Wait for transaction confirmation and check status
+      console.log(`   ⏳ Waiting for transaction confirmation...`);
+      const receipt = await provider.waitForTransaction(hash);
+      
+      if (receipt.status === 0) {
+        throw new Error(`Transaction ${hash} reverted! Check the transaction on Etherscan for details.`);
+      }
+      
+      console.log(`   ✅ Transaction confirmed in block ${receipt.blockNumber}`);
+      console.log(`   ⛽ Gas used: ${receipt.gasUsed.toString()}`);
+    }
     console.log(
       `\n✅ Total successful transactions: ${transactionHashes.length}`
     );
