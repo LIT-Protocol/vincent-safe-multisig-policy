@@ -36,9 +36,10 @@ export const vincentPolicy = createVincentPolicy({
                 toolIpfsCid,
                 cbor2EncodedParametersHash: parametersHash,
                 agentWalletAddress: delegatorPkpInfo.ethAddress,
-                expiry,
-                nonce,
+                expiry: expiry.toString(),
+                nonce: nonce.toString(),
             };
+            console.log(`vincentExecution in precheck: ${JSON.stringify(vincentExecution)}`);
             const eip712Message = createEIP712Message(vincentExecution);
             const messageString = JSON.stringify(eip712Message);
             const messageHash = generateSafeMessageHash(messageString, userParams.safeAddress, "11155111");
@@ -106,9 +107,10 @@ export const vincentPolicy = createVincentPolicy({
                 toolIpfsCid: toolIpfsCid,
                 cbor2EncodedParametersHash: parametersHash,
                 agentWalletAddress: delegatorPkpInfo.ethAddress,
-                expiry,
-                nonce,
+                expiry: expiry.toString(),
+                nonce: nonce.toString(),
             };
+            console.log(`vincentExecution in evaluate: ${JSON.stringify(vincentExecution)}`);
             const eip712Message = createEIP712Message(vincentExecution);
             const messageString = JSON.stringify(eip712Message);
             const messageHash = generateSafeMessageHash(messageString, userParams.safeAddress, "11155111");

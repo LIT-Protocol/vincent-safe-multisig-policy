@@ -306,14 +306,16 @@ import SafeApiKit from "@safe-global/api-kit";
   console.log(`Parameters hash params: `);
 
   const vincentExecution = {
-    appId: BigInt(registeredAppId),
-    appVersion: BigInt(registeredAppVersion),
+    appId: Number(registeredAppId),
+    appVersion: Number(registeredAppVersion),
     toolIpfsCid: nativeSendTool.ipfsCid,
     cbor2EncodedParametersHash: parametersHash,
     agentWalletAddress,
-    expiry: generatedExpiry,
-    nonce: generatedNonce,
+    expiry: generatedExpiry.toString(),
+    nonce: generatedNonce.toString(),
   };
+
+  console.log(`vincentExecution in e2e: ${JSON.stringify(vincentExecution)}`);
 
   const eip712Message = createEIP712Message(vincentExecution);
   const messageString = JSON.stringify(eip712Message);

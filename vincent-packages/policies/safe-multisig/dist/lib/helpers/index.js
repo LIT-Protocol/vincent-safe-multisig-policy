@@ -13,8 +13,8 @@ export function createEIP712Message(params) {
             toolIpfsCid: params.toolIpfsCid,
             cbor2EncodedParametersHash: params.cbor2EncodedParametersHash,
             agentWalletAddress: params.agentWalletAddress,
-            expiry: params.expiry.toString(),
-            nonce: params.nonce.toString(),
+            expiry: params.expiry,
+            nonce: params.nonce,
         },
     };
 }
@@ -49,7 +49,6 @@ export async function checkSafeMessage(provider, safeAddress, messageHash, safeA
                 console.log(`🔍 Safe message not found for hash: ${messageHash}`);
                 return null;
             }
-            throw new Error(`Failed to fetch Safe message: ${response.status} ${response.statusText}`);
         }
         const message = await response.json();
         console.log(`✅ Found Safe message:`, message);
@@ -100,7 +99,7 @@ export function generateSafeMessageHash(message, safeAddress, chainId) {
         verifyingContract: safeAddress,
     };
     const eip712Payload = ethers.utils._TypedDataEncoder.getPayload(domain, { SafeMessage: safeMessageTypes.SafeMessage }, { message: messageHash });
-    console.log("eip712Payload: ", eip712Payload);
+    console.log("eip712Payload: ", JSON.stringify(eip712Payload));
     return ethers.utils._TypedDataEncoder.hash(domain, { SafeMessage: safeMessageTypes.SafeMessage }, { message: messageHash });
     // const messageHash = keccak256(toUtf8Bytes(message));
     // const safeMessageHash = keccak256(
@@ -117,6 +116,7 @@ export function createParametersHash(toolIpfsCid, toolParams, agentWalletAddress
         toolParams,
         agentWalletAddress,
     };
+    console.log("createParametersHash: ", data);
     return keccak256(toUtf8Bytes(JSON.stringify(data)));
 }
 /**

@@ -11,13 +11,13 @@ const SAFE_MESSAGE_TYPE_HASH =
   "0x60b3cbf8b4a223d68d641b3b6ddf9a298e7f33710cf3d3a9d1146b5a6150fbca";
 
 export function createEIP712Message(params: {
-  appId: number | bigint;
-  appVersion: number | bigint;
+  appId: number;
+  appVersion: number;
   toolIpfsCid: string;
   cbor2EncodedParametersHash: string;
   agentWalletAddress: string;
-  expiry: bigint;
-  nonce: bigint;
+  expiry: string;
+  nonce: string;
 }) {
   return {
     types: EIP712_MESSAGE_TYPES,
@@ -29,8 +29,8 @@ export function createEIP712Message(params: {
       toolIpfsCid: params.toolIpfsCid,
       cbor2EncodedParametersHash: params.cbor2EncodedParametersHash,
       agentWalletAddress: params.agentWalletAddress,
-      expiry: params.expiry.toString(),
-      nonce: params.nonce.toString(),
+      expiry: params.expiry,
+      nonce: params.nonce,
     },
   };
 }
@@ -79,9 +79,6 @@ export async function checkSafeMessage(
         console.log(`🔍 Safe message not found for hash: ${messageHash}`);
         return null;
       }
-      throw new Error(
-        `Failed to fetch Safe message: ${response.status} ${response.statusText}`
-      );
     }
 
     const message = await response.json();
@@ -165,7 +162,7 @@ export function generateSafeMessageHash(
     { SafeMessage: safeMessageTypes.SafeMessage },
     { message: messageHash }
   );
-  console.log("eip712Payload: ", eip712Payload);
+  console.log("eip712Payload: ", JSON.stringify(eip712Payload));
 
   return ethers.utils._TypedDataEncoder.hash(
     domain,
@@ -192,6 +189,7 @@ export function createParametersHash(
     toolParams,
     agentWalletAddress,
   };
+  console.log("createParametersHash: ", data);
 
   return keccak256(toUtf8Bytes(JSON.stringify(data)));
 }
