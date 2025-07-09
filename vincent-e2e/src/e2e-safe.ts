@@ -196,11 +196,12 @@ import SafeApiKit from "@safe-global/api-kit";
   const TEST_TOOL_PARAMS = {
     to: accounts.delegatee.ethersWallet.address,
     amount: "0.000000000000000001", // 1 wei
-    rpcUrl,
+    rpcUrl, // This is for the native-send tool
     safeApiKey,
     safeNonce: testNonce.toString(),
     safeExpiry: testExpiry.toString(),
-    chainId: "11155111", // Sepolia chain ID
+    safeChainId: "11155111", // Sepolia chain ID
+    // Note: rpcUrl is also used by Safe policy precheck phase (optional)
   };
 
   // We'll get the actual agent wallet address after minting the PKP
@@ -396,8 +397,6 @@ import SafeApiKit from "@safe-global/api-kit";
     agentWalletAddress
   );
 
-  console.log(`Parameters hash params: `);
-
   const vincentExecution = {
     appId: Number(registeredAppId),
     appVersion: Number(registeredAppVersion),
@@ -412,13 +411,13 @@ import SafeApiKit from "@safe-global/api-kit";
 
   const eip712Message = createEIP712Message({
     ...vincentExecution,
-    chainId: TEST_TOOL_PARAMS.chainId,
+    chainId: TEST_TOOL_PARAMS.safeChainId,
   });
   const messageString = JSON.stringify(eip712Message);
   const messageHash = generateSafeMessageHash(
     messageString,
     safeAddress,
-    TEST_TOOL_PARAMS.chainId
+    TEST_TOOL_PARAMS.safeChainId
   );
 
   console.log("📝 EIP712 message:", eip712Message);

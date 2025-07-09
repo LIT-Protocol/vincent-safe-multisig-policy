@@ -7,9 +7,13 @@ export const toolParamsSchema = z.object({
     safeExpiry: z
         .string()
         .describe("The expiry timestamp for the Vincent execution"),
-    chainId: z
+    safeChainId: z
         .string()
         .describe("The chain ID where the Safe contract is deployed"),
+    rpcUrl: z
+        .string()
+        .optional()
+        .describe("RPC URL for blockchain access (required in precheck phase, not allowed in evaluate phase)"),
 });
 export const userParamsSchema = z.object({
     safeAddress: z.string().describe("The Safe multisig contract address"),

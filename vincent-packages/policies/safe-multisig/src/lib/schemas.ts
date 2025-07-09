@@ -8,9 +8,15 @@ export const toolParamsSchema = z.object({
   safeExpiry: z
     .string()
     .describe("The expiry timestamp for the Vincent execution"),
-  chainId: z
+  safeChainId: z
     .string()
     .describe("The chain ID where the Safe contract is deployed"),
+  rpcUrl: z
+    .string()
+    .optional()
+    .describe(
+      "RPC URL for blockchain access (required in precheck phase, not allowed in evaluate phase)"
+    ),
 });
 
 export type ToolParams = z.infer<typeof toolParamsSchema>;
@@ -22,12 +28,13 @@ export const userParamsSchema = z.object({
 export type UserParams = z.infer<typeof userParamsSchema>;
 
 // EIP712 domain will be created dynamically based on chainId
-export const createEIP712Domain = (chainId: number) => ({
-  name: "Vincent Safe Policy",
-  version: "1",
-  chainId,
-  verifyingContract: "0x0000000000000000000000000000000000000000", // Placeholder
-} as const);
+export const createEIP712Domain = (chainId: number) =>
+  ({
+    name: "Vincent Safe Policy",
+    version: "1",
+    chainId,
+    verifyingContract: "0x0000000000000000000000000000000000000000", // Placeholder
+  } as const);
 
 // Legacy domain for backward compatibility
 export const EIP712_DOMAIN = {
@@ -162,7 +169,8 @@ export const SAFE_CHAINS: Record<string, ChainConfig> = {
   "80001": {
     chainId: 80001,
     name: "Polygon Mumbai",
-    transactionServiceUrl: "https://safe-transaction-polygon-mumbai.safe.global",
+    transactionServiceUrl:
+      "https://safe-transaction-polygon-mumbai.safe.global",
   },
   // Polygon zkEVM
   "1101": {
@@ -179,7 +187,8 @@ export const SAFE_CHAINS: Record<string, ChainConfig> = {
   "421614": {
     chainId: 421614,
     name: "Arbitrum Sepolia",
-    transactionServiceUrl: "https://safe-transaction-arbitrum-sepolia.safe.global",
+    transactionServiceUrl:
+      "https://safe-transaction-arbitrum-sepolia.safe.global",
   },
   // Optimism
   "10": {
@@ -190,7 +199,8 @@ export const SAFE_CHAINS: Record<string, ChainConfig> = {
   "11155420": {
     chainId: 11155420,
     name: "Optimism Sepolia",
-    transactionServiceUrl: "https://safe-transaction-optimism-sepolia.safe.global",
+    transactionServiceUrl:
+      "https://safe-transaction-optimism-sepolia.safe.global",
   },
   // Base
   "8453": {
@@ -250,7 +260,11 @@ export const SAFE_CHAINS: Record<string, ChainConfig> = {
 export const getSafeChainConfig = (chainId: string): ChainConfig => {
   const config = SAFE_CHAINS[chainId];
   if (!config) {
-    throw new Error(`Unsupported chain ID: ${chainId}. Supported chains: ${Object.keys(SAFE_CHAINS).join(", ")}`);
+    throw new Error(
+      `Unsupported chain ID: ${chainId}. Supported chains: ${Object.keys(
+        SAFE_CHAINS
+      ).join(", ")}`
+    );
   }
   return config;
 };

@@ -47,8 +47,15 @@ const toolParams = {
   safeNonce: "123456789",              // Unique nonce for the execution
   safeExpiry: "1704067200",            // Expiry timestamp (Unix)
   chainId: "1",                        // Target blockchain chain ID
+  rpcUrl: "https://eth.llamarpc.com",  // Required in precheck, not allowed in evaluate
 };
 ```
+
+#### Important Notes about `rpcUrl`:
+- **Required in precheck**: Must be provided during the precheck phase for blockchain access
+- **Not allowed in evaluate**: If provided during the evaluate phase, the policy will throw an error
+- **Phase-specific usage**: The schema is optional because it's shared between both phases
+- **Lit Actions runtime**: During evaluate, RPC access is managed by the Lit Actions runtime
 
 ### Policy Parameters
 
@@ -67,6 +74,7 @@ const mainnetParams = {
   safeNonce: generateNonce().toString(),
   safeExpiry: generateExpiry(1).toString(), // 1 hour from now
   chainId: "1", // Ethereum Mainnet
+  rpcUrl: "https://eth.llamarpc.com", // Required for precheck
 };
 ```
 
@@ -77,6 +85,7 @@ const polygonParams = {
   safeNonce: generateNonce().toString(),
   safeExpiry: generateExpiry(1).toString(),
   chainId: "137", // Polygon Mainnet
+  rpcUrl: "https://polygon-rpc.com", // Required for precheck
 };
 ```
 
@@ -87,6 +96,7 @@ const baseSepoliaParams = {
   safeNonce: generateNonce().toString(),
   safeExpiry: generateExpiry(1).toString(),
   chainId: "84532", // Base Sepolia
+  rpcUrl: "https://sepolia.base.org", // Required for precheck
 };
 ```
 
@@ -161,9 +171,9 @@ If upgrading from the previous Sepolia-only version:
 
 ## Deployment
 
-The multichain policy has been deployed to IPFS:
-- **IPFS CID**: `QmVEe1jfCgTKHUhMGGU24PpxnZg13EfgSLLguLyQDcbBHm`
-- **Explorer**: https://explorer.litprotocol.com/ipfs/QmVEe1jfCgTKHUhMGGU24PpxnZg13EfgSLLguLyQDcbBHm
+The multichain policy with phase-specific rpcUrl requirements has been deployed to IPFS:
+- **IPFS CID**: `QmSpCEswvozrdQMnBDnhLJYteKPGZ8du5qYQ67mV3JE42B`
+- **Explorer**: https://explorer.litprotocol.com/ipfs/QmSpCEswvozrdQMnBDnhLJYteKPGZ8du5qYQ67mV3JE42B
 
 ## Support
 

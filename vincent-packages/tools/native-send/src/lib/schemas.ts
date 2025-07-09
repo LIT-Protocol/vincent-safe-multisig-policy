@@ -13,6 +13,7 @@ export const toolParamsSchema = z.object({
   safeApiKey: z.string().optional(),
   safeExpiry: z.string().optional(),
   safeNonce: z.string().optional(),
+  safeChainId: z.string().optional(),
 });
 
 /**

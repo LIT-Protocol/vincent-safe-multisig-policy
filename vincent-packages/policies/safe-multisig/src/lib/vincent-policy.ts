@@ -49,8 +49,15 @@ export const vincentPolicy = createVincentPolicy({
     console.log("SafeMultisigPolicy precheck", { toolParams, userParams });
 
     try {
-      const rpcUrl = process.env.SEPOLIA_RPC_URL!;
-      const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+      // rpcUrl is required during precheck phase
+      if (!toolParams.rpcUrl) {
+        return deny({
+          reason: "rpcUrl parameter is required during the precheck phase",
+          safeAddress: userParams.safeAddress,
+        });
+      }
+
+      const provider = new ethers.providers.JsonRpcProvider(toolParams.rpcUrl);
 
       // Get Safe threshold from contract
       const threshold = await getSafeThreshold(
@@ -87,20 +94,20 @@ export const vincentPolicy = createVincentPolicy({
 
       const eip712Message = createEIP712Message({
         ...vincentExecution,
-        chainId: toolParams.chainId,
+        chainId: toolParams.safeChainId,
       });
       const messageString = JSON.stringify(eip712Message);
       const messageHash = generateSafeMessageHash(
         messageString,
         userParams.safeAddress,
-        toolParams.chainId
+        toolParams.safeChainId
       );
 
       const safeMessage = await checkSafeMessage(
         userParams.safeAddress,
         messageHash,
         toolParams.safeApiKey,
-        toolParams.chainId
+        toolParams.safeChainId
       );
 
       if (!safeMessage) {
@@ -128,7 +135,7 @@ export const vincentPolicy = createVincentPolicy({
         safeAddress: userParams.safeAddress,
         threshold,
         messageHash,
-        chainId: toolParams.chainId,
+        chainId: toolParams.safeChainId,
       });
     } catch (error) {
       console.error("Precheck error:", error);
@@ -152,6 +159,15 @@ export const vincentPolicy = createVincentPolicy({
     console.log("SafeMultisigPolicy evaluate");
 
     try {
+      // Throw error if rpcUrl is provided in toolParams during evaluate phase
+      if (toolParams.rpcUrl) {
+        return deny({
+          reason:
+            "rpcUrl parameter is not allowed in the evaluate phase. RPC access is managed by Lit Actions runtime.",
+          safeAddress: userParams.safeAddress,
+        });
+      }
+
       const rpcUrl = await Lit.Actions.getRpcUrl({ chain: "sepolia" });
       const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
 
@@ -190,20 +206,20 @@ export const vincentPolicy = createVincentPolicy({
 
       const eip712Message = createEIP712Message({
         ...vincentExecution,
-        chainId: toolParams.chainId,
+        chainId: toolParams.safeChainId,
       });
       const messageString = JSON.stringify(eip712Message);
       const messageHash = generateSafeMessageHash(
         messageString,
         userParams.safeAddress,
-        toolParams.chainId
+        toolParams.safeChainId
       );
 
       const safeMessage = await checkSafeMessage(
         userParams.safeAddress,
         messageHash,
         toolParams.safeApiKey,
-        toolParams.chainId
+        toolParams.safeChainId
       );
 
       console.log("🔍 Safe message:", safeMessage);
