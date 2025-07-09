@@ -29,7 +29,7 @@ export const vincentPolicy = createVincentPolicy({
                     safeAddress: userParams.safeAddress,
                 });
             }
-            const parametersHash = createParametersHash(toolIpfsCid, toolParams, delegatorPkpInfo.ethAddress);
+            const parametersHash = createParametersHash(toolIpfsCid, {}, delegatorPkpInfo.ethAddress);
             const vincentExecution = {
                 appId,
                 appVersion,
@@ -41,7 +41,7 @@ export const vincentPolicy = createVincentPolicy({
             };
             const eip712Message = createEIP712Message(vincentExecution);
             const messageString = JSON.stringify(eip712Message);
-            const messageHash = generateSafeMessageHash(messageString);
+            const messageHash = generateSafeMessageHash(messageString, userParams.safeAddress, "11155111");
             const safeMessage = await checkSafeMessage(provider, userParams.safeAddress, messageHash, toolParams.safeApiKey);
             if (!safeMessage) {
                 return deny({
@@ -99,7 +99,7 @@ export const vincentPolicy = createVincentPolicy({
                     safeAddress: userParams.safeAddress,
                 });
             }
-            const parametersHash = createParametersHash(toolIpfsCid, toolParams, delegatorPkpInfo.ethAddress);
+            const parametersHash = createParametersHash(toolIpfsCid, {}, delegatorPkpInfo.ethAddress);
             const vincentExecution = {
                 appId: appId,
                 appVersion: appVersion,
@@ -111,7 +111,7 @@ export const vincentPolicy = createVincentPolicy({
             };
             const eip712Message = createEIP712Message(vincentExecution);
             const messageString = JSON.stringify(eip712Message);
-            const messageHash = generateSafeMessageHash(messageString);
+            const messageHash = generateSafeMessageHash(messageString, userParams.safeAddress, "11155111");
             const safeMessage = await checkSafeMessage(provider, userParams.safeAddress, messageHash, toolParams.safeApiKey);
             console.log("🔍 Safe message:", safeMessage);
             if (!safeMessage || safeMessage.confirmations.length < threshold) {

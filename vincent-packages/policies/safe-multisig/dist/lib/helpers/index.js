@@ -36,7 +36,7 @@ export async function checkSafeMessage(provider, safeAddress, messageHash, safeA
         const url = `${serviceUrl}/api/v1/messages/${messageHash}/`;
         console.log(`🔍 Fetching from URL: ${url}`);
         const headers = {
-            "Accept": "application/json",
+            Accept: "application/json",
             "content-type": "application/json",
         };
         // Add API key if provided
@@ -54,7 +54,8 @@ export async function checkSafeMessage(provider, safeAddress, messageHash, safeA
         const message = await response.json();
         console.log(`✅ Found Safe message:`, message);
         // Verify the message is for the correct Safe
-        if (message.safe && message.safe.toLowerCase() !== safeAddress.toLowerCase()) {
+        if (message.safe &&
+            message.safe.toLowerCase() !== safeAddress.toLowerCase()) {
             console.log(`⚠️ Message found but for different Safe. Expected: ${safeAddress}, Got: ${message.safe}`);
             return null;
         }
@@ -78,10 +79,37 @@ export async function isValidSafeSignature(provider, safeAddress, messageHash, s
         return false;
     }
 }
-export function generateSafeMessageHash(message) {
-    const messageHash = keccak256(toUtf8Bytes(message));
-    const safeMessageHash = keccak256(ethers.utils.solidityPack(["bytes32", "bytes32"], [SAFE_MESSAGE_TYPE_HASH, messageHash]));
-    return safeMessageHash;
+export function generateSafeMessageHash(message, safeAddress, chainId) {
+    // just testing with eip191 now.  can switch to eip712 later.
+    const messageHash = ethers.utils.hashMessage(ethers.utils.toUtf8Bytes(message));
+    const safeMessageTypes = {
+        EIP712Domain: [
+            {
+                type: "uint256",
+                name: "chainId",
+            },
+            {
+                type: "address",
+                name: "verifyingContract",
+            },
+        ],
+        SafeMessage: [{ type: "bytes", name: "message" }],
+    };
+    const domain = {
+        chainId: Number(chainId),
+        verifyingContract: safeAddress,
+    };
+    const eip712Payload = ethers.utils._TypedDataEncoder.getPayload(domain, { SafeMessage: safeMessageTypes.SafeMessage }, { message: messageHash });
+    console.log("eip712Payload: ", eip712Payload);
+    return ethers.utils._TypedDataEncoder.hash(domain, { SafeMessage: safeMessageTypes.SafeMessage }, { message: messageHash });
+    // const messageHash = keccak256(toUtf8Bytes(message));
+    // const safeMessageHash = keccak256(
+    //   ethers.utils.solidityPack(
+    //     ["bytes32", "bytes32"],
+    //     [SAFE_MESSAGE_TYPE_HASH, messageHash]
+    //   )
+    // );
+    // return safeMessageHash;
 }
 export function createParametersHash(toolIpfsCid, toolParams, agentWalletAddress) {
     const data = {

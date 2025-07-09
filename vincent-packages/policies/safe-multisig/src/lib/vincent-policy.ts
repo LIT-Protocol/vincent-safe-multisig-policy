@@ -74,7 +74,7 @@ export const vincentPolicy = createVincentPolicy({
 
       const parametersHash = createParametersHash(
         toolIpfsCid,
-        toolParams,
+        {},
         delegatorPkpInfo.ethAddress
       );
 
@@ -90,7 +90,11 @@ export const vincentPolicy = createVincentPolicy({
 
       const eip712Message = createEIP712Message(vincentExecution);
       const messageString = JSON.stringify(eip712Message);
-      const messageHash = generateSafeMessageHash(messageString);
+      const messageHash = generateSafeMessageHash(
+        messageString,
+        userParams.safeAddress,
+        "11155111"
+      );
 
       const safeMessage = await checkSafeMessage(
         provider,
@@ -177,7 +181,7 @@ export const vincentPolicy = createVincentPolicy({
 
       const parametersHash = createParametersHash(
         toolIpfsCid,
-        toolParams,
+        {},
         delegatorPkpInfo.ethAddress
       );
 
@@ -193,7 +197,11 @@ export const vincentPolicy = createVincentPolicy({
 
       const eip712Message = createEIP712Message(vincentExecution);
       const messageString = JSON.stringify(eip712Message);
-      const messageHash = generateSafeMessageHash(messageString);
+      const messageHash = generateSafeMessageHash(
+        messageString,
+        userParams.safeAddress,
+        "11155111"
+      );
 
       const safeMessage = await checkSafeMessage(
         provider,

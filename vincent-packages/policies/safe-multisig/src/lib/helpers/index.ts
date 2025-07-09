@@ -55,23 +55,23 @@ export async function checkSafeMessage(
   try {
     console.log(`🔍 Checking Safe message with hash: ${messageHash}`);
     console.log(`🔍 Using Safe address: ${safeAddress}`);
-    
+
     // Use the messages endpoint with just the hash (not safe-specific)
     const serviceUrl = "https://safe-transaction-sepolia.safe.global";
     const url = `${serviceUrl}/api/v1/messages/${messageHash}/`;
-    
+
     console.log(`🔍 Fetching from URL: ${url}`);
-    
+
     const headers: Record<string, string> = {
-      "Accept": "application/json",
+      Accept: "application/json",
       "content-type": "application/json",
     };
-    
+
     // Add API key if provided
     if (safeApiKey) {
       headers["Authorization"] = `Bearer ${safeApiKey}`;
     }
-    
+
     const response = await fetch(url, { headers });
 
     if (!response.ok) {
@@ -79,18 +79,25 @@ export async function checkSafeMessage(
         console.log(`🔍 Safe message not found for hash: ${messageHash}`);
         return null;
       }
-      throw new Error(`Failed to fetch Safe message: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch Safe message: ${response.status} ${response.statusText}`
+      );
     }
 
     const message = await response.json();
     console.log(`✅ Found Safe message:`, message);
-    
+
     // Verify the message is for the correct Safe
-    if (message.safe && message.safe.toLowerCase() !== safeAddress.toLowerCase()) {
-      console.log(`⚠️ Message found but for different Safe. Expected: ${safeAddress}, Got: ${message.safe}`);
+    if (
+      message.safe &&
+      message.safe.toLowerCase() !== safeAddress.toLowerCase()
+    ) {
+      console.log(
+        `⚠️ Message found but for different Safe. Expected: ${safeAddress}, Got: ${message.safe}`
+      );
       return null;
     }
-    
+
     return message;
   } catch (error) {
     console.error("Error checking Safe message:", error);
@@ -124,17 +131,56 @@ export async function isValidSafeSignature(
   }
 }
 
-export function generateSafeMessageHash(message: string): string {
-  const messageHash = keccak256(toUtf8Bytes(message));
-  const safeMessageHash = keccak256(
-    ethers.utils.solidityPack(
-      ["bytes32", "bytes32"],
-      [SAFE_MESSAGE_TYPE_HASH, messageHash]
-    )
+export function generateSafeMessageHash(
+  message: string,
+  safeAddress: string,
+  chainId: string
+): string {
+  // just testing with eip191 now.  can switch to eip712 later.
+  const messageHash = ethers.utils.hashMessage(
+    ethers.utils.toUtf8Bytes(message)
   );
-  return safeMessageHash;
-}
 
+  const safeMessageTypes = {
+    EIP712Domain: [
+      {
+        type: "uint256",
+        name: "chainId",
+      },
+      {
+        type: "address",
+        name: "verifyingContract",
+      },
+    ],
+    SafeMessage: [{ type: "bytes", name: "message" }],
+  };
+
+  const domain = {
+    chainId: Number(chainId),
+    verifyingContract: safeAddress,
+  };
+
+  const eip712Payload = ethers.utils._TypedDataEncoder.getPayload(
+    domain,
+    { SafeMessage: safeMessageTypes.SafeMessage },
+    { message: messageHash }
+  );
+  console.log("eip712Payload: ", eip712Payload);
+
+  return ethers.utils._TypedDataEncoder.hash(
+    domain,
+    { SafeMessage: safeMessageTypes.SafeMessage },
+    { message: messageHash }
+  );
+  // const messageHash = keccak256(toUtf8Bytes(message));
+  // const safeMessageHash = keccak256(
+  //   ethers.utils.solidityPack(
+  //     ["bytes32", "bytes32"],
+  //     [SAFE_MESSAGE_TYPE_HASH, messageHash]
+  //   )
+  // );
+  // return safeMessageHash;
+}
 
 export function createParametersHash(
   toolIpfsCid: string,

@@ -23,7 +23,7 @@ import {
 } from "../../vincent-packages/policies/safe-multisig/dist/lib/helpers/index.js";
 
 // Import Safe SDK for real Safe interaction
-import Safe from "@safe-global/protocol-kit";
+import Safe, { hashSafeMessage } from "@safe-global/protocol-kit";
 import SafeApiKit from "@safe-global/api-kit";
 
 (async () => {
@@ -299,9 +299,11 @@ import SafeApiKit from "@safe-global/api-kit";
 
   const parametersHash = createParametersHash(
     nativeSendTool.ipfsCid,
-    TEST_TOOL_PARAMS,
+    {},
     agentWalletAddress
   );
+
+  console.log(`Parameters hash params: `);
 
   const vincentExecution = {
     appId: BigInt(registeredAppId),
@@ -315,7 +317,11 @@ import SafeApiKit from "@safe-global/api-kit";
 
   const eip712Message = createEIP712Message(vincentExecution);
   const messageString = JSON.stringify(eip712Message);
-  const messageHash = generateSafeMessageHash(messageString);
+  const messageHash = generateSafeMessageHash(
+    messageString,
+    safeAddress,
+    "11155111"
+  );
 
   console.log("📝 EIP712 message:", eip712Message);
   console.log("🔏 Message hash:", messageHash);
@@ -330,6 +336,15 @@ import SafeApiKit from "@safe-global/api-kit";
     signer: funderPrivateKey,
     safeAddress,
   });
+
+  // calculate the hash using the safe sdk
+  const safeMessageHash = await protocolKit.getSafeMessageHash(
+    hashSafeMessage(messageString)
+  );
+  console.log("🔏 Safe message hash:", safeMessageHash);
+  if (safeMessageHash !== messageHash) {
+    throw new Error("Safe message hash mismatch");
+  }
 
   const apiKit = new SafeApiKit({
     chainId: 11155111n, // Sepolia
@@ -426,7 +441,7 @@ import SafeApiKit from "@safe-global/api-kit";
   try {
     // Create Safe message using Safe SDK
     const safeMessage = protocolKit.createMessage(messageString);
-    console.log("📝 Created Safe message");
+    console.log("📝 Created Safe message", safeMessage);
 
     // Sign the message using Safe SDK
     const signedMessage = await protocolKit.signMessage(safeMessage);
