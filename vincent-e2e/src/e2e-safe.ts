@@ -107,7 +107,7 @@ import SafeApiKit from "@safe-global/api-kit";
 
   const TEST_TOOL_PARAMS = {
     to: accounts.delegatee.ethersWallet.address,
-    amount: "0.000001",
+    amount: "0.000000000000000001", // 1 wei
     rpcUrl,
     safeApiKey,
     safeNonce: testNonce.toString(),
@@ -175,6 +175,24 @@ import SafeApiKit from "@safe-global/api-kit";
 
   console.log("🤖 Agent Wallet PKP:", agentWalletPkp);
   agentWalletAddress = agentWalletPkp.ethAddress;
+
+  /**
+   * ====================================
+   * 💰 Fund the PKP wallet with ETH for gas
+   * ====================================
+   */
+  console.log("💰 Funding PKP wallet with ETH for gas...");
+  const fundingTx = await safeSigner.sendTransaction({
+    to: agentWalletAddress,
+    value: ethers.utils.parseEther("0.00001"), // 0.00001 ETH
+  });
+  await fundingTx.wait();
+  console.log("✅ PKP wallet funded with 0.00001 ETH");
+  console.log("   Transaction hash:", fundingTx.hash);
+
+  // Check PKP balance
+  const pkpBalance = await provider.getBalance(agentWalletAddress);
+  console.log("   PKP balance:", ethers.utils.formatEther(pkpBalance), "ETH");
 
   /**
    * ====================================

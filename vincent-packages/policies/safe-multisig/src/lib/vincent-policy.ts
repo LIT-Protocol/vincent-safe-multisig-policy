@@ -225,6 +225,10 @@ export const vincentPolicy = createVincentPolicy({
       );
       const signature = buildEIP712Signature(safeMessage.confirmations);
       console.log(`signature in evaluate: ${signature}`);
+      // inside isValidSafeSignature, we should pass the dataHash instead of messageHash
+      // this is because the isValidSignature does the message hashing for you.
+      // i discovered this deep in the contract code:
+      // https://github.com/safe-global/safe-smart-account/blob/main/contracts/handler/CompatibilityFallbackHandler.sol#L73
       const dataHash = ethers.utils.hashMessage(
         ethers.utils.toUtf8Bytes(messageString)
       );
