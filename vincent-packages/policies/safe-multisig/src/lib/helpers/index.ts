@@ -3,12 +3,8 @@ import { keccak256, toUtf8Bytes } from "ethers/lib/utils";
 import {
   EIP712_DOMAIN,
   EIP712_MESSAGE_TYPES,
-  VincentToolExecution,
   SafeMessageResponse,
 } from "../schemas";
-
-const SAFE_MESSAGE_TYPE_HASH =
-  "0x60b3cbf8b4a223d68d641b3b6ddf9a298e7f33710cf3d3a9d1146b5a6150fbca";
 
 export function createEIP712Message(params: {
   appId: number;
@@ -47,7 +43,6 @@ export function hashToolParameters(params: any): string {
 }
 
 export async function checkSafeMessage(
-  provider: ethers.providers.Provider,
   safeAddress: string,
   messageHash: string,
   safeApiKey: string

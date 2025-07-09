@@ -21,7 +21,6 @@ export const vincentPolicy = createVincentPolicy({
             const threshold = await getSafeThreshold(provider, userParams.safeAddress);
             // Use expiry and nonce from toolParams
             const expiry = BigInt(toolParams.safeExpiry);
-            const nonce = BigInt(toolParams.safeNonce);
             const currentTime = BigInt(Math.floor(Date.now() / 1000));
             if (expiry <= currentTime) {
                 return deny({
@@ -39,11 +38,10 @@ export const vincentPolicy = createVincentPolicy({
                 expiry: toolParams.safeExpiry,
                 nonce: toolParams.safeNonce,
             };
-            console.log(`vincentExecution in precheck: ${JSON.stringify(vincentExecution)}`);
             const eip712Message = createEIP712Message(vincentExecution);
             const messageString = JSON.stringify(eip712Message);
             const messageHash = generateSafeMessageHash(messageString, userParams.safeAddress, "11155111");
-            const safeMessage = await checkSafeMessage(provider, userParams.safeAddress, messageHash, toolParams.safeApiKey);
+            const safeMessage = await checkSafeMessage(userParams.safeAddress, messageHash, toolParams.safeApiKey);
             if (!safeMessage) {
                 return deny({
                     reason: "Safe message not found or not proposed",
@@ -102,11 +100,10 @@ export const vincentPolicy = createVincentPolicy({
                 expiry: toolParams.safeExpiry,
                 nonce: toolParams.safeNonce,
             };
-            console.log(`vincentExecution in evaluate: ${JSON.stringify(vincentExecution)}`);
             const eip712Message = createEIP712Message(vincentExecution);
             const messageString = JSON.stringify(eip712Message);
             const messageHash = generateSafeMessageHash(messageString, userParams.safeAddress, "11155111");
-            const safeMessage = await checkSafeMessage(provider, userParams.safeAddress, messageHash, toolParams.safeApiKey);
+            const safeMessage = await checkSafeMessage(userParams.safeAddress, messageHash, toolParams.safeApiKey);
             console.log("🔍 Safe message:", safeMessage);
             if (!safeMessage || safeMessage.confirmations.length < threshold) {
                 return deny({
@@ -119,6 +116,10 @@ export const vincentPolicy = createVincentPolicy({
             console.log(`safeMessage.confirmations in evaluate: ${JSON.stringify(safeMessage.confirmations)}`);
             const signature = buildEIP712Signature(safeMessage.confirmations);
             console.log(`signature in evaluate: ${signature}`);
+            // inside isValidSafeSignature, we should pass the dataHash instead of messageHash
+            // this is because the isValidSignature does the message hashing for you.
+            // i discovered this in the contract code:
+            // https://github.com/safe-global/safe-smart-account/blob/main/contracts/handler/CompatibilityFallbackHandler.sol#L73
             const dataHash = ethers.utils.hashMessage(ethers.utils.toUtf8Bytes(messageString));
             console.log(`dataHash in evaluate: ${dataHash}`);
             const isValid = await isValidSafeSignature(provider, userParams.safeAddress, dataHash, signature);

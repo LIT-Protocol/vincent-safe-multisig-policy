@@ -368,7 +368,7 @@ import SafeApiKit from "@safe-global/api-kit";
   // Test 1: Execute with Safe multisig policy (no signatures - should fail)
   // ----------------------------------------
   console.log(
-    "(PRECHECK-TEST-1) Safe multisig execution test - no signatures (should fail)"
+    "(PRECHECK-TEST-1) Safe multisig policy execution test - no signatures (the SAFE policy should fail)"
   );
   const safePrecheckRes1 = await precheck();
 
@@ -517,16 +517,20 @@ import SafeApiKit from "@safe-global/api-kit";
     for (let i = 0; i < transactionHashes.length; i++) {
       const hash = transactionHashes[i];
       console.log(`${i + 1}. ${hash}`);
-      
+
       // Wait for transaction confirmation and check status
       console.log(`   ⏳ Waiting for transaction confirmation...`);
       const receipt = await provider.waitForTransaction(hash);
-      
+
       if (receipt.status === 0) {
-        throw new Error(`Transaction ${hash} reverted! Check the transaction on Etherscan for details.`);
+        throw new Error(
+          `Transaction ${hash} reverted! Check the transaction on Etherscan for details.`
+        );
       }
-      
-      console.log(`   ✅ Transaction confirmed in block ${receipt.blockNumber}`);
+
+      console.log(
+        `   ✅ Transaction confirmed in block ${receipt.blockNumber}`
+      );
       console.log(`   ⛽ Gas used: ${receipt.gasUsed.toString()}`);
     }
     console.log(

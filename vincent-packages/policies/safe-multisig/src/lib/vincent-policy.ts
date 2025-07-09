@@ -60,7 +60,6 @@ export const vincentPolicy = createVincentPolicy({
 
       // Use expiry and nonce from toolParams
       const expiry = BigInt(toolParams.safeExpiry);
-      const nonce = BigInt(toolParams.safeNonce);
 
       const currentTime = BigInt(Math.floor(Date.now() / 1000));
       if (expiry <= currentTime) {
@@ -85,9 +84,6 @@ export const vincentPolicy = createVincentPolicy({
         expiry: toolParams.safeExpiry,
         nonce: toolParams.safeNonce,
       };
-      console.log(
-        `vincentExecution in precheck: ${JSON.stringify(vincentExecution)}`
-      );
 
       const eip712Message = createEIP712Message(vincentExecution);
       const messageString = JSON.stringify(eip712Message);
@@ -98,7 +94,6 @@ export const vincentPolicy = createVincentPolicy({
       );
 
       const safeMessage = await checkSafeMessage(
-        provider,
         userParams.safeAddress,
         messageHash,
         toolParams.safeApiKey
@@ -187,9 +182,6 @@ export const vincentPolicy = createVincentPolicy({
         expiry: toolParams.safeExpiry,
         nonce: toolParams.safeNonce,
       };
-      console.log(
-        `vincentExecution in evaluate: ${JSON.stringify(vincentExecution)}`
-      );
 
       const eip712Message = createEIP712Message(vincentExecution);
       const messageString = JSON.stringify(eip712Message);
@@ -200,7 +192,6 @@ export const vincentPolicy = createVincentPolicy({
       );
 
       const safeMessage = await checkSafeMessage(
-        provider,
         userParams.safeAddress,
         messageHash,
         toolParams.safeApiKey
@@ -227,7 +218,7 @@ export const vincentPolicy = createVincentPolicy({
       console.log(`signature in evaluate: ${signature}`);
       // inside isValidSafeSignature, we should pass the dataHash instead of messageHash
       // this is because the isValidSignature does the message hashing for you.
-      // i discovered this deep in the contract code:
+      // i discovered this in the contract code:
       // https://github.com/safe-global/safe-smart-account/blob/main/contracts/handler/CompatibilityFallbackHandler.sol#L73
       const dataHash = ethers.utils.hashMessage(
         ethers.utils.toUtf8Bytes(messageString)

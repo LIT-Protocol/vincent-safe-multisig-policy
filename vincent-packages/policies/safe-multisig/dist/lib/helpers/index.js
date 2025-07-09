@@ -1,7 +1,6 @@
 import { ethers } from "ethers";
 import { keccak256, toUtf8Bytes } from "ethers/lib/utils";
 import { EIP712_DOMAIN, EIP712_MESSAGE_TYPES, } from "../schemas";
-const SAFE_MESSAGE_TYPE_HASH = "0x60b3cbf8b4a223d68d641b3b6ddf9a298e7f33710cf3d3a9d1146b5a6150fbca";
 export function createEIP712Message(params) {
     return {
         types: EIP712_MESSAGE_TYPES,
@@ -27,7 +26,7 @@ export function hashToolParameters(params) {
     }, {});
     return keccak256(toUtf8Bytes(JSON.stringify(sortedParams)));
 }
-export async function checkSafeMessage(provider, safeAddress, messageHash, safeApiKey) {
+export async function checkSafeMessage(safeAddress, messageHash, safeApiKey) {
     try {
         console.log(`🔍 Checking Safe message with hash: ${messageHash}`);
         console.log(`🔍 Using Safe address: ${safeAddress}`);
