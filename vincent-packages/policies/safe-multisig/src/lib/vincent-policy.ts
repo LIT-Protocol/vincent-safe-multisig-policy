@@ -11,16 +11,12 @@ import {
   userParamsSchema,
 } from "./schemas";
 import {
-  checkSafeMessage,
-  createEIP712Message,
+  getSafeMessage,
   createParametersHash,
-  generateSafeMessageHash,
-  isValidSafeSignature,
   getSafeThreshold,
-  generateNonce,
-  generateExpiry,
-  buildEIP712Signature,
   parseAndValidateEIP712Message,
+  getRpcUrlFromLitChainIdentifier,
+  getSafeTransactionServiceUrl,
 } from "./helpers";
 
 export const vincentPolicy = createVincentPolicy({
@@ -49,20 +45,18 @@ export const vincentPolicy = createVincentPolicy({
       delegation: { delegatorPkpInfo },
     }
   ) => {
-    console.log("SafeMultisigPolicy precheck", { toolParams, userParams });
+    console.log("[SafeMultisigPolicy precheck]", { toolParams, userParams });
 
     try {
-      const rpcUrl = process.env.SEPOLIA_RPC_URL!;
-      const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
-      const safeTransactionServiceUrl = "https://safe-transaction-sepolia.safe.global";
+      const rpcUrl = getRpcUrlFromLitChainIdentifier(userParams.litChainIdentifier);
+      const provider = new ethers.providers.StaticJsonRpcProvider(rpcUrl);
 
-      const safeMessage = await checkSafeMessage(
-        provider,
-        safeTransactionServiceUrl,
-        userParams.safeAddress,
-        toolParams.safeMessageHash,
-        toolParams.safeApiKey
-      );
+      const safeMessage = await getSafeMessage({
+        safeTransactionServiceUrl: getSafeTransactionServiceUrl(userParams.litChainIdentifier),
+        safeAddress: userParams.safeAddress,
+        safeApiKey: toolParams.safeApiKey,
+        messageHash: toolParams.safeMessageHash,
+      });
       console.log("[SafeMultisigPolicy precheck] Retrieved Safe message:", safeMessage);
 
       if (safeMessage === null) {
@@ -73,31 +67,6 @@ export const vincentPolicy = createVincentPolicy({
         });
       }
 
-      // Parse and validate the EIP712 message using helper function
-      const eip712ValidationResult = parseAndValidateEIP712Message({
-        messageString: safeMessage.message as string,
-        expectedToolIpfsCid: toolIpfsCid,
-        expectedAgentAddress: delegatorPkpInfo.ethAddress,
-        expectedAppId: appId,
-        expectedAppVersion: appVersion,
-      });
-
-      if (!eip712ValidationResult.success) {
-        return deny({
-          reason: eip712ValidationResult.error || "EIP712 validation failed",
-          safeAddress: userParams.safeAddress,
-          messageHash: toolParams.safeMessageHash,
-          expected: eip712ValidationResult.expected,
-          received: eip712ValidationResult.received,
-        });
-      }
-
-      const eip712Data = eip712ValidationResult.data!;
-
-      console.log("[SafeMultisigPolicy precheck] EIP712 message validation passed");
-      console.log("[SafeMultisigPolicy precheck] EIP712 message data:", eip712Data.message);
-
-      // Get Safe threshold from contract
       const threshold = await getSafeThreshold(
         provider,
         userParams.safeAddress
@@ -113,8 +82,32 @@ export const vincentPolicy = createVincentPolicy({
         });
       }
 
+      const eip712ValidationResult = parseAndValidateEIP712Message({
+        messageString: safeMessage.message as string,
+        expectedToolIpfsCid: toolIpfsCid,
+        expectedAgentAddress: delegatorPkpInfo.ethAddress,
+        expectedAppId: appId,
+        expectedAppVersion: appVersion,
+        expectedToolParametersHash: createParametersHash({
+          toolIpfsCid,
+          toolParams: toolParams.executingToolParams,
+          agentWalletAddress: delegatorPkpInfo.ethAddress,
+        }),
+      });
+
+      if (!eip712ValidationResult.success) {
+        return deny({
+          reason: eip712ValidationResult.error || "EIP712 validation failed",
+          safeAddress: userParams.safeAddress,
+          messageHash: toolParams.safeMessageHash,
+          expected: eip712ValidationResult.expected,
+          received: eip712ValidationResult.received,
+        });
+      }
+
       return allow({
         safeAddress: userParams.safeAddress,
+        litChainIdentifier: userParams.litChainIdentifier,
         messageHash: toolParams.safeMessageHash,
       });
     } catch (error) {
@@ -136,20 +129,18 @@ export const vincentPolicy = createVincentPolicy({
       delegation: { delegatorPkpInfo },
     }
   ) => {
-    console.log("SafeMultisigPolicy evaluate", { toolParams, userParams });
+    console.log("[SafeMultisigPolicy evaluate]", { toolParams, userParams });
 
     try {
-      const rpcUrl = process.env.SEPOLIA_RPC_URL!;
-      const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
-      const safeTransactionServiceUrl = "https://safe-transaction-sepolia.safe.global";
+      const rpcUrl = getRpcUrlFromLitChainIdentifier(userParams.litChainIdentifier);
+      const provider = new ethers.providers.StaticJsonRpcProvider(rpcUrl);
 
-      const safeMessage = await checkSafeMessage(
-        provider,
-        safeTransactionServiceUrl,
-        userParams.safeAddress,
-        toolParams.safeMessageHash,
-        toolParams.safeApiKey
-      );
+      const safeMessage = await getSafeMessage({
+        safeTransactionServiceUrl: getSafeTransactionServiceUrl(userParams.litChainIdentifier),
+        safeAddress: userParams.safeAddress,
+        safeApiKey: toolParams.safeApiKey,
+        messageHash: toolParams.safeMessageHash,
+      });
       console.log("[SafeMultisigPolicy evaluate] Retrieved Safe message:", safeMessage);
 
       if (safeMessage === null) {
@@ -160,31 +151,6 @@ export const vincentPolicy = createVincentPolicy({
         });
       }
 
-      // Parse and validate the EIP712 message using helper function
-      const eip712ValidationResult = parseAndValidateEIP712Message({
-        messageString: safeMessage.message as string,
-        expectedToolIpfsCid: toolIpfsCid,
-        expectedAgentAddress: delegatorPkpInfo.ethAddress,
-        expectedAppId: appId,
-        expectedAppVersion: appVersion,
-      });
-
-      if (!eip712ValidationResult.success) {
-        return deny({
-          reason: eip712ValidationResult.error || "EIP712 validation failed",
-          safeAddress: userParams.safeAddress,
-          messageHash: toolParams.safeMessageHash,
-          expected: eip712ValidationResult.expected,
-          received: eip712ValidationResult.received,
-        });
-      }
-
-      const eip712Data = eip712ValidationResult.data!;
-
-      console.log("[SafeMultisigPolicy evaluate] EIP712 message validation passed");
-      console.log("[SafeMultisigPolicy evaluate] EIP712 message data:", eip712Data.message);
-
-      // Get Safe threshold from contract
       const threshold = await getSafeThreshold(
         provider,
         userParams.safeAddress
@@ -200,8 +166,32 @@ export const vincentPolicy = createVincentPolicy({
         });
       }
 
+      const eip712ValidationResult = parseAndValidateEIP712Message({
+        messageString: safeMessage.message as string,
+        expectedToolIpfsCid: toolIpfsCid,
+        expectedAgentAddress: delegatorPkpInfo.ethAddress,
+        expectedAppId: appId,
+        expectedAppVersion: appVersion,
+        expectedToolParametersHash: createParametersHash({
+          toolIpfsCid,
+          toolParams: toolParams.executingToolParams,
+          agentWalletAddress: delegatorPkpInfo.ethAddress,
+        }),
+      });
+
+      if (!eip712ValidationResult.success) {
+        return deny({
+          reason: eip712ValidationResult.error || "EIP712 validation failed",
+          safeAddress: userParams.safeAddress,
+          messageHash: toolParams.safeMessageHash,
+          expected: eip712ValidationResult.expected,
+          received: eip712ValidationResult.received,
+        });
+      }
+
       return allow({
         safeAddress: userParams.safeAddress,
+        litChainIdentifier: userParams.litChainIdentifier,
         messageHash: toolParams.safeMessageHash,
       });
     } catch (error) {
@@ -216,13 +206,13 @@ export const vincentPolicy = createVincentPolicy({
     console.log("SafeMultisigPolicy commit");
 
     try {
-      const { txHash } = commitParams as any;
-      console.log(`Tool execution completed with txHash: ${txHash}`);
+      // const { txHash } = commitParams as any;
+      // console.log(`Tool execution completed with txHash: ${txHash}`);
       console.log(`Safe message should be recorded as executed`);
 
       return allow({
         message: "Safe message should be recorded as executed",
-        txHash,
+        // txHash,
       });
     } catch (error) {
       console.error("Commit error:", error);

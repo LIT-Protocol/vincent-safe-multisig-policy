@@ -5,12 +5,14 @@ export const toolParamsSchema = z.object({
     .string()
     .describe("The Safe API key for Transaction Service access"),
   safeMessageHash: z.string().describe("The hash of the EIP-712 Safe message that's signed by the Safe multisig signers to permit Vincent Tool execution"),
+  executingToolParams: z.any().describe("The parameters of the tool that is being executed"),
 });
 
 export type ToolParams = z.infer<typeof toolParamsSchema>;
 
 export const userParamsSchema = z.object({
   safeAddress: z.string().describe("The Safe multisig contract address"),
+  litChainIdentifier: z.string().describe("The chain identifier of the LIT chain where the Safe multisig contract is deployed"),
 });
 
 export type UserParams = z.infer<typeof userParamsSchema>;
@@ -27,32 +29,22 @@ export const EIP712_MESSAGE_TYPES = {
     { name: "appId", type: "uint256" },
     { name: "appVersion", type: "uint256" },
     { name: "toolIpfsCid", type: "string" },
-    { name: "cbor2EncodedParametersHash", type: "string" },
+    { name: "toolParametersHash", type: "string" },
     { name: "agentWalletAddress", type: "string" },
     { name: "expiry", type: "uint256" },
     { name: "nonce", type: "uint256" },
   ],
 } as const;
 
-export const vincentToolExecutionSchema = z.object({
-  appId: z.bigint(),
-  appVersion: z.bigint(),
-  toolIpfsCid: z.string(),
-  cbor2EncodedParametersHash: z.string(),
-  agentWalletAddress: z.string(),
-  expiry: z.bigint(),
-  nonce: z.bigint(),
-});
-
-export type VincentToolExecution = z.infer<typeof vincentToolExecutionSchema>;
-
 export const precheckAllowResultSchema = z.object({
   safeAddress: z.string(),
+  litChainIdentifier: z.string(),
   messageHash: z.string(),
 });
 
 export const precheckDenyResultSchema = z.object({
   reason: z.string(),
+  litChainIdentifier: z.string().optional(),
   safeAddress: z.string().optional(),
   messageHash: z.string().optional(),
   expected: z.any().optional(),
@@ -61,20 +53,26 @@ export const precheckDenyResultSchema = z.object({
   requiredNumberOfSignatures: z.number().optional(),
 });
 
-export const evalAllowResultSchema = z.object({
-  safeAddress: z.string(),
-  messageHash: z.string(),
-});
+// export const evalAllowResultSchema = z.object({
+//   safeAddress: z.string(),
+//   litChainIdentifier: z.string(),
+//   messageHash: z.string(),
+// });
 
-export const evalDenyResultSchema = z.object({
-  reason: z.string(),
-  safeAddress: z.string().optional(),
-  messageHash: z.string().optional(),
-  expected: z.any().optional(),
-  received: z.any().optional(),
-  currentNumberOfSignatures: z.number().optional(),
-  requiredNumberOfSignatures: z.number().optional(),
-});
+export const evalAllowResultSchema = z.any();
+
+// export const evalDenyResultSchema = z.object({
+//   reason: z.string(),
+//   litChainIdentifier: z.string().optional(),
+//   safeAddress: z.string().optional(),
+//   messageHash: z.string().optional(),
+//   expected: z.any().optional(),
+//   received: z.any().optional(),
+//   currentNumberOfSignatures: z.number().optional(),
+//   requiredNumberOfSignatures: z.number().optional(),
+// });
+
+export const evalDenyResultSchema = z.any();
 
 export const commitAllowResultSchema = z.object({
   message: z.string(),

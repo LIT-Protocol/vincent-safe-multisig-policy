@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { keccak256, toUtf8Bytes } from "ethers/lib/utils";
+import { LIT_CHAINS } from '@lit-protocol/constants';
 import { EIP712_DOMAIN, EIP712_MESSAGE_TYPES, } from "../schemas";
-const SAFE_MESSAGE_TYPE_HASH = "0x60b3cbf8b4a223d68d641b3b6ddf9a298e7f33710cf3d3a9d1146b5a6150fbca";
 export function createEIP712Message(params) {
     return {
         types: EIP712_MESSAGE_TYPES,
@@ -11,7 +11,7 @@ export function createEIP712Message(params) {
             appId: params.appId.toString(),
             appVersion: params.appVersion.toString(),
             toolIpfsCid: params.toolIpfsCid,
-            cbor2EncodedParametersHash: params.cbor2EncodedParametersHash,
+            toolParametersHash: params.toolParametersHash,
             agentWalletAddress: params.agentWalletAddress,
             expiry: params.expiry.toString(),
             nonce: params.nonce.toString(),
@@ -27,12 +27,11 @@ export function hashToolParameters(params) {
     }, {});
     return keccak256(toUtf8Bytes(JSON.stringify(sortedParams)));
 }
-export async function checkSafeMessage(provider, safeTransactionServiceUrl, safeAddress, messageHash, safeApiKey) {
+export async function getSafeMessage({ safeTransactionServiceUrl, safeAddress, messageHash, safeApiKey, }) {
     try {
         console.log(`🔍 Checking Safe message with hash: ${messageHash}`);
         console.log(`🔍 Using Safe address: ${safeAddress}`);
         console.log(`🔍 Using Safe transaction service URL: ${safeTransactionServiceUrl}`);
-        // Use the messages endpoint with just the hash (not safe-specific)
         const url = `${safeTransactionServiceUrl}/api/v1/messages/${messageHash}/`;
         console.log(`🔍 Fetching from URL: ${url}`);
         const headers = {
@@ -111,12 +110,13 @@ export function generateSafeMessageHash(message, safeAddress, chainId) {
     // );
     // return safeMessageHash;
 }
-export function createParametersHash(toolIpfsCid, toolParams, agentWalletAddress) {
+export function createParametersHash({ toolIpfsCid, toolParams, agentWalletAddress, }) {
     const data = {
         toolIpfsCid,
         toolParams,
         agentWalletAddress,
     };
+    console.log("createParametersHash data: ", data);
     return keccak256(toUtf8Bytes(JSON.stringify(data)));
 }
 /**
@@ -164,34 +164,28 @@ export function buildEIP712Signature(confirmations) {
  * @param expectedAgentAddress - Expected agent wallet address for validation
  * @returns Validation result with parsed data or error
  */
-export function parseAndValidateEIP712Message({ messageString, expectedToolIpfsCid, expectedAgentAddress, expectedAppId, expectedAppVersion, }) {
+export function parseAndValidateEIP712Message({ messageString, expectedToolIpfsCid, expectedAgentAddress, expectedAppId, expectedAppVersion, expectedToolParametersHash, }) {
     try {
-        // Parse the stringified EIP712 message
         const parsedMessage = JSON.parse(messageString);
         console.log("[EIP712 Helper] Parsed EIP712 message:", parsedMessage);
-        // Validate the EIP712 structure
         if (!parsedMessage.types || !parsedMessage.domain || !parsedMessage.message) {
             return {
                 success: false,
                 error: "Invalid EIP712 message structure - missing types, domain, or message"
             };
         }
-        // Use ethers to validate and extract EIP712 data
         const domain = parsedMessage.domain;
         const types = parsedMessage.types;
         const message = parsedMessage.message;
-        // Validate that the primary type exists
         if (!types.VincentToolExecution) {
             return {
                 success: false,
                 error: "Missing VincentToolExecution type in EIP712 message"
             };
         }
-        // Use ethers to encode the EIP712 data for validation
         const encodedData = ethers.utils._TypedDataEncoder.encode(domain, types, message);
         console.log("[EIP712 Helper] EIP712 encoded data:", encodedData);
-        // Validate required fields
-        const requiredFields = ['appId', 'appVersion', 'toolIpfsCid', 'cbor2EncodedParametersHash', 'agentWalletAddress', 'expiry', 'nonce'];
+        const requiredFields = ['appId', 'appVersion', 'toolIpfsCid', 'toolParametersHash', 'agentWalletAddress', 'expiry', 'nonce'];
         for (const field of requiredFields) {
             if (!(field in message)) {
                 return {
@@ -200,7 +194,6 @@ export function parseAndValidateEIP712Message({ messageString, expectedToolIpfsC
                 };
             }
         }
-        // Validate appId
         if (message.appId !== expectedAppId.toString()) {
             return {
                 success: false,
@@ -209,7 +202,6 @@ export function parseAndValidateEIP712Message({ messageString, expectedToolIpfsC
                 received: message.appId
             };
         }
-        // Validate appVersion
         if (message.appVersion !== expectedAppVersion.toString()) {
             return {
                 success: false,
@@ -218,7 +210,6 @@ export function parseAndValidateEIP712Message({ messageString, expectedToolIpfsC
                 received: message.appVersion
             };
         }
-        // Validate expiry
         const currentTime = BigInt(Math.floor(Date.now() / 1000));
         const expiry = BigInt(message.expiry);
         if (expiry <= currentTime) {
@@ -229,7 +220,6 @@ export function parseAndValidateEIP712Message({ messageString, expectedToolIpfsC
                 received: expiry.toString()
             };
         }
-        // Validate that the message is for the correct tool
         if (message.toolIpfsCid !== expectedToolIpfsCid) {
             return {
                 success: false,
@@ -238,7 +228,6 @@ export function parseAndValidateEIP712Message({ messageString, expectedToolIpfsC
                 received: message.toolIpfsCid
             };
         }
-        // Validate that the message is for the correct agent
         if (message.agentWalletAddress !== expectedAgentAddress) {
             return {
                 success: false,
@@ -247,15 +236,21 @@ export function parseAndValidateEIP712Message({ messageString, expectedToolIpfsC
                 received: message.agentWalletAddress
             };
         }
+        if (message.toolParametersHash !== expectedToolParametersHash) {
+            return {
+                success: false,
+                error: "EIP712 message toolParametersHash does not match expected tool parameters hash",
+                expected: expectedToolParametersHash,
+                received: message.toolParametersHash
+            };
+        }
         console.log("[EIP712 Helper] EIP712 message validation passed");
         return {
             success: true,
-            data: {
-                domain,
-                types,
-                message,
-                encodedData
-            }
+            domain,
+            types,
+            message,
+            encodedData
         };
     }
     catch (parseError) {
@@ -264,5 +259,91 @@ export function parseAndValidateEIP712Message({ messageString, expectedToolIpfsC
             success: false,
             error: parseError instanceof Error ? parseError.message : "Unknown parse error"
         };
+    }
+}
+/**
+ * Get RPC URL from LIT chain identifier
+ * @param litChainIdentifier - The LIT chain identifier (e.g., 'ethereum', 'polygon', 'sepolia')
+ * @returns The RPC URL for the chain
+ * @throws Error if chain identifier is not found or has no RPC URL
+ */
+export function getRpcUrlFromLitChainIdentifier(litChainIdentifier) {
+    const chain = LIT_CHAINS[litChainIdentifier];
+    if (!chain) {
+        throw new Error(`Chain identifier '${litChainIdentifier}' not found in LIT_CHAINS`);
+    }
+    // Check for rpcUrls property (most common in LIT_CHAINS)
+    if (chain.rpcUrls && Array.isArray(chain.rpcUrls) && chain.rpcUrls.length > 0) {
+        return chain.rpcUrls[0];
+    }
+    // If no RPC URL found, provide a helpful error message
+    throw new Error(`No RPC URL found for chain identifier '${litChainIdentifier}'. Available properties: ${Object.keys(chain).join(', ')}`);
+}
+/**
+ * Get Safe Transaction Service URL from LIT chain identifier
+ * @param litChainIdentifier - The LIT chain identifier (must be a valid key from LIT_CHAINS)
+ * @returns The Safe Transaction Service URL for the chain
+ * @throws Error if chain identifier is not found or Safe doesn't support the chain
+ */
+export function getSafeTransactionServiceUrl(litChainIdentifier) {
+    const chain = LIT_CHAINS[litChainIdentifier];
+    if (!chain) {
+        throw new Error(`Chain identifier '${litChainIdentifier}' not supported by Lit`);
+    }
+    switch (litChainIdentifier) {
+        case "arbitrum":
+            return "https://safe-transaction-arbitrum.safe.global";
+        case "aurora":
+            return "https://safe-transaction-aurora.safe.global";
+        case "avalanche":
+            return "https://safe-transaction-avalanche.safe.global";
+        case "base":
+            return "https://safe-transaction-base.safe.global";
+        case "baseSepolia":
+            return "https://safe-transaction-base-sepolia.safe.global";
+        case "berachain":
+            throw new Error("Berachain is not supported by Lit");
+        case "bsc":
+            return "https://safe-transaction-bsc.safe.global";
+        case "celo":
+            return "https://safe-transaction-celo.safe.global";
+        case "chiado":
+            return "https://safe-transaction-chiado.safe.global";
+        case "gnosis-chain":
+            throw new Error("Gnosis Chain is not supported by Lit");
+        case "hemi":
+            throw new Error("Hemi is not supported by Lit");
+        case "ink":
+            throw new Error("Ink is not supported by Lit");
+        case "lens":
+            throw new Error("Lens is not supported by Lit");
+        case "linea":
+            throw new Error("Linea is not supported by Lit");
+        case "ethereum":
+            return "https://safe-transaction-mainnet.safe.global";
+        case "mantle":
+            return "https://safe-transaction-mantle.safe.global";
+        case "optimism":
+            return "https://safe-transaction-optimism.safe.global";
+        case "polygon":
+            return "https://safe-transaction-polygon.safe.global";
+        case "scroll":
+            return "https://safe-transaction-scroll.safe.global";
+        case "sepolia":
+            return "https://safe-transaction-sepolia.safe.global";
+        case "sonicMainnet":
+            return "https://safe-transaction-sonic.safe.global";
+        case "unichain":
+            throw new Error("Unichain is not supported by Lit");
+        case "worldchain":
+            throw new Error("Worldchain is not supported by Lit");
+        case "xlayer":
+            throw new Error("Xlayer is not supported by Lit");
+        case "zkEvm":
+            return "https://safe-transaction-zkevm.safe.global";
+        case "zksync":
+            return "https://safe-transaction-zksync.safe.global";
+        default:
+            throw new Error(`Safe Transaction Service is not supported for chain identifier '${litChainIdentifier}'`);
     }
 }
