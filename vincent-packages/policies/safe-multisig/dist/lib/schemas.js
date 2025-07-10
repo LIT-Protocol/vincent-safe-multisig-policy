@@ -1,9 +1,11 @@
 import { z } from "zod";
 export const toolParamsSchema = z.object({
-    safeApiKey: z
-        .string()
-        .describe("The Safe API key for Transaction Service access"),
-    safeMessageHash: z.string().describe("The hash of the EIP-712 Safe message that's signed by the Safe multisig signers to permit Vincent Tool execution"),
+    safeConfig: z.object({
+        safeApiKey: z
+            .string()
+            .describe("The Safe API key for Transaction Service access"),
+        safeMessageHash: z.string().describe("The hash of the EIP-712 Safe message that's signed by the Safe multisig signers to permit Vincent Tool execution"),
+    }),
     executingToolParams: z.any().describe("The parameters of the tool that is being executed"),
 });
 export const userParamsSchema = z.object({

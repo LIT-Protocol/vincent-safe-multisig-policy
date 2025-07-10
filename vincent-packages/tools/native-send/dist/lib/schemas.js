@@ -9,15 +9,9 @@ export const toolParamsSchema = z.object({
         .regex(/^\d*\.?\d+$/, "Invalid amount format")
         .refine((val) => parseFloat(val) > 0, "Amount must be greater than 0"),
     rpcUrl: z.string().url("Invalid RPC URL format").optional(),
-    safeApiKey: z.string().optional(),
-    safeMessageHash: z.string().optional(),
-    executingToolParams: z.object({
-        to: z.string().regex(/^0x[a-fA-F0-9]{40}$/, "Invalid Ethereum address"),
-        amount: z
-            .string()
-            .regex(/^\d*\.?\d+$/, "Invalid amount format")
-            .refine((val) => parseFloat(val) > 0, "Amount must be greater than 0"),
-        rpcUrl: z.string().url("Invalid RPC URL format").optional(),
+    safeConfig: z.object({
+        safeApiKey: z.string().optional(),
+        safeMessageHash: z.string().optional(),
     }).optional(),
 });
 /**

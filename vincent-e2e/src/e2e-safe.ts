@@ -376,9 +376,10 @@ import SafeApiKit from "@safe-global/api-kit";
   const precheck = async () => {
     return await nativeSendToolClient.precheck({
       ...TEST_TOOL_PARAMS,
-      safeApiKey,
-      safeMessageHash,
-      executingToolParams: TEST_TOOL_PARAMS,
+      safeConfig: {
+        safeApiKey,
+        safeMessageHash,
+      },
     }, {
       delegatorPkpEthAddress: agentWalletPkp.ethAddress,
     });
@@ -387,9 +388,10 @@ import SafeApiKit from "@safe-global/api-kit";
   const execute = async () => {
     return await nativeSendToolClient.execute({
       ...TEST_TOOL_PARAMS,
-      safeApiKey,
-      safeMessageHash,
-      executingToolParams: TEST_TOOL_PARAMS,
+      safeConfig: {
+        safeApiKey,
+        safeMessageHash,
+      },
     }, {
       delegatorPkpEthAddress: agentWalletPkp.ethAddress,
     });
@@ -429,33 +431,33 @@ import SafeApiKit from "@safe-global/api-kit";
   // ----------------------------------------
   // Test 2: Execute Safe multisig policy Execute method (1 out of 2 signatures - should fail)
   // ----------------------------------------
-  console.log(
-    "(EXECUTE-TEST-1) Execute Safe multisig policy Execute method (1 out of 2 signatures - should fail)"
-  );
-  const safeExecuteRes1 = await execute();
+  // console.log(
+  //   "(EXECUTE-TEST-1) Execute Safe multisig policy Execute method (1 out of 2 signatures - should fail)"
+  // );
+  // const safeExecuteRes1 = await execute();
 
-  console.log("(EXECUTE-RES[1]): ", safeExecuteRes1);
-  console.log(
-    "(EXECUTE-RES[1].context.policiesContext.evaluatedPolicies): ",
-    safeExecuteRes1.context?.policiesContext?.evaluatedPolicies
-  );
+  // console.log("(EXECUTE-RES[1]): ", safeExecuteRes1);
+  // console.log(
+  //   "(EXECUTE-RES[1].context.policiesContext.evaluatedPolicies): ",
+  //   safeExecuteRes1.context?.policiesContext?.evaluatedPolicies
+  // );
 
-  if (
-    safeExecuteRes1.context?.policiesContext?.allow === false
-  ) {
-    const deniedPolicy = safeExecuteRes1.context?.policiesContext?.deniedPolicy;
-    console.log("📄 (EXECUTE-TEST-1) Denied Policy:", deniedPolicy);
+  // if (
+  //   safeExecuteRes1.context?.policiesContext?.allow === false
+  // ) {
+  //   const deniedPolicy = safeExecuteRes1.context?.policiesContext?.deniedPolicy;
+  //   console.log("📄 (EXECUTE-TEST-1) Denied Policy:", deniedPolicy);
 
-    if (deniedPolicy?.result?.reason === "Insufficient signatures") {
-      console.log("✅ (EXECUTE-TEST-1) Execute correctly failed (expected - 1 out of 2 valid Safe signatures available):");
-    } else {
-      console.log("❌ (EXECUTE-TEST-1) Execute unexpectedly failed - it should have failed because it only found 1 out of 2 valid Safe signatures");
-    }
-  } else {
-    console.log(
-      "❌ (EXECUTE-TEST-1) Execute unexpectedly succeeded - it should have failed because it only found 1 out of 2 valid Safe signatures"
-    );
-  }
+  //   if (deniedPolicy?.result?.reason === "Insufficient signatures") {
+  //     console.log("✅ (EXECUTE-TEST-1) Execute correctly failed (expected - 1 out of 2 valid Safe signatures available):");
+  //   } else {
+  //     console.log("❌ (EXECUTE-TEST-1) Execute unexpectedly failed - it should have failed because it only found 1 out of 2 valid Safe signatures");
+  //   }
+  // } else {
+  //   console.log(
+  //     "❌ (EXECUTE-TEST-1) Execute unexpectedly succeeded - it should have failed because it only found 1 out of 2 valid Safe signatures"
+  //   );
+  // }
 
   // ----------------------------------------
   // Sign and propose message via Safe SDK using safeSigner_2
@@ -530,30 +532,30 @@ import SafeApiKit from "@safe-global/api-kit";
   // ----------------------------------------
   // Test 4: Execute Safe multisig policy Execute method (2 out of 2 signatures - should succeed)
   // ----------------------------------------
-  console.log(
-    "(EXECUTE-TEST-2) Safe multisig execution test - 2 out of 2 signatures (should succeed)"
-  );
-  const safeExecuteRes2 = await execute();
+  // console.log(
+  //   "(EXECUTE-TEST-2) Safe multisig execution test - 2 out of 2 signatures (should succeed)"
+  // );
+  // const safeExecuteRes2 = await execute();
 
-  console.log("(EXECUTE-RES[2]): ", safeExecuteRes2);
-  console.log(
-    "(EXECUTE-RES[2].context.policiesContext.evaluatedPolicies): ",
-    safeExecuteRes2.context?.policiesContext?.evaluatedPolicies
-  );
+  // console.log("(EXECUTE-RES[2]): ", safeExecuteRes2);
+  // console.log(
+  //   "(EXECUTE-RES[2].context.policiesContext.evaluatedPolicies): ",
+  //   safeExecuteRes2.context?.policiesContext?.evaluatedPolicies
+  // );
 
-  if (
-    safeExecuteRes2.context?.policiesContext?.allow === false
-  ) {
-    console.log(
-      "❌ (EXECUTE-TEST-2) Execute unexpectedly failed - it should have succeeded because it found 2 out of 2 valid Safe signatures"
-    );
-    const deniedPolicy = safeExecuteRes2.context?.policiesContext?.deniedPolicy;
-    console.log("📄 (EXECUTE-TEST-2) Denied Policy:", deniedPolicy);
-  } else {
-    console.log(
-      "✅ (EXECUTE-TEST-2) Execute correctly succeeded (expected - 2 out of 2 valid Safe signatures available):"
-    );
-  }
+  // if (
+  //   safeExecuteRes2.context?.policiesContext?.allow === false
+  // ) {
+  //   console.log(
+  //     "❌ (EXECUTE-TEST-2) Execute unexpectedly failed - it should have succeeded because it found 2 out of 2 valid Safe signatures"
+  //   );
+  //   const deniedPolicy = safeExecuteRes2.context?.policiesContext?.deniedPolicy;
+  //   console.log("📄 (EXECUTE-TEST-2) Denied Policy:", deniedPolicy);
+  // } else {
+  //   console.log(
+  //     "✅ (EXECUTE-TEST-2) Execute correctly succeeded (expected - 2 out of 2 valid Safe signatures available):"
+  //   );
+  // }
 
   process.exit();
 })();

@@ -14,21 +14,22 @@ export const vincentPolicy = createVincentPolicy({
     commitDenyResultSchema,
     precheck: async ({ toolParams, userParams }, { allow, deny, appId, appVersion, toolIpfsCid, delegation: { delegatorPkpInfo }, }) => {
         console.log("[SafeMultisigPolicy precheck]", { toolParams, userParams });
+        const { safeConfig, ...executingToolParams } = toolParams;
         try {
             const rpcUrl = getRpcUrlFromLitChainIdentifier(userParams.litChainIdentifier);
             const provider = new ethers.providers.StaticJsonRpcProvider(rpcUrl);
             const safeMessage = await getSafeMessage({
                 safeTransactionServiceUrl: getSafeTransactionServiceUrl(userParams.litChainIdentifier),
                 safeAddress: userParams.safeAddress,
-                safeApiKey: toolParams.safeApiKey,
-                messageHash: toolParams.safeMessageHash,
+                safeApiKey: safeConfig.safeApiKey,
+                messageHash: safeConfig.safeMessageHash,
             });
-            console.log(`[SafeMultisigPolicy precheck] Retrieved Safe message: ${safeMessage}`);
+            console.log(`[SafeMultisigPolicy precheck] Retrieved Safe message: ${JSON.stringify(safeMessage, null, 2)}`);
             if (safeMessage === null) {
                 return deny({
                     reason: "Safe message not found or not proposed",
                     safeAddress: userParams.safeAddress,
-                    messageHash: toolParams.safeMessageHash,
+                    messageHash: safeConfig.safeMessageHash,
                 });
             }
             const threshold = await getSafeThreshold(provider, userParams.safeAddress);
@@ -49,7 +50,7 @@ export const vincentPolicy = createVincentPolicy({
                 expectedAppVersion: appVersion,
                 expectedToolParametersHash: createParametersHash({
                     toolIpfsCid,
-                    toolParams: toolParams.executingToolParams,
+                    toolParams: executingToolParams,
                     agentWalletAddress: delegatorPkpInfo.ethAddress,
                 }),
             });
@@ -57,7 +58,7 @@ export const vincentPolicy = createVincentPolicy({
                 return deny({
                     reason: eip712ValidationResult.error || "EIP712 validation failed",
                     safeAddress: userParams.safeAddress,
-                    messageHash: toolParams.safeMessageHash,
+                    messageHash: safeConfig.safeMessageHash,
                     expected: eip712ValidationResult.expected,
                     received: eip712ValidationResult.received,
                 });
@@ -83,7 +84,7 @@ export const vincentPolicy = createVincentPolicy({
             return allow({
                 safeAddress: userParams.safeAddress,
                 litChainIdentifier: userParams.litChainIdentifier,
-                messageHash: toolParams.safeMessageHash,
+                messageHash: safeConfig.safeMessageHash,
             });
         }
         catch (error) {
@@ -95,21 +96,22 @@ export const vincentPolicy = createVincentPolicy({
     },
     evaluate: async ({ toolParams, userParams }, { allow, deny, appId, appVersion, toolIpfsCid, delegation: { delegatorPkpInfo }, }) => {
         console.log("[SafeMultisigPolicy evaluate]", { toolParams, userParams });
+        const { safeConfig, ...executingToolParams } = toolParams;
         try {
             const rpcUrl = getRpcUrlFromLitChainIdentifier(userParams.litChainIdentifier);
             const provider = new ethers.providers.StaticJsonRpcProvider(rpcUrl);
             const safeMessage = await getSafeMessage({
                 safeTransactionServiceUrl: getSafeTransactionServiceUrl(userParams.litChainIdentifier),
                 safeAddress: userParams.safeAddress,
-                safeApiKey: toolParams.safeApiKey,
-                messageHash: toolParams.safeMessageHash,
+                safeApiKey: safeConfig.safeApiKey,
+                messageHash: safeConfig.safeMessageHash,
             });
-            console.log("[SafeMultisigPolicy evaluate] Retrieved Safe message:", safeMessage);
+            console.log("[SafeMultisigPolicy evaluate] Retrieved Safe message:", JSON.stringify(safeMessage, null, 2));
             if (safeMessage === null) {
                 return deny({
                     reason: "Safe message not found or not proposed",
                     safeAddress: userParams.safeAddress,
-                    messageHash: toolParams.safeMessageHash,
+                    messageHash: safeConfig.safeMessageHash,
                 });
             }
             const threshold = await getSafeThreshold(provider, userParams.safeAddress);
@@ -130,7 +132,7 @@ export const vincentPolicy = createVincentPolicy({
                 expectedAppVersion: appVersion,
                 expectedToolParametersHash: createParametersHash({
                     toolIpfsCid,
-                    toolParams: toolParams.executingToolParams,
+                    toolParams: executingToolParams,
                     agentWalletAddress: delegatorPkpInfo.ethAddress,
                 }),
             });
@@ -138,7 +140,7 @@ export const vincentPolicy = createVincentPolicy({
                 return deny({
                     reason: eip712ValidationResult.error || "EIP712 validation failed",
                     safeAddress: userParams.safeAddress,
-                    messageHash: toolParams.safeMessageHash,
+                    messageHash: safeConfig.safeMessageHash,
                     expected: eip712ValidationResult.expected,
                     received: eip712ValidationResult.received,
                 });
@@ -164,7 +166,7 @@ export const vincentPolicy = createVincentPolicy({
             return allow({
                 safeAddress: userParams.safeAddress,
                 litChainIdentifier: userParams.litChainIdentifier,
-                messageHash: toolParams.safeMessageHash,
+                messageHash: safeConfig.safeMessageHash,
             });
         }
         catch (error) {
