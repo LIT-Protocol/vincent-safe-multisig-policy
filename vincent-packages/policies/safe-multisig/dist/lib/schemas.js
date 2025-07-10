@@ -42,23 +42,21 @@ export const precheckDenyResultSchema = z.object({
     currentNumberOfSignatures: z.number().optional(),
     requiredNumberOfSignatures: z.number().optional(),
 });
-// export const evalAllowResultSchema = z.object({
-//   safeAddress: z.string(),
-//   litChainIdentifier: z.string(),
-//   messageHash: z.string(),
-// });
-export const evalAllowResultSchema = z.any();
-// export const evalDenyResultSchema = z.object({
-//   reason: z.string(),
-//   litChainIdentifier: z.string().optional(),
-//   safeAddress: z.string().optional(),
-//   messageHash: z.string().optional(),
-//   expected: z.any().optional(),
-//   received: z.any().optional(),
-//   currentNumberOfSignatures: z.number().optional(),
-//   requiredNumberOfSignatures: z.number().optional(),
-// });
-export const evalDenyResultSchema = z.any();
+export const evalAllowResultSchema = z.object({
+    safeAddress: z.string(),
+    litChainIdentifier: z.string(),
+    messageHash: z.string(),
+});
+export const evalDenyResultSchema = z.object({
+    reason: z.string(),
+    litChainIdentifier: z.string().optional(),
+    safeAddress: z.string().optional(),
+    messageHash: z.string().optional(),
+    expected: z.any().optional(),
+    received: z.any().optional(),
+    currentNumberOfSignatures: z.number().optional(),
+    requiredNumberOfSignatures: z.number().optional(),
+});
 export const commitAllowResultSchema = z.object({
     message: z.string(),
     txHash: z.string().optional(),
