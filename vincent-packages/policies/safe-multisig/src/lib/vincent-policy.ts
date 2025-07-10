@@ -17,6 +17,8 @@ import {
   parseAndValidateEIP712Message,
   getRpcUrlFromLitChainIdentifier,
   getSafeTransactionServiceUrl,
+  isValidSafeSignature,
+  buildEIP712Signature,
 } from "./helpers";
 
 export const vincentPolicy = createVincentPolicy({
@@ -57,7 +59,7 @@ export const vincentPolicy = createVincentPolicy({
         safeApiKey: toolParams.safeApiKey,
         messageHash: toolParams.safeMessageHash,
       });
-      console.log("[SafeMultisigPolicy precheck] Retrieved Safe message:", safeMessage);
+      console.log(`[SafeMultisigPolicy precheck] Retrieved Safe message: ${safeMessage}`);
 
       if (safeMessage === null) {
         return deny({
@@ -71,7 +73,7 @@ export const vincentPolicy = createVincentPolicy({
         provider,
         userParams.safeAddress
       );
-      console.log("[SafeMultisigPolicy precheck] Safe threshold:", threshold);
+      console.log(`[SafeMultisigPolicy precheck] Safe threshold: ${threshold}`);
 
       if (safeMessage.confirmations.length < threshold) {
         return deny({
@@ -102,6 +104,32 @@ export const vincentPolicy = createVincentPolicy({
           messageHash: toolParams.safeMessageHash,
           expected: eip712ValidationResult.expected,
           received: eip712ValidationResult.received,
+        });
+      }
+
+      console.log(`[SafeMultisigPolicy precheck] safeMessage.message: ${safeMessage.message}`);
+      const hashedSafeMessage = ethers.utils.hashMessage(
+        ethers.utils.toUtf8Bytes(safeMessage.message as string)
+      );
+      console.log(`[SafeMultisigPolicy precheck] hashedSafeMessage: ${hashedSafeMessage}`);
+
+      const eip712Signature = buildEIP712Signature(safeMessage.confirmations);
+      console.log(`[SafeMultisigPolicy precheck] eip712Signature: ${eip712Signature}`);
+
+      const isValid = await isValidSafeSignature(
+        {
+          provider,
+          safeAddress: userParams.safeAddress,
+          dataHash: hashedSafeMessage,
+          signature: eip712Signature,
+        }
+      );
+      console.log(`[SafeMultisigPolicy precheck] isValidSafeSignature: ${isValid}`);
+
+      if (!isValid) {
+        return deny({
+          reason: "Invalid signature",
+          confirmations: safeMessage.confirmations,
         });
       }
 
@@ -186,6 +214,32 @@ export const vincentPolicy = createVincentPolicy({
           messageHash: toolParams.safeMessageHash,
           expected: eip712ValidationResult.expected,
           received: eip712ValidationResult.received,
+        });
+      }
+
+      console.log(`[SafeMultisigPolicy precheck] safeMessage.message: ${safeMessage.message}`);
+      const hashedSafeMessage = ethers.utils.hashMessage(
+        ethers.utils.toUtf8Bytes(safeMessage.message as string)
+      );
+      console.log(`[SafeMultisigPolicy precheck] hashedSafeMessage: ${hashedSafeMessage}`);
+
+      const eip712Signature = buildEIP712Signature(safeMessage.confirmations);
+      console.log(`[SafeMultisigPolicy precheck] eip712Signature: ${eip712Signature}`);
+
+      const isValid = await isValidSafeSignature(
+        {
+          provider,
+          safeAddress: userParams.safeAddress,
+          dataHash: hashedSafeMessage,
+          signature: eip712Signature,
+        }
+      );
+      console.log(`[SafeMultisigPolicy precheck] isValidSafeSignature: ${isValid}`);
+
+      if (!isValid) {
+        return deny({
+          reason: "Invalid signature",
+          confirmations: safeMessage.confirmations,
         });
       }
 

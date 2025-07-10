@@ -51,6 +51,13 @@ export const precheckDenyResultSchema = z.object({
   received: z.any().optional(),
   currentNumberOfSignatures: z.number().optional(),
   requiredNumberOfSignatures: z.number().optional(),
+  confirmations: z.array(z.object({
+    signature: z.string().optional(),
+    created: z.string().optional(),
+    modified: z.string().optional(),
+    owner: z.string().optional(),
+    signatureType: z.string().optional(),
+  })).optional(),
 });
 
 export const evalAllowResultSchema = z.object({
@@ -68,6 +75,13 @@ export const evalDenyResultSchema = z.object({
   received: z.any().optional(),
   currentNumberOfSignatures: z.number().optional(),
   requiredNumberOfSignatures: z.number().optional(),
+  confirmations: z.array(z.object({
+    signature: z.string().optional(),
+    created: z.string().optional(),
+    modified: z.string().optional(),
+    owner: z.string().optional(),
+    signatureType: z.string().optional(),
+  })).optional(),
 });
 
 export const commitAllowResultSchema = z.object({

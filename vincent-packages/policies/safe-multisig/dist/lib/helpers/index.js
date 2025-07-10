@@ -65,12 +65,13 @@ export async function getSafeMessage({ safeTransactionServiceUrl, safeAddress, m
         return null;
     }
 }
-export async function isValidSafeSignature(provider, safeAddress, messageHash, signature) {
+export async function isValidSafeSignature({ provider, safeAddress, dataHash, signature, }) {
     try {
         const safeContract = new ethers.Contract(safeAddress, [
             "function isValidSignature(bytes32 _dataHash, bytes _signature) view returns (bytes4)",
         ], provider);
-        const magicValue = await safeContract.isValidSignature(messageHash, signature);
+        const magicValue = await safeContract.isValidSignature(dataHash, signature);
+        console.log("isValidSafeSignature returned magicValue: ", magicValue);
         return magicValue === "0x1626ba7e";
     }
     catch (error) {
@@ -79,7 +80,6 @@ export async function isValidSafeSignature(provider, safeAddress, messageHash, s
     }
 }
 export function generateSafeMessageHash(message, safeAddress, chainId) {
-    // just testing with eip191 now.  can switch to eip712 later.
     const messageHash = ethers.utils.hashMessage(ethers.utils.toUtf8Bytes(message));
     const safeMessageTypes = {
         EIP712Domain: [
@@ -101,14 +101,6 @@ export function generateSafeMessageHash(message, safeAddress, chainId) {
     const eip712Payload = ethers.utils._TypedDataEncoder.getPayload(domain, { SafeMessage: safeMessageTypes.SafeMessage }, { message: messageHash });
     console.log("eip712Payload: ", eip712Payload);
     return ethers.utils._TypedDataEncoder.hash(domain, { SafeMessage: safeMessageTypes.SafeMessage }, { message: messageHash });
-    // const messageHash = keccak256(toUtf8Bytes(message));
-    // const safeMessageHash = keccak256(
-    //   ethers.utils.solidityPack(
-    //     ["bytes32", "bytes32"],
-    //     [SAFE_MESSAGE_TYPE_HASH, messageHash]
-    //   )
-    // );
-    // return safeMessageHash;
 }
 export function createParametersHash({ toolIpfsCid, toolParams, agentWalletAddress, }) {
     const data = {
@@ -290,25 +282,29 @@ export function getSafeTransactionServiceUrl(litChainIdentifier) {
     if (!chain) {
         throw new Error(`Chain identifier '${litChainIdentifier}' not supported by Lit`);
     }
+    // This switch case is handling the cases where the chain identifier used by Safe
+    // is different from the chain identifier used by Lit, and unsupported chains by Lit.
+    let safeChainIdentifier = litChainIdentifier;
     switch (litChainIdentifier) {
         case "arbitrum":
-            return "https://safe-transaction-arbitrum.safe.global";
+            break;
         case "aurora":
-            return "https://safe-transaction-aurora.safe.global";
+            break;
         case "avalanche":
-            return "https://safe-transaction-avalanche.safe.global";
+            break;
         case "base":
-            return "https://safe-transaction-base.safe.global";
+            break;
         case "baseSepolia":
-            return "https://safe-transaction-base-sepolia.safe.global";
+            safeChainIdentifier = "base-sepolia";
+            break;
         case "berachain":
             throw new Error("Berachain is not supported by Lit");
         case "bsc":
-            return "https://safe-transaction-bsc.safe.global";
+            break;
         case "celo":
-            return "https://safe-transaction-celo.safe.global";
+            break;
         case "chiado":
-            return "https://safe-transaction-chiado.safe.global";
+            break;
         case "gnosis-chain":
             throw new Error("Gnosis Chain is not supported by Lit");
         case "hemi":
@@ -320,19 +316,21 @@ export function getSafeTransactionServiceUrl(litChainIdentifier) {
         case "linea":
             throw new Error("Linea is not supported by Lit");
         case "ethereum":
-            return "https://safe-transaction-mainnet.safe.global";
+            safeChainIdentifier = "mainnet";
+            break;
         case "mantle":
-            return "https://safe-transaction-mantle.safe.global";
+            break;
         case "optimism":
-            return "https://safe-transaction-optimism.safe.global";
+            break;
         case "polygon":
-            return "https://safe-transaction-polygon.safe.global";
+            break;
         case "scroll":
-            return "https://safe-transaction-scroll.safe.global";
+            break;
         case "sepolia":
-            return "https://safe-transaction-sepolia.safe.global";
+            break;
         case "sonicMainnet":
-            return "https://safe-transaction-sonic.safe.global";
+            safeChainIdentifier = "sonic";
+            break;
         case "unichain":
             throw new Error("Unichain is not supported by Lit");
         case "worldchain":
@@ -340,10 +338,11 @@ export function getSafeTransactionServiceUrl(litChainIdentifier) {
         case "xlayer":
             throw new Error("Xlayer is not supported by Lit");
         case "zkEvm":
-            return "https://safe-transaction-zkevm.safe.global";
+            break;
         case "zksync":
-            return "https://safe-transaction-zksync.safe.global";
+            break;
         default:
             throw new Error(`Safe Transaction Service is not supported for chain identifier '${litChainIdentifier}'`);
     }
+    return `https://safe-transaction-${safeChainIdentifier}.safe.global`;
 }

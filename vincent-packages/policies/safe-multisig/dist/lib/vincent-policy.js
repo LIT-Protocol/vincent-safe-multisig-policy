@@ -1,7 +1,7 @@
 import { createVincentPolicy } from "@lit-protocol/vincent-tool-sdk";
 import { ethers } from "ethers";
 import { commitAllowResultSchema, commitDenyResultSchema, evalAllowResultSchema, evalDenyResultSchema, precheckAllowResultSchema, precheckDenyResultSchema, toolParamsSchema, userParamsSchema, } from "./schemas";
-import { getSafeMessage, createParametersHash, getSafeThreshold, parseAndValidateEIP712Message, getRpcUrlFromLitChainIdentifier, getSafeTransactionServiceUrl, } from "./helpers";
+import { getSafeMessage, createParametersHash, getSafeThreshold, parseAndValidateEIP712Message, getRpcUrlFromLitChainIdentifier, getSafeTransactionServiceUrl, isValidSafeSignature, buildEIP712Signature, } from "./helpers";
 export const vincentPolicy = createVincentPolicy({
     packageName: "@lit-protocol/vincent-policy-safe-multisig",
     toolParamsSchema,
@@ -23,7 +23,7 @@ export const vincentPolicy = createVincentPolicy({
                 safeApiKey: toolParams.safeApiKey,
                 messageHash: toolParams.safeMessageHash,
             });
-            console.log("[SafeMultisigPolicy precheck] Retrieved Safe message:", safeMessage);
+            console.log(`[SafeMultisigPolicy precheck] Retrieved Safe message: ${safeMessage}`);
             if (safeMessage === null) {
                 return deny({
                     reason: "Safe message not found or not proposed",
@@ -32,7 +32,7 @@ export const vincentPolicy = createVincentPolicy({
                 });
             }
             const threshold = await getSafeThreshold(provider, userParams.safeAddress);
-            console.log("[SafeMultisigPolicy precheck] Safe threshold:", threshold);
+            console.log(`[SafeMultisigPolicy precheck] Safe threshold: ${threshold}`);
             if (safeMessage.confirmations.length < threshold) {
                 return deny({
                     reason: "Insufficient signatures",
@@ -60,6 +60,24 @@ export const vincentPolicy = createVincentPolicy({
                     messageHash: toolParams.safeMessageHash,
                     expected: eip712ValidationResult.expected,
                     received: eip712ValidationResult.received,
+                });
+            }
+            console.log(`[SafeMultisigPolicy precheck] safeMessage.message: ${safeMessage.message}`);
+            const hashedSafeMessage = ethers.utils.hashMessage(ethers.utils.toUtf8Bytes(safeMessage.message));
+            console.log(`[SafeMultisigPolicy precheck] hashedSafeMessage: ${hashedSafeMessage}`);
+            const eip712Signature = buildEIP712Signature(safeMessage.confirmations);
+            console.log(`[SafeMultisigPolicy precheck] eip712Signature: ${eip712Signature}`);
+            const isValid = await isValidSafeSignature({
+                provider,
+                safeAddress: userParams.safeAddress,
+                dataHash: hashedSafeMessage,
+                signature: eip712Signature,
+            });
+            console.log(`[SafeMultisigPolicy precheck] isValidSafeSignature: ${isValid}`);
+            if (!isValid) {
+                return deny({
+                    reason: "Invalid signature",
+                    confirmations: safeMessage.confirmations,
                 });
             }
             return allow({
@@ -123,6 +141,24 @@ export const vincentPolicy = createVincentPolicy({
                     messageHash: toolParams.safeMessageHash,
                     expected: eip712ValidationResult.expected,
                     received: eip712ValidationResult.received,
+                });
+            }
+            console.log(`[SafeMultisigPolicy precheck] safeMessage.message: ${safeMessage.message}`);
+            const hashedSafeMessage = ethers.utils.hashMessage(ethers.utils.toUtf8Bytes(safeMessage.message));
+            console.log(`[SafeMultisigPolicy precheck] hashedSafeMessage: ${hashedSafeMessage}`);
+            const eip712Signature = buildEIP712Signature(safeMessage.confirmations);
+            console.log(`[SafeMultisigPolicy precheck] eip712Signature: ${eip712Signature}`);
+            const isValid = await isValidSafeSignature({
+                provider,
+                safeAddress: userParams.safeAddress,
+                dataHash: hashedSafeMessage,
+                signature: eip712Signature,
+            });
+            console.log(`[SafeMultisigPolicy precheck] isValidSafeSignature: ${isValid}`);
+            if (!isValid) {
+                return deny({
+                    reason: "Invalid signature",
+                    confirmations: safeMessage.confirmations,
                 });
             }
             return allow({
