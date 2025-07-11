@@ -7,8 +7,7 @@ export const toolParamsSchema = z.object({
       .describe("The Safe API key for Transaction Service access"),
     safeMessageHash: z.string().describe("The hash of the EIP-712 Safe message that's signed by the Safe multisig signers to permit Vincent Tool execution"),
   }),
-  executingToolParams: z.any().describe("The parameters of the tool that is being executed"),
-});
+}).passthrough();
 
 export type ToolParams = z.infer<typeof toolParamsSchema>;
 
