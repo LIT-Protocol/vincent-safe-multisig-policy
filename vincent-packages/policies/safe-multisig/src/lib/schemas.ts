@@ -31,7 +31,7 @@ export const EIP712_MESSAGE_TYPES = {
     { name: "appId", type: "uint256" },
     { name: "appVersion", type: "uint256" },
     { name: "toolIpfsCid", type: "string" },
-    { name: "toolParametersHash", type: "string" },
+    { name: "toolParametersString", type: "string" },
     { name: "agentWalletAddress", type: "string" },
     { name: "expiry", type: "uint256" },
     { name: "nonce", type: "uint256" },

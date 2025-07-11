@@ -9,24 +9,23 @@ import {
 suppressLitLogs(true);
 
 import { getVincentToolClient } from "@lit-protocol/vincent-app-sdk";
-import { vincentPolicyMetadata as safeMultisigPolicyMetadata } from "../../vincent-packages/policies/safe-multisig/dist/index.js";
-import { bundledVincentTool as nativeSendTool } from "../../vincent-packages/tools/native-send/dist/index.js";
 import { ethers } from "ethers";
 import { LIT_CHAINS } from '@lit-protocol/constants';
+import Safe, { hashSafeMessage } from "@safe-global/protocol-kit";
+import SafeApiKit from "@safe-global/api-kit";
 
-// Import helpers from built policy (no TypeScript types needed in E2E)
+import { vincentPolicyMetadata as safeMultisigPolicyMetadata } from "../../vincent-packages/policies/safe-multisig/dist/index.js";
+import { bundledVincentTool as nativeSendTool } from "../../vincent-packages/tools/native-send/dist/index.js";
+
+// Import helpers from built policy
 import {
-  createEIP712Message,
-  createParametersHash,
+  createParametersString,
   generateSafeMessageHash,
   generateNonce,
   generateExpiry,
   getRpcUrlFromLitChainIdentifier,
+  getSafeMessageString
 } from "../../vincent-packages/policies/safe-multisig/dist/lib/helpers/index.js";
-
-// Import Safe SDK for real Safe interaction
-import Safe, { hashSafeMessage } from "@safe-global/protocol-kit";
-import SafeApiKit from "@safe-global/api-kit";
 
 (async () => {
   /**
@@ -260,34 +259,31 @@ import SafeApiKit from "@safe-global/api-kit";
    * Create and sign Safe message for testing
    * ====================================
    */
-  const parametersHash = createParametersHash({
-    toolIpfsCid: nativeSendTool.ipfsCid,
-    toolParams: TEST_TOOL_PARAMS,
-    agentWalletAddress,
-  });
-  console.log("🔏 Tool parameters hash:", parametersHash);
+  const toolParametersString = createParametersString(TEST_TOOL_PARAMS);
+  console.log("🔏 Tool parameters string:", toolParametersString);
 
   const vincentExecution = {
     appId: BigInt(registeredAppId),
     appVersion: BigInt(registeredAppVersion),
     toolIpfsCid: nativeSendTool.ipfsCid,
-    toolParametersHash: parametersHash,
+    toolParametersString,
     agentWalletAddress,
     expiry: generateExpiry(),
     nonce: generateNonce(),
   };
   console.log("🔏 Raw Vincent execution object:", vincentExecution);
 
-  const eip712Message = createEIP712Message(vincentExecution);
-  const messageString = JSON.stringify(eip712Message);
-  const messageHash = generateSafeMessageHash(
-    messageString,
-    safeAddress,
-    safeChainId
+  const safeMessageString = getSafeMessageString(vincentExecution);
+  const safeMessageHash = generateSafeMessageHash(
+    {
+      safeMessageString,
+      safeAddress,
+      chainId: safeChainId,
+    }
   );
 
-  console.log("📝 EIP712 message:", eip712Message);
-  console.log("🔏 Message hash:", messageHash);
+  console.log("🔏 Safe message string:", safeMessageString);
+  console.log("🔏 Safe message hash:", safeMessageHash);
 
   /**
    * ====================================
@@ -299,15 +295,6 @@ import SafeApiKit from "@safe-global/api-kit";
     signer: safeSignerPrivateKey_1,
     safeAddress,
   });
-
-  // calculate the hash using the safe sdk
-  const safeMessageHash = await protocolKit.getSafeMessageHash(
-    hashSafeMessage(messageString)
-  );
-  console.log("🔏 Safe message hash:", safeMessageHash);
-  if (safeMessageHash !== messageHash) {
-    throw new Error("Safe message hash mismatch");
-  }
 
   const apiKit = new SafeApiKit({
     chainId: BigInt(safeChainId),
@@ -325,7 +312,7 @@ import SafeApiKit from "@safe-global/api-kit";
   console.log("=".repeat(60));
 
   // Create Safe message using Safe SDK
-  const safeMessage = protocolKit.createMessage(messageString);
+  const safeMessage = protocolKit.createMessage(safeMessageString);
   console.log("📝 Created Safe message", safeMessage);
 
   // Sign the message using Safe SDK
@@ -347,7 +334,7 @@ import SafeApiKit from "@safe-global/api-kit";
 
   try {
     await apiKit.addMessage(safeAddress, {
-      message: messageString,
+      message: safeMessageString,
       signature: signerSignature.data,
     });
 
@@ -415,7 +402,7 @@ import SafeApiKit from "@safe-global/api-kit";
     safePrecheckRes1.context?.policiesContext?.allow === false
   ) {
     const deniedPolicy = safePrecheckRes1.context?.policiesContext?.deniedPolicy;
-    console.log("📄 (PRECHECK-TEST-1) Denied Policy:", deniedPolicy);
+    console.log("📄 (PRECHECK-TEST-1) Denied Policy:", JSON.stringify(deniedPolicy, null, 2));
 
     if (deniedPolicy?.result?.reason === "Insufficient signatures") {
       console.log("✅ (PRECHECK-TEST-1) Precheck correctly failed (expected - 1 out of 2 valid Safe signatures available):");
@@ -431,33 +418,33 @@ import SafeApiKit from "@safe-global/api-kit";
   // ----------------------------------------
   // Test 2: Execute Safe multisig policy Execute method (1 out of 2 signatures - should fail)
   // ----------------------------------------
-  // console.log(
-  //   "(EXECUTE-TEST-1) Execute Safe multisig policy Execute method (1 out of 2 signatures - should fail)"
-  // );
-  // const safeExecuteRes1 = await execute();
+  console.log(
+    "(EXECUTE-TEST-1) Execute Safe multisig policy Execute method (1 out of 2 signatures - should fail)"
+  );
+  const safeExecuteRes1 = await execute();
 
-  // console.log("(EXECUTE-RES[1]): ", safeExecuteRes1);
-  // console.log(
-  //   "(EXECUTE-RES[1].context.policiesContext.evaluatedPolicies): ",
-  //   safeExecuteRes1.context?.policiesContext?.evaluatedPolicies
-  // );
+  console.log("(EXECUTE-RES[1]): ", safeExecuteRes1);
+  console.log(
+    "(EXECUTE-RES[1].context.policiesContext.evaluatedPolicies): ",
+    safeExecuteRes1.context?.policiesContext?.evaluatedPolicies
+  );
 
-  // if (
-  //   safeExecuteRes1.context?.policiesContext?.allow === false
-  // ) {
-  //   const deniedPolicy = safeExecuteRes1.context?.policiesContext?.deniedPolicy;
-  //   console.log("📄 (EXECUTE-TEST-1) Denied Policy:", deniedPolicy);
+  if (
+    safeExecuteRes1.context?.policiesContext?.allow === false
+  ) {
+    const deniedPolicy = safeExecuteRes1.context?.policiesContext?.deniedPolicy;
+    console.log("📄 (EXECUTE-TEST-1) Denied Policy:", JSON.stringify(deniedPolicy, null, 2));
 
-  //   if (deniedPolicy?.result?.reason === "Insufficient signatures") {
-  //     console.log("✅ (EXECUTE-TEST-1) Execute correctly failed (expected - 1 out of 2 valid Safe signatures available):");
-  //   } else {
-  //     console.log("❌ (EXECUTE-TEST-1) Execute unexpectedly failed - it should have failed because it only found 1 out of 2 valid Safe signatures");
-  //   }
-  // } else {
-  //   console.log(
-  //     "❌ (EXECUTE-TEST-1) Execute unexpectedly succeeded - it should have failed because it only found 1 out of 2 valid Safe signatures"
-  //   );
-  // }
+    if (deniedPolicy?.result?.reason === "Insufficient signatures") {
+      console.log("✅ (EXECUTE-TEST-1) Execute correctly failed (expected - 1 out of 2 valid Safe signatures available):");
+    } else {
+      console.log("❌ (EXECUTE-TEST-1) Execute unexpectedly failed - it should have failed because it only found 1 out of 2 valid Safe signatures");
+    }
+  } else {
+    console.log(
+      "❌ (EXECUTE-TEST-1) Execute unexpectedly succeeded - it should have failed because it only found 1 out of 2 valid Safe signatures"
+    );
+  }
 
   // ----------------------------------------
   // Sign and propose message via Safe SDK using safeSigner_2
@@ -522,7 +509,7 @@ import SafeApiKit from "@safe-global/api-kit";
       "❌ (PRECHECK-TEST-2) Precheck unexpectedly failed - it should have succeeded because it found 2 out of 2 valid Safe signatures"
     );
     const deniedPolicy = safePrecheckRes2.context?.policiesContext?.deniedPolicy;
-    console.log("📄 (PRECHECK-TEST-2) Denied Policy:", deniedPolicy);
+    console.log("📄 (PRECHECK-TEST-2) Denied Policy:", JSON.stringify(deniedPolicy, null, 2));
   } else {
     console.log(
       "✅ (PRECHECK-TEST-2) Precheck correctly succeeded (expected - 2 out of 2 valid Safe signatures available):"
@@ -532,30 +519,30 @@ import SafeApiKit from "@safe-global/api-kit";
   // ----------------------------------------
   // Test 4: Execute Safe multisig policy Execute method (2 out of 2 signatures - should succeed)
   // ----------------------------------------
-  // console.log(
-  //   "(EXECUTE-TEST-2) Safe multisig execution test - 2 out of 2 signatures (should succeed)"
-  // );
-  // const safeExecuteRes2 = await execute();
+  console.log(
+    "(EXECUTE-TEST-2) Safe multisig execution test - 2 out of 2 signatures (should succeed)"
+  );
+  const safeExecuteRes2 = await execute();
 
-  // console.log("(EXECUTE-RES[2]): ", safeExecuteRes2);
-  // console.log(
-  //   "(EXECUTE-RES[2].context.policiesContext.evaluatedPolicies): ",
-  //   safeExecuteRes2.context?.policiesContext?.evaluatedPolicies
-  // );
+  console.log("(EXECUTE-RES[2]): ", safeExecuteRes2);
+  console.log(
+    "(EXECUTE-RES[2].context.policiesContext.evaluatedPolicies): ",
+    safeExecuteRes2.context?.policiesContext?.evaluatedPolicies
+  );
 
-  // if (
-  //   safeExecuteRes2.context?.policiesContext?.allow === false
-  // ) {
-  //   console.log(
-  //     "❌ (EXECUTE-TEST-2) Execute unexpectedly failed - it should have succeeded because it found 2 out of 2 valid Safe signatures"
-  //   );
-  //   const deniedPolicy = safeExecuteRes2.context?.policiesContext?.deniedPolicy;
-  //   console.log("📄 (EXECUTE-TEST-2) Denied Policy:", deniedPolicy);
-  // } else {
-  //   console.log(
-  //     "✅ (EXECUTE-TEST-2) Execute correctly succeeded (expected - 2 out of 2 valid Safe signatures available):"
-  //   );
-  // }
+  if (
+    safeExecuteRes2.context?.policiesContext?.allow === false
+  ) {
+    console.log(
+      "❌ (EXECUTE-TEST-2) Execute unexpectedly failed - it should have succeeded because it found 2 out of 2 valid Safe signatures"
+    );
+    const deniedPolicy = safeExecuteRes2.context?.policiesContext?.deniedPolicy;
+    console.log("📄 (EXECUTE-TEST-2) Denied Policy:", JSON.stringify(deniedPolicy, null, 2));
+  } else {
+    console.log(
+      "✅ (EXECUTE-TEST-2) Execute correctly succeeded (expected - 2 out of 2 valid Safe signatures available):"
+    );
+  }
 
   process.exit();
 })();

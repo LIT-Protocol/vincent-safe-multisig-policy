@@ -1,12 +1,16 @@
 import { ethers } from "ethers";
 
-export function generateSafeMessageHash(
-    message: string,
+export function generateSafeMessageHash({
+    safeMessageString,
+    safeAddress,
+    chainId,
+}: {
+    safeMessageString: string,
     safeAddress: string,
-    chainId: string
-): string {
+    chainId: string,
+}): string {
     const messageHash = ethers.utils.hashMessage(
-        ethers.utils.toUtf8Bytes(message)
+        ethers.utils.toUtf8Bytes(safeMessageString)
     );
 
     const safeMessageTypes = {

@@ -1,7 +1,7 @@
 import { createVincentPolicy } from "@lit-protocol/vincent-tool-sdk";
 import { ethers } from "ethers";
 import { commitAllowResultSchema, commitDenyResultSchema, evalAllowResultSchema, evalDenyResultSchema, precheckAllowResultSchema, precheckDenyResultSchema, toolParamsSchema, userParamsSchema, } from "./schemas";
-import { getSafeMessage, createParametersHash, getSafeThreshold, parseAndValidateEIP712Message, getRpcUrlFromLitChainIdentifier, getSafeTransactionServiceUrl, isValidSafeSignature, buildEIP712Signature, } from "./helpers";
+import { getSafeMessage, getSafeThreshold, parseAndValidateEIP712Message, getRpcUrlFromLitChainIdentifier, getSafeTransactionServiceUrl, isValidSafeSignature, buildEIP712Signature, createParametersString, } from "./helpers";
 export const vincentPolicy = createVincentPolicy({
     packageName: "@lit-protocol/vincent-policy-safe-multisig",
     toolParamsSchema,
@@ -48,11 +48,7 @@ export const vincentPolicy = createVincentPolicy({
                 expectedAgentAddress: delegatorPkpInfo.ethAddress,
                 expectedAppId: appId,
                 expectedAppVersion: appVersion,
-                expectedToolParametersHash: createParametersHash({
-                    toolIpfsCid,
-                    toolParams: executingToolParams,
-                    agentWalletAddress: delegatorPkpInfo.ethAddress,
-                }),
+                expectedToolParametersString: createParametersString(executingToolParams),
             });
             if (!eip712ValidationResult.success) {
                 return deny({
@@ -66,7 +62,8 @@ export const vincentPolicy = createVincentPolicy({
             console.log(`[SafeMultisigPolicy precheck] safeMessage.message: ${safeMessage.message}`);
             const hashedSafeMessage = ethers.utils.hashMessage(ethers.utils.toUtf8Bytes(safeMessage.message));
             console.log(`[SafeMultisigPolicy precheck] hashedSafeMessage: ${hashedSafeMessage}`);
-            const eip712Signature = buildEIP712Signature(safeMessage.confirmations);
+            // Use the preparedSignature from Safe Transaction Service if available
+            const eip712Signature = safeMessage.preparedSignature || buildEIP712Signature(safeMessage.confirmations);
             console.log(`[SafeMultisigPolicy precheck] eip712Signature: ${eip712Signature}`);
             const isValid = await isValidSafeSignature({
                 provider,
@@ -130,11 +127,7 @@ export const vincentPolicy = createVincentPolicy({
                 expectedAgentAddress: delegatorPkpInfo.ethAddress,
                 expectedAppId: appId,
                 expectedAppVersion: appVersion,
-                expectedToolParametersHash: createParametersHash({
-                    toolIpfsCid,
-                    toolParams: executingToolParams,
-                    agentWalletAddress: delegatorPkpInfo.ethAddress,
-                }),
+                expectedToolParametersString: createParametersString(executingToolParams),
             });
             if (!eip712ValidationResult.success) {
                 return deny({
@@ -148,7 +141,8 @@ export const vincentPolicy = createVincentPolicy({
             console.log(`[SafeMultisigPolicy precheck] safeMessage.message: ${safeMessage.message}`);
             const hashedSafeMessage = ethers.utils.hashMessage(ethers.utils.toUtf8Bytes(safeMessage.message));
             console.log(`[SafeMultisigPolicy precheck] hashedSafeMessage: ${hashedSafeMessage}`);
-            const eip712Signature = buildEIP712Signature(safeMessage.confirmations);
+            // Use the preparedSignature from Safe Transaction Service if available
+            const eip712Signature = safeMessage.preparedSignature || buildEIP712Signature(safeMessage.confirmations);
             console.log(`[SafeMultisigPolicy precheck] eip712Signature: ${eip712Signature}`);
             const isValid = await isValidSafeSignature({
                 provider,

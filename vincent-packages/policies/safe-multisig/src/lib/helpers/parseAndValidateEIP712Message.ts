@@ -24,14 +24,14 @@ export function parseAndValidateEIP712Message({
     expectedAgentAddress,
     expectedAppId,
     expectedAppVersion,
-    expectedToolParametersHash,
+    expectedToolParametersString,
 }: {
     messageString: string;
     expectedToolIpfsCid: string;
     expectedAgentAddress: string;
     expectedAppId: number;
     expectedAppVersion: number;
-    expectedToolParametersHash: string;
+    expectedToolParametersString: string;
 }): EIP712ValidationResult {
     try {
         const parsedMessage = JSON.parse(messageString);
@@ -58,7 +58,7 @@ export function parseAndValidateEIP712Message({
         const encodedData = ethers.utils._TypedDataEncoder.encode(domain, types, message);
         console.log("[EIP712 Helper] EIP712 encoded data:", encodedData);
 
-        const requiredFields = ['appId', 'appVersion', 'toolIpfsCid', 'toolParametersHash', 'agentWalletAddress', 'expiry', 'nonce'];
+        const requiredFields = ['appId', 'appVersion', 'toolIpfsCid', 'toolParametersString', 'agentWalletAddress', 'expiry', 'nonce'];
         for (const field of requiredFields) {
             if (!(field in message)) {
                 return {
@@ -115,12 +115,12 @@ export function parseAndValidateEIP712Message({
             };
         }
 
-        if (message.toolParametersHash !== expectedToolParametersHash) {
+        if (message.toolParametersString !== expectedToolParametersString) {
             return {
                 success: false,
-                error: "EIP712 message toolParametersHash does not match expected tool parameters hash",
-                expected: expectedToolParametersHash,
-                received: message.toolParametersHash
+                error: "EIP712 message toolParametersString does not match expected tool parameters hash",
+                expected: expectedToolParametersString,
+                received: message.toolParametersString
             };
         }
 
