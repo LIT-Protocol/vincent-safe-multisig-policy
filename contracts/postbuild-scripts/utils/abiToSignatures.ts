@@ -107,20 +107,20 @@ export function abiToSignatures(deploymentFile: string, outputDir: string): stri
         fs.mkdirSync(outputDir, { recursive: true });
     }
 
-    const outputFile = path.join(outputDir, 'vincent-signatures.ts');
+    const outputFile = path.join(outputDir, 'safe-message-tracker-signatures.ts');
 
     fs.writeFileSync(
         outputFile,
         `/**
- * Generated Contract Method Signatures for Vincent SDK
+ * Generated Contract Method Signatures for SafeMessageTracker
  * This file is auto-generated. DO NOT EDIT UNLESS YOU KNOW WHAT YOU'RE DOING.
  */
 
-export const vincentContractAddress = '${contractAddress}';
+export const safeMessageTrackerContractAddress = '${contractAddress}';
 
-export const vincentSignatures = ${JSON.stringify(signatures, null, 2)} as const;`,
+export const safeMessageTrackerSignatures = ${JSON.stringify(signatures, null, 2)} as const;`,
     );
 
-    console.log(`✅ Vincent Signatures generated at: ${outputFile}`);
+    console.log(`✅ SafeMessageTracker Signatures generated at: ${outputFile}`);
     return outputFile;
 }

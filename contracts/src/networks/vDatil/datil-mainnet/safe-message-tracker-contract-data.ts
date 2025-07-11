@@ -1,15 +1,14 @@
 /**
- * Generated Contract Method Signatures for Vincent SDK
+ * Generated Contract Data for SafeMessageTracker
  * This file is auto-generated. DO NOT EDIT UNLESS YOU KNOW WHAT YOU'RE DOING.
  */
 
-export const vincentContractAddress = '0xef62643b52b1f2e57a855403c8e1b3641cb94be7';
+export const safeMessageTrackerContractAddress = '0xef62643b52b1f2e57a855403c8e1b3641cb94be7';
 
-export const vincentSignatures = {
-  "SafeMessageTracker": {
-    "address": "0xef62643b52b1f2e57a855403c8e1b3641cb94be7",
-    "methods": {
-      "consume": {
+export const safeMessageTrackerContractData = [
+  {
+    "SafeMessageTracker": [
+      {
         "type": "function",
         "name": "consume",
         "inputs": [
@@ -22,7 +21,7 @@ export const vincentSignatures = {
         "outputs": [],
         "stateMutability": "nonpayable"
       },
-      "consumedMessages": {
+      {
         "type": "function",
         "name": "consumedMessages",
         "inputs": [
@@ -46,7 +45,7 @@ export const vincentSignatures = {
         ],
         "stateMutability": "view"
       },
-      "getConsumedAt": {
+      {
         "type": "function",
         "name": "getConsumedAt",
         "inputs": [
@@ -69,9 +68,7 @@ export const vincentSignatures = {
           }
         ],
         "stateMutability": "view"
-      }
-    },
-    "events": [
+      },
       {
         "type": "event",
         "name": "MessageConsumed",
@@ -96,9 +93,7 @@ export const vincentSignatures = {
           }
         ],
         "anonymous": false
-      }
-    ],
-    "errors": [
+      },
       {
         "type": "error",
         "name": "EmptyMessageHashes",
@@ -127,4 +122,4 @@ export const vincentSignatures = {
       }
     ]
   }
-} as const;
+] as const;

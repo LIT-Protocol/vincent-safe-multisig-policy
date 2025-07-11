@@ -1,7 +1,7 @@
 /**
  * ABI to Signatures Generator
  *
- * This script reads ABI files from the Vincent contracts and generates a TypeScript file
+ * This script reads ABI files from the SafeMessageTracker contract and generates a TypeScript file
  * containing method signatures and event definitions.
  */
 
@@ -61,20 +61,20 @@ export function abiToTypeAssertions(deploymentFile: string, outputDir: string): 
         fs.mkdirSync(outputDir, { recursive: true });
     }
 
-    const outputFile = path.join(outputDir, 'vincent-contract-data.ts');
+    const outputFile = path.join(outputDir, 'safe-message-tracker-contract-data.ts');
 
     fs.writeFileSync(
         outputFile,
         `/**
- * Generated Contract Data for Vincent SDK
+ * Generated Contract Data for SafeMessageTracker
  * This file is auto-generated. DO NOT EDIT UNLESS YOU KNOW WHAT YOU'RE DOING.
  */
 
-export const vincentContractAddress = '${contractAddress}';
+export const safeMessageTrackerContractAddress = '${contractAddress}';
 
-export const vincentContractData = ${JSON.stringify(contractData, null, 2)} as const;`,
+export const safeMessageTrackerContractData = ${JSON.stringify(contractData, null, 2)} as const;`,
     );
 
-    console.log(`✅ Vincent Contract Data generated at: ${outputFile}`);
+    console.log(`✅ SafeMessageTracker Contract Data generated at: ${outputFile}`);
     return outputFile;
 }
