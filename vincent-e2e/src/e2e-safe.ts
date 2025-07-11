@@ -99,15 +99,6 @@ import {
       }
     });
 
-    console.log("\n🔍 Features Tested:");
-    console.log("   🔐 EIP712 message creation and signing");
-    console.log("   📡 Safe Transaction Service API integration");
-    console.log("   🔍 Vincent policy signature validation");
-    console.log("   🎯 Threshold requirement enforcement");
-    console.log("   ⏰ Message expiry validation");
-    console.log("   💰 PKP wallet funding and gas management");
-    console.log("   🔗 Transaction confirmation verification");
-
     console.log("\n" + "=".repeat(70));
     if (failed === 0) {
       console.log(
