@@ -23,10 +23,10 @@ export async function isValidSafeSignature(
         );
 
         const magicValue = await safeContract.isValidSignature(dataHash, signature);
-        console.log("isValidSafeSignature returned magicValue: ", magicValue);
+        console.log("[isValidSafeSignature] isValidSafeSignature contract call returned magicValue: ", magicValue);
         return magicValue === "0x1626ba7e";
     } catch (error) {
-        console.error("Error validating Safe signature:", error);
+        console.error("[isValidSafeSignature] Error validating Safe signature:", error);
         return false;
     }
 }

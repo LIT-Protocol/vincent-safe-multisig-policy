@@ -11,7 +11,7 @@ export function getSafeTransactionServiceUrl(
 ): string {
     const chain = LIT_CHAINS[litChainIdentifier];
     if (!chain) {
-        throw new Error(`Chain identifier '${litChainIdentifier}' not supported by Lit`);
+        throw new Error(`[getSafeTransactionServiceUrl] Chain identifier '${litChainIdentifier}' not supported by Lit`);
     }
 
     // This switch case is handling the cases where the chain identifier used by Safe
@@ -30,7 +30,7 @@ export function getSafeTransactionServiceUrl(
             safeChainIdentifier = "base-sepolia";
             break;
         case "berachain":
-            throw new Error("Berachain is not supported by Lit");
+            throw new Error("[getSafeTransactionServiceUrl] Berachain is not supported by Lit");
         case "bsc":
             break;
         case "celo":
@@ -38,15 +38,15 @@ export function getSafeTransactionServiceUrl(
         case "chiado":
             break;
         case "gnosis-chain":
-            throw new Error("Gnosis Chain is not supported by Lit");
+            throw new Error("[getSafeTransactionServiceUrl] Gnosis Chain is not supported by Lit");
         case "hemi":
-            throw new Error("Hemi is not supported by Lit");
+            throw new Error("[getSafeTransactionServiceUrl] Hemi is not supported by Lit");
         case "ink":
-            throw new Error("Ink is not supported by Lit");
+            throw new Error("[getSafeTransactionServiceUrl] Ink is not supported by Lit");
         case "lens":
-            throw new Error("Lens is not supported by Lit");
+            throw new Error("[getSafeTransactionServiceUrl] Lens is not supported by Lit");
         case "linea":
-            throw new Error("Linea is not supported by Lit");
+            throw new Error("[getSafeTransactionServiceUrl] Linea is not supported by Lit");
         case "ethereum":
             safeChainIdentifier = "mainnet";
             break;
@@ -64,17 +64,17 @@ export function getSafeTransactionServiceUrl(
             safeChainIdentifier = "sonic";
             break;
         case "unichain":
-            throw new Error("Unichain is not supported by Lit");
+            throw new Error("[getSafeTransactionServiceUrl] Unichain is not supported by Lit");
         case "worldchain":
-            throw new Error("Worldchain is not supported by Lit");
+            throw new Error("[getSafeTransactionServiceUrl] Worldchain is not supported by Lit");
         case "xlayer":
-            throw new Error("Xlayer is not supported by Lit");
+            throw new Error("[getSafeTransactionServiceUrl] Xlayer is not supported by Lit");
         case "zkEvm":
             break;
         case "zksync":
             break;
         default:
-            throw new Error(`Safe Transaction Service is not supported for chain identifier '${litChainIdentifier}'`);
+            throw new Error(`[getSafeTransactionServiceUrl] Safe Transaction Service is not supported for chain identifier '${litChainIdentifier}'`);
     }
 
     return `https://safe-transaction-${safeChainIdentifier}.safe.global`;

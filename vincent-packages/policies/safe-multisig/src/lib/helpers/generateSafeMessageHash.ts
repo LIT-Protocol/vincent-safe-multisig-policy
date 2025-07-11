@@ -37,7 +37,7 @@ export function generateSafeMessageHash({
         { SafeMessage: safeMessageTypes.SafeMessage },
         { message: messageHash }
     );
-    console.log("eip712Payload: ", eip712Payload);
+    console.log("[generateSafeMessageHash] eip712Payload: ", eip712Payload);
 
     return ethers.utils._TypedDataEncoder.hash(
         domain,

@@ -17,9 +17,9 @@ export async function getSafeThreshold(
         const threshold = await safeContract.getThreshold();
         return threshold.toNumber();
     } catch (error) {
-        console.error("Error getting Safe threshold:", error);
+        console.error("[getSafeThreshold] Error getting Safe threshold:", error);
         throw new Error(
-            `Failed to get Safe threshold: ${error instanceof Error ? error.message : "Unknown error"
+            `[getSafeThreshold] Failed to get Safe threshold: ${error instanceof Error ? error.message : "Unknown error"
             }`
         );
     }

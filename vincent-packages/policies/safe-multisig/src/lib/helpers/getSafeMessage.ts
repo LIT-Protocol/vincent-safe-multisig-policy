@@ -12,13 +12,13 @@ export async function getSafeMessage({
     safeApiKey: string;
 }): Promise<SafeMessageResponse | null> {
     try {
-        console.log(`🔍 Checking Safe message with hash: ${messageHash}`);
-        console.log(`🔍 Using Safe address: ${safeAddress}`);
-        console.log(`🔍 Using Safe transaction service URL: ${safeTransactionServiceUrl}`);
+        console.log(`[getSafeMessage] Checking Safe message with hash: ${messageHash}`);
+        console.log(`[getSafeMessage] Using Safe address: ${safeAddress}`);
+        console.log(`[getSafeMessage] Using Safe transaction service URL: ${safeTransactionServiceUrl}`);
 
         const url = `${safeTransactionServiceUrl}/api/v1/messages/${messageHash}/`;
 
-        console.log(`🔍 Fetching from URL: ${url}`);
+        console.log(`[getSafeMessage] Fetching from URL: ${url}`);
 
         const headers: Record<string, string> = {
             Accept: "application/json",
@@ -34,16 +34,16 @@ export async function getSafeMessage({
 
         if (!response.ok) {
             if (response.status === 404) {
-                console.log(`🔍 Safe message not found for hash: ${messageHash}`);
+                console.log(`[getSafeMessage] Safe message not found for hash: ${messageHash}`);
                 return null;
             }
             throw new Error(
-                `Failed to fetch Safe message: ${response.status} ${response.statusText}`
+                `[getSafeMessage] Failed to fetch Safe message: ${response.status} ${response.statusText}`
             );
         }
 
         const message = await response.json();
-        console.log(`✅ Found Safe message:`, message);
+        console.log(`[getSafeMessage] Found Safe message:`, message);
 
         // Verify the message is for the correct Safe
         if (
@@ -51,14 +51,14 @@ export async function getSafeMessage({
             message.safe.toLowerCase() !== safeAddress.toLowerCase()
         ) {
             console.log(
-                `⚠️ Message found but for different Safe. Expected: ${safeAddress}, Got: ${message.safe}`
+                `[getSafeMessage] Message found but for different Safe. Expected: ${safeAddress}, Got: ${message.safe}`
             );
             return null;
         }
 
         return message;
     } catch (error) {
-        console.error("Error checking Safe message:", error);
+        console.error("[getSafeMessage] Error checking Safe message:", error);
         return null;
     }
 }

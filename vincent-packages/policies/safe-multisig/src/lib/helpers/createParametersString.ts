@@ -25,7 +25,7 @@ export function createParametersString(toolParams: Record<string, unknown>): str
 
     console.log(
         "[createParametersString] Creating parameters string for tool params: ",
-        JSON.stringify(processedParams, null, 2)
+        deterministicStringify(processedParams)
     );
 
     return deterministicStringify(processedParams);

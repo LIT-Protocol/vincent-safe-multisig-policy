@@ -35,7 +35,7 @@ export function parseAndValidateEIP712Message({
 }): EIP712ValidationResult {
     try {
         const parsedMessage = JSON.parse(messageString);
-        console.log("[EIP712 Helper] Parsed EIP712 message:", parsedMessage);
+        console.log("[parseAndValidateEIP712Message] Parsed EIP712 message:", parsedMessage);
 
         if (!parsedMessage.types || !parsedMessage.domain || !parsedMessage.message) {
             return {
@@ -56,7 +56,7 @@ export function parseAndValidateEIP712Message({
         }
 
         const encodedData = ethers.utils._TypedDataEncoder.encode(domain, types, message);
-        console.log("[EIP712 Helper] EIP712 encoded data:", encodedData);
+        console.log("[parseAndValidateEIP712Message] EIP712 encoded data:", encodedData);
 
         const requiredFields = ['appId', 'appVersion', 'toolIpfsCid', 'toolParametersString', 'agentWalletAddress', 'expiry', 'nonce'];
         for (const field of requiredFields) {
@@ -124,7 +124,7 @@ export function parseAndValidateEIP712Message({
             };
         }
 
-        console.log("[EIP712 Helper] EIP712 message validation passed");
+        console.log("[parseAndValidateEIP712Message] EIP712 message validation passed");
 
         return {
             success: true,
@@ -135,7 +135,7 @@ export function parseAndValidateEIP712Message({
         };
 
     } catch (parseError) {
-        console.error("[EIP712 Helper] Error parsing EIP712 message:", parseError);
+        console.error("[parseAndValidateEIP712Message] Error parsing EIP712 message:", parseError);
         return {
             success: false,
             error: parseError instanceof Error ? parseError.message : "Unknown parse error"
