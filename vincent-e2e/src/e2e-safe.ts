@@ -30,6 +30,97 @@ import {
 (async () => {
   /**
    * ====================================
+   * Initialise test tracking system
+   * ====================================
+   */
+  const testResults: {
+    name: string;
+    status: "passed" | "failed";
+    error?: string;
+    duration?: number;
+  }[] = [];
+  const overallStartTime = Date.now();
+
+  const runTest = async (testName: string, testFn: () => Promise<void>) => {
+    const testStartTime = Date.now();
+    console.log(`\n🧪 Running: ${testName}`);
+    try {
+      await testFn();
+      const testDuration = Date.now() - testStartTime;
+      testResults.push({
+        name: testName,
+        status: "passed",
+        duration: testDuration,
+      });
+      console.log(`✅ PASSED: ${testName} (${testDuration}ms)`);
+    } catch (error) {
+      const testDuration = Date.now() - testStartTime;
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      testResults.push({
+        name: testName,
+        status: "failed",
+        error: errorMessage,
+        duration: testDuration,
+      });
+      console.error(`❌ FAILED: ${testName} (${testDuration}ms)`);
+      console.error(`   Error: ${errorMessage}`);
+
+      // Print summary before exiting
+      printTestSummary();
+      process.exit(1);
+    }
+  };
+
+  const printTestSummary = () => {
+    const overallDuration = Date.now() - overallStartTime;
+
+    console.log("\n" + "=".repeat(70));
+    console.log("📊 SAFE MULTISIG POLICY TEST SUMMARY");
+    console.log("=".repeat(70));
+
+    const passed = testResults.filter((t) => t.status === "passed").length;
+    const failed = testResults.filter((t) => t.status === "failed").length;
+    const total = testResults.length;
+
+    console.log(
+      `\n📈 Overall Results: ${passed}/${total} passed${failed > 0 ? ` (${failed} failed)` : ""
+      }`
+    );
+    console.log(`⏱️  Total Duration: ${(overallDuration / 1000).toFixed(2)}s`);
+
+    console.log("\n📋 Individual Test Results:");
+    testResults.forEach((result, index) => {
+      const icon = result.status === "passed" ? "✅" : "❌";
+      const duration = result.duration ? `${result.duration}ms` : "N/A";
+      console.log(`   ${index + 1}. ${icon} ${result.name} (${duration})`);
+      if (result.error) {
+        console.log(`      └─ Error: ${result.error}`);
+      }
+    });
+
+    console.log("\n🔍 Features Tested:");
+    console.log("   🔐 EIP712 message creation and signing");
+    console.log("   📡 Safe Transaction Service API integration");
+    console.log("   🔍 Vincent policy signature validation");
+    console.log("   🎯 Threshold requirement enforcement");
+    console.log("   ⏰ Message expiry validation");
+    console.log("   💰 PKP wallet funding and gas management");
+    console.log("   🔗 Transaction confirmation verification");
+
+    console.log("\n" + "=".repeat(70));
+    if (failed === 0) {
+      console.log(
+        "🎉 ALL TESTS PASSED! Safe multisig policy is working correctly."
+      );
+    } else {
+      console.log("💥 TEST SUITE FAILED! Check the errors above for details.");
+    }
+    console.log("=".repeat(70));
+  };
+
+  /**
+   * ====================================
    * Initialise the environment
    * ====================================
    */
@@ -97,6 +188,18 @@ import {
   );
   const threshold = await safeContract.getThreshold();
   console.log("🔢 Safe threshold:", threshold.toNumber());
+
+  /**
+   * ====================================
+   * Set up test funder signing with TEST_FUNDER_PRIVATE_KEY
+   * ====================================
+   */
+  const testFunderPrivateKey = process.env.TEST_FUNDER_PRIVATE_KEY;
+  if (!testFunderPrivateKey) {
+    throw new Error("TEST_FUNDER_PRIVATE_KEY environment variable is required");
+  }
+  const testFunder = new ethers.Wallet(testFunderPrivateKey, provider);
+  console.log("🔑 Test funder address:", testFunder.address);
 
   /**
    * ====================================
@@ -180,6 +283,51 @@ import {
 
   console.log("🤖 Agent Wallet PKP:", agentWalletPkp);
   agentWalletAddress = agentWalletPkp.ethAddress;
+
+  /**
+   * ====================================
+   * 💰 Fund the PKP wallet with ETH for gas (if needed)
+   * ====================================
+   */
+  // Check PKP balance first
+  const pkpBalance = await provider.getBalance(agentWalletAddress);
+  // Add 10% gas buffer to the required balance
+  const minRequiredBalance = ethers.utils.parseEther(TEST_TOOL_PARAMS.amount)
+    .mul(110)
+    .div(100);
+
+  console.log("💰 Checking PKP wallet balance...");
+  console.log(
+    "   Current PKP balance:",
+    ethers.utils.formatEther(pkpBalance),
+    "ETH"
+  );
+  console.log(
+    "   Required minimum:",
+    ethers.utils.formatEther(minRequiredBalance),
+    "ETH"
+  );
+
+  if (pkpBalance.lte(minRequiredBalance)) {
+    console.log("💰 PKP balance is below minimum, funding with ETH for gas...");
+    const fundingTx = await testFunder.sendTransaction({
+      to: agentWalletAddress,
+      value: minRequiredBalance,
+    });
+    await fundingTx.wait();
+    console.log("✅ PKP wallet funded with", ethers.utils.formatEther(minRequiredBalance), "ETH");
+    console.log("   Transaction hash:", fundingTx.hash);
+
+    // Check new balance
+    const newPkpBalance = await provider.getBalance(agentWalletAddress);
+    console.log(
+      "   New PKP balance:",
+      ethers.utils.formatEther(newPkpBalance),
+      "ETH"
+    );
+  } else {
+    console.log("✅ PKP wallet has sufficient balance, skipping funding");
+  }
 
   /**
    * ====================================
@@ -387,64 +535,58 @@ import {
   // ----------------------------------------
   // Test 1: Execute Safe multisig policy Precheck method (1 out of 2 signatures - should fail)
   // ----------------------------------------
-  console.log(
-    "(PRECHECK-TEST-1) Execute Safe multisig policy Precheck method (1 out of 2 signatures - should fail)"
-  );
-  const safePrecheckRes1 = await precheck();
+  await runTest("(PRECHECK-TEST-1) Execute Safe multisig policy Precheck method (1 out of 2 signatures - should fail)", async () => {
+    const safePrecheckRes1 = await precheck();
 
-  console.log("(PRECHECK-RES[1]): ", safePrecheckRes1);
-  console.log(
-    "(PRECHECK-RES[1].context.policiesContext.evaluatedPolicies): ",
-    safePrecheckRes1.context?.policiesContext?.evaluatedPolicies
-  );
-
-  if (
-    safePrecheckRes1.context?.policiesContext?.allow === false
-  ) {
-    const deniedPolicy = safePrecheckRes1.context?.policiesContext?.deniedPolicy;
-    console.log("📄 (PRECHECK-TEST-1) Denied Policy:", JSON.stringify(deniedPolicy, null, 2));
-
-    if (deniedPolicy?.result?.reason === "Insufficient signatures") {
-      console.log("✅ (PRECHECK-TEST-1) Precheck correctly failed (expected - 1 out of 2 valid Safe signatures available):");
-    } else {
-      console.log("❌ (PRECHECK-TEST-1) Precheck unexpectedly failed - it should have failed because it only found 1 out of 2 valid Safe signatures");
-    }
-  } else {
+    console.log("(PRECHECK-RES[1]): ", safePrecheckRes1);
     console.log(
-      "❌ (PRECHECK-TEST-1) Precheck unexpectedly succeeded - it should have failed because it only found 1 out of 2 valid Safe signatures"
+      "(PRECHECK-RES[1].context.policiesContext.evaluatedPolicies): ",
+      safePrecheckRes1.context?.policiesContext?.evaluatedPolicies
     );
-  }
+
+    if (
+      safePrecheckRes1.context?.policiesContext?.allow === false
+    ) {
+      const deniedPolicy = safePrecheckRes1.context?.policiesContext?.deniedPolicy;
+      console.log("📄 (PRECHECK-TEST-1) Denied Policy:", JSON.stringify(deniedPolicy, null, 2));
+
+      if (deniedPolicy?.result?.reason === "Insufficient signatures") {
+        console.log("✅ (PRECHECK-TEST-1) Precheck correctly failed (expected - 1 out of 2 valid Safe signatures available):");
+      } else {
+        throw new Error("❌ (PRECHECK-TEST-1) Precheck unexpectedly failed - it should have failed because it only found 1 out of 2 valid Safe signatures");
+      }
+    } else {
+      throw new Error("❌ (PRECHECK-TEST-1) Precheck unexpectedly succeeded - it should have failed because it only found 1 out of 2 valid Safe signatures");
+    }
+  });
 
   // ----------------------------------------
   // Test 2: Execute Safe multisig policy Execute method (1 out of 2 signatures - should fail)
   // ----------------------------------------
-  console.log(
-    "(EXECUTE-TEST-1) Execute Safe multisig policy Execute method (1 out of 2 signatures - should fail)"
-  );
-  const safeExecuteRes1 = await execute();
+  await runTest("(EXECUTE-TEST-1) Execute Safe multisig policy Execute method (1 out of 2 signatures - should fail)", async () => {
+    const safeExecuteRes1 = await execute();
 
-  console.log("(EXECUTE-RES[1]): ", safeExecuteRes1);
-  console.log(
-    "(EXECUTE-RES[1].context.policiesContext.evaluatedPolicies): ",
-    safeExecuteRes1.context?.policiesContext?.evaluatedPolicies
-  );
-
-  if (
-    safeExecuteRes1.context?.policiesContext?.allow === false
-  ) {
-    const deniedPolicy = safeExecuteRes1.context?.policiesContext?.deniedPolicy;
-    console.log("📄 (EXECUTE-TEST-1) Denied Policy:", JSON.stringify(deniedPolicy, null, 2));
-
-    if (deniedPolicy?.result?.reason === "Insufficient signatures") {
-      console.log("✅ (EXECUTE-TEST-1) Execute correctly failed (expected - 1 out of 2 valid Safe signatures available):");
-    } else {
-      console.log("❌ (EXECUTE-TEST-1) Execute unexpectedly failed - it should have failed because it only found 1 out of 2 valid Safe signatures");
-    }
-  } else {
+    console.log("(EXECUTE-RES[1]): ", safeExecuteRes1);
     console.log(
-      "❌ (EXECUTE-TEST-1) Execute unexpectedly succeeded - it should have failed because it only found 1 out of 2 valid Safe signatures"
+      "(EXECUTE-RES[1].context.policiesContext.evaluatedPolicies): ",
+      safeExecuteRes1.context?.policiesContext?.evaluatedPolicies
     );
-  }
+
+    if (
+      safeExecuteRes1.context?.policiesContext?.allow === false
+    ) {
+      const deniedPolicy = safeExecuteRes1.context?.policiesContext?.deniedPolicy;
+      console.log("📄 (EXECUTE-TEST-1) Denied Policy:", JSON.stringify(deniedPolicy, null, 2));
+
+      if (deniedPolicy?.result?.reason === "Insufficient signatures") {
+        console.log("✅ (EXECUTE-TEST-1) Execute correctly failed (expected - 1 out of 2 valid Safe signatures available):");
+      } else {
+        throw new Error("❌ (EXECUTE-TEST-1) Execute unexpectedly failed - it should have failed because it only found 1 out of 2 valid Safe signatures");
+      }
+    } else {
+      throw new Error("❌ (EXECUTE-TEST-1) Execute unexpectedly succeeded - it should have failed because it only found 1 out of 2 valid Safe signatures");
+    }
+  });
 
   // ----------------------------------------
   // Sign and propose message via Safe SDK using safeSigner_2
@@ -491,58 +633,95 @@ import {
   // ----------------------------------------
   // Test 3: Execute Safe multisig policy Precheck method (2 out of 2 signatures - should succeed)
   // ----------------------------------------
-  console.log(
-    "(PRECHECK-TEST-2) Execute Safe multisig policy Precheck method (2 out of 2 signatures - should succeed)"
-  );
-  const safePrecheckRes2 = await precheck();
+  await runTest("(PRECHECK-TEST-2) Execute Safe multisig policy Precheck method (2 out of 2 signatures - should succeed)", async () => {
+    const safePrecheckRes2 = await precheck();
 
-  console.log("(PRECHECK-RES[2]): ", safePrecheckRes2);
-  console.log(
-    "(PRECHECK-RES[2].context.policiesContext.evaluatedPolicies): ",
-    safePrecheckRes2.context?.policiesContext?.evaluatedPolicies
-  );
+    console.log("(PRECHECK-RES[2]): ", safePrecheckRes2);
+    console.log(
+      "(PRECHECK-RES[2].context.policiesContext.evaluatedPolicies): ",
+      safePrecheckRes2.context?.policiesContext?.evaluatedPolicies
+    );
 
-  if (
-    safePrecheckRes2.context?.policiesContext?.allow === false
-  ) {
-    console.log(
-      "❌ (PRECHECK-TEST-2) Precheck unexpectedly failed - it should have succeeded because it found 2 out of 2 valid Safe signatures"
-    );
-    const deniedPolicy = safePrecheckRes2.context?.policiesContext?.deniedPolicy;
-    console.log("📄 (PRECHECK-TEST-2) Denied Policy:", JSON.stringify(deniedPolicy, null, 2));
-  } else {
-    console.log(
-      "✅ (PRECHECK-TEST-2) Precheck correctly succeeded (expected - 2 out of 2 valid Safe signatures available):"
-    );
-  }
+    if (
+      safePrecheckRes2.context?.policiesContext?.allow === false
+    ) {
+      const deniedPolicy = safePrecheckRes2.context?.policiesContext?.deniedPolicy;
+      console.log("📄 (PRECHECK-TEST-2) Denied Policy:", JSON.stringify(deniedPolicy, null, 2));
+      throw new Error("❌ (PRECHECK-TEST-2) Precheck unexpectedly failed - it should have succeeded because it found 2 out of 2 valid Safe signatures");
+    } else {
+      console.log(
+        "✅ (PRECHECK-TEST-2) Precheck correctly succeeded (expected - 2 out of 2 valid Safe signatures available):"
+      );
+    }
+  });
 
   // ----------------------------------------
   // Test 4: Execute Safe multisig policy Execute method (2 out of 2 signatures - should succeed)
   // ----------------------------------------
-  console.log(
-    "(EXECUTE-TEST-2) Safe multisig execution test - 2 out of 2 signatures (should succeed)"
-  );
-  const safeExecuteRes2 = await execute();
+  let transactionHashes: string[] = [];
+  await runTest("(EXECUTE-TEST-2) Safe multisig execution test - 2 out of 2 signatures (should succeed)", async () => {
+    const safeExecuteRes2 = await execute();
 
-  console.log("(EXECUTE-RES[2]): ", safeExecuteRes2);
-  console.log(
-    "(EXECUTE-RES[2].context.policiesContext.evaluatedPolicies): ",
-    safeExecuteRes2.context?.policiesContext?.evaluatedPolicies
-  );
-
-  if (
-    safeExecuteRes2.context?.policiesContext?.allow === false
-  ) {
+    console.log("(EXECUTE-RES[2]): ", safeExecuteRes2);
     console.log(
-      "❌ (EXECUTE-TEST-2) Execute unexpectedly failed - it should have succeeded because it found 2 out of 2 valid Safe signatures"
+      "(EXECUTE-RES[2].context.policiesContext.evaluatedPolicies): ",
+      safeExecuteRes2.context?.policiesContext?.evaluatedPolicies
     );
-    const deniedPolicy = safeExecuteRes2.context?.policiesContext?.deniedPolicy;
-    console.log("📄 (EXECUTE-TEST-2) Denied Policy:", JSON.stringify(deniedPolicy, null, 2));
-  } else {
-    console.log(
-      "✅ (EXECUTE-TEST-2) Execute correctly succeeded (expected - 2 out of 2 valid Safe signatures available):"
-    );
-  }
 
+    if (
+      safeExecuteRes2.context?.policiesContext?.allow === false
+    ) {
+      const deniedPolicy = safeExecuteRes2.context?.policiesContext?.deniedPolicy;
+      console.log("📄 (EXECUTE-TEST-2) Denied Policy:", JSON.stringify(deniedPolicy, null, 2));
+      throw new Error("❌ (EXECUTE-TEST-2) Execute unexpectedly failed - it should have succeeded because it found 2 out of 2 valid Safe signatures");
+    } else {
+      console.log(
+        "✅ (EXECUTE-TEST-2) Execute correctly succeeded (expected - 2 out of 2 valid Safe signatures available):"
+      );
+
+      if (safeExecuteRes2.result && 'txHash' in safeExecuteRes2.result) {
+        transactionHashes.push(safeExecuteRes2.result.txHash);
+      } else {
+        throw new Error(
+          "Execution succeeded but no transaction hash was returned"
+        );
+      }
+    }
+  });
+
+  // Test 4: Verify transaction confirmations
+  await runTest("Transaction confirmation verification", async () => {
+    if (transactionHashes.length === 0) {
+      throw new Error("No transaction hashes were collected during the tests");
+    }
+
+    console.log(
+      `   📋 Verifying ${transactionHashes.length} transaction(s)...`
+    );
+
+    for (let i = 0; i < transactionHashes.length; i++) {
+      const hash = transactionHashes[i];
+      console.log(`   ${i + 1}. Transaction: ${hash}`);
+
+      // Wait for transaction confirmation and check status
+      console.log(`      ⏳ Waiting for confirmation...`);
+      const receipt = await provider.waitForTransaction(hash);
+
+      if (receipt.status === 0) {
+        throw new Error(
+          `Transaction ${hash} reverted! Check the transaction on Etherscan for details.`
+        );
+      }
+
+      console.log(`      ✅ Confirmed in block ${receipt.blockNumber}`);
+      console.log(`      ⛽ Gas used: ${receipt.gasUsed.toString()}`);
+    }
+
+    console.log(
+      `   ✅ All ${transactionHashes.length} transaction(s) confirmed successfully`
+    );
+  });
+
+  printTestSummary();
   process.exit();
 })();
