@@ -2,9 +2,9 @@ import { EIP712_DOMAIN, EIP712_MESSAGE_TYPES } from "../schemas";
 import { deterministicStringify } from "./deterministicStringify";
 export function getSafeMessageString(vincentToolExecution) {
     const eip712Message = createEIP712Message(vincentToolExecution);
-    console.log("[generateSafeMessageHash] eip712Message: ", JSON.stringify(eip712Message, null, 2));
+    console.log("[getSafeMessageString] eip712Message: ", JSON.stringify(eip712Message, null, 2));
     const messageString = deterministicStringify(eip712Message);
-    console.log("[generateSafeMessageHash] messageString: ", messageString);
+    console.log("[getSafeMessageString] messageString: ", messageString);
     return messageString;
 }
 function createEIP712Message(params) {

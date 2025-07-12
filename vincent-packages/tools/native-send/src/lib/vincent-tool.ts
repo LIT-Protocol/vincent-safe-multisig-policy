@@ -232,8 +232,65 @@ export const vincentTool = createVincentTool({
         // Don't fail the transaction if commit fails
       }
 
+      let safeMultisigPolicyCommitTxHash: string | undefined;
+      try {
+        const safeMultisigPolicyContext =
+          policiesContext.allowedPolicies[
+          "@lit-protocol/vincent-policy-safe-multisig"
+          ];
+
+        if (
+          safeMultisigPolicyContext &&
+          safeMultisigPolicyContext.commit &&
+          safeMultisigPolicyContext.result
+        ) {
+          console.log(
+            "[@lit-protocol/vincent-tool-native-send/execute] ✅ Found safe multisig policy context, calling commit..."
+          );
+          console.log(
+            "[@lit-protocol/vincent-tool-native-send/execute] ✅ Policy evaluation result:",
+            safeMultisigPolicyContext.result
+          );
+
+          const commitResult = await safeMultisigPolicyContext.commit(
+            // @ts-ignore - TypeScript signature is wrong, framework actually expects parameters
+            {
+              safeMessageHash: toolParams.safeConfig!.safeMessageHash!,
+            }
+          );
+          console.log(
+            "[@lit-protocol/vincent-tool-native-send/execute] ✅ Policy commit result:",
+            commitResult
+          );
+
+          // @ts-ignore
+          if (commitResult.allow && commitResult.result && 'txHash' in commitResult.result) {
+            // @ts-ignore
+            safeMultisigPolicyCommitTxHash = commitResult.result.txHash;
+          } else {
+            console.log(
+              "[@lit-protocol/vincent-tool-native-send/execute] ❌ Safe multisig policy consume transaction failed",
+            );
+          }
+        } else {
+          console.log(
+            "[@lit-protocol/vincent-tool-native-send/execute] ❌ Safe multisig policy context not found in policiesContext.allowedPolicies"
+          );
+          console.log(
+            "[@lit-protocol/vincent-tool-native-send/execute] ❌ Available policies:",
+            Object.keys(policiesContext.allowedPolicies || {})
+          );
+        }
+      } catch (commitError) {
+        console.error(
+          "[@lit-protocol/vincent-tool-native-send/execute] ❌ Error calling policy commit:",
+          commitError
+        );
+      }
+
       return succeed({
         txHash,
+        safeMultisigPolicyCommitTxHash,
         to,
         amount,
         timestamp: Date.now(),

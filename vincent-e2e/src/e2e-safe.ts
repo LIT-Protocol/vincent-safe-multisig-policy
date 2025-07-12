@@ -11,7 +11,7 @@ suppressLitLogs(true);
 import { getVincentToolClient } from "@lit-protocol/vincent-app-sdk";
 import { ethers } from "ethers";
 import { LIT_CHAINS } from '@lit-protocol/constants';
-import Safe, { hashSafeMessage } from "@safe-global/protocol-kit";
+import Safe from "@safe-global/protocol-kit";
 import SafeApiKit from "@safe-global/api-kit";
 
 import { vincentPolicyMetadata as safeMultisigPolicyMetadata } from "../../vincent-packages/policies/safe-multisig/dist/index.js";
@@ -26,6 +26,7 @@ import {
   getRpcUrlFromLitChainIdentifier,
   getSafeMessageString
 } from "../../vincent-packages/policies/safe-multisig/dist/lib/helpers/index.js";
+import { safeMessageTrackerContractAddress, safeMessageTrackerContractData } from "../../vincent-packages/policies/safe-multisig/dist/lib/safe-message-tracker-contract-data.js";
 
 (async () => {
   /**
@@ -119,6 +120,7 @@ import {
     network: "datil",
     deploymentStatus: "dev",
   });
+  const yellowStoneProvider = new ethers.providers.JsonRpcProvider("https://yellowstone-rpc.litprotocol.com/");
 
   /**
    * ====================================
@@ -147,6 +149,17 @@ import {
   console.log("🌐 Using Safe chain Lit identifier:", safeChainLitIdentifier);
   console.log("🌐 Using RPC URL:", rpcUrl);
   console.log("🌐 Using Safe chain ID:", safeChainId);
+
+  /**
+   * ====================================
+   * Setup SafeMessageTracker contract
+   * ====================================
+   */
+  const safeMessageTrackerContract = new ethers.Contract(
+    safeMessageTrackerContractAddress,
+    safeMessageTrackerContractData[0].SafeMessageTracker,
+    yellowStoneProvider
+  );
 
   /**
    * ====================================
@@ -646,10 +659,20 @@ import {
     }
   });
 
+  // Test 4: Verify Safe message is NOT marked as consumed in SafeMessageTracker contract
+  await runTest("Safe message should NOT be marked as consumed in SafeMessageTracker contract", async () => {
+    const consumedAtTimestamp = await safeMessageTrackerContract.getConsumedAt(agentWalletPkp.ethAddress, safeMessageHash);
+    if (consumedAtTimestamp.gt(ethers.BigNumber.from(0))) {
+      throw new Error(`❌ Safe message is marked as consumed in SafeMessageTracker contract. Consumed at block timestamp: ${consumedAtTimestamp}`);
+    }
+
+    console.log(`   ✅ Safe message ${safeMessageHash} is NOT marked as consumed in SafeMessageTracker contract. Consumed at block timestamp: ${consumedAtTimestamp}`);
+  });
+
   // ----------------------------------------
-  // Test 4: Execute Safe multisig policy Execute method (2 out of 2 signatures - should succeed)
+  // Test 5: Execute Safe multisig policy Execute method (2 out of 2 signatures - should succeed)
   // ----------------------------------------
-  let transactionHashes: string[] = [];
+  let transactionHashes: { name: string; txHash: string; provider: ethers.providers.JsonRpcProvider }[] = [];
   await runTest("(EXECUTE-TEST-2) Safe multisig execution test - 2 out of 2 signatures (should succeed)", async () => {
     const safeExecuteRes2 = await execute();
 
@@ -671,16 +694,32 @@ import {
       );
 
       if (safeExecuteRes2.result && 'txHash' in safeExecuteRes2.result) {
-        transactionHashes.push(safeExecuteRes2.result.txHash);
+        transactionHashes.push({
+          name: "Native Send Transaction",
+          txHash: safeExecuteRes2.result.txHash,
+          provider: provider,
+        });
       } else {
         throw new Error(
           "Execution succeeded but no transaction hash was returned"
         );
       }
+
+      if (safeExecuteRes2.result && 'safeMultisigPolicyCommitTxHash' in safeExecuteRes2.result) {
+        transactionHashes.push({
+          name: "Safe Multisig Policy Commit Transaction",
+          txHash: safeExecuteRes2.result.safeMultisigPolicyCommitTxHash!,
+          provider: yellowStoneProvider,
+        });
+      } else {
+        throw new Error(
+          "Execution succeeded but no safe multisig policy commit transaction hash was returned"
+        );
+      }
     }
   });
 
-  // Test 4: Verify transaction confirmations
+  // Test 6: Verify transaction confirmations
   await runTest("Transaction confirmation verification", async () => {
     if (transactionHashes.length === 0) {
       throw new Error("No transaction hashes were collected during the tests");
@@ -691,16 +730,16 @@ import {
     );
 
     for (let i = 0; i < transactionHashes.length; i++) {
-      const hash = transactionHashes[i];
-      console.log(`   ${i + 1}. Transaction: ${hash}`);
+      const { name, txHash } = transactionHashes[i];
+      console.log(`   ${i + 1}. Transaction (${name}): ${txHash}`);
 
       // Wait for transaction confirmation and check status
       console.log(`      ⏳ Waiting for confirmation...`);
-      const receipt = await provider.waitForTransaction(hash);
+      const receipt = await transactionHashes[i].provider.waitForTransaction(txHash);
 
       if (receipt.status === 0) {
         throw new Error(
-          `Transaction ${hash} reverted! Check the transaction on Etherscan for details.`
+          `Transaction (${name}) ${txHash} reverted! Check the transaction on Etherscan for details.`
         );
       }
 
@@ -711,6 +750,16 @@ import {
     console.log(
       `   ✅ All ${transactionHashes.length} transaction(s) confirmed successfully`
     );
+  });
+
+  // Test 7: Verify Safe message is marked as consumed in SafeMessageTracker contract
+  await runTest("Safe message should be marked as consumed in SafeMessageTracker contract", async () => {
+    const consumedAtTimestamp = await safeMessageTrackerContract.getConsumedAt(agentWalletPkp.ethAddress, safeMessageHash);
+    if (consumedAtTimestamp.eq(ethers.BigNumber.from(0))) {
+      throw new Error(`❌ Safe message is not marked as consumed in SafeMessageTracker contract. Consumed at block timestamp: ${consumedAtTimestamp}`);
+    }
+
+    console.log(`   ✅ Safe message ${safeMessageHash} is marked as consumed in SafeMessageTracker contract. Consumed at block timestamp: ${consumedAtTimestamp}`);
   });
 
   printTestSummary();

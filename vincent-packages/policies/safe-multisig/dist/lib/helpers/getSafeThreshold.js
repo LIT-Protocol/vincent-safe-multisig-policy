@@ -9,7 +9,7 @@ export async function getSafeThreshold(provider, safeAddress) {
         return threshold.toNumber();
     }
     catch (error) {
-        console.error("Error getting Safe threshold:", error);
-        throw new Error(`Failed to get Safe threshold: ${error instanceof Error ? error.message : "Unknown error"}`);
+        console.error("[getSafeThreshold] Error getting Safe threshold:", error);
+        throw new Error(`[getSafeThreshold] Failed to get Safe threshold: ${error instanceof Error ? error.message : "Unknown error"}`);
     }
 }
