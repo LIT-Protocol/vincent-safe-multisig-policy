@@ -12,16 +12,7 @@ import {
   toolParamsSchema,
   userParamsSchema,
 } from "./schemas";
-import {
-  getSafeMessage,
-  getSafeThreshold,
-  parseAndValidateEIP712Message,
-  getRpcUrlFromLitChainIdentifier,
-  getSafeTransactionServiceUrl,
-  isValidSafeSignature,
-  buildEIP712Signature,
-  createParametersString,
-} from "./helpers";
+import { validateSafeMessage } from "./helpers";
 import { safeMessageTrackerSignatures, safeMessageTrackerContractAddress } from "./safe-message-tracker-signatures";
 import { safeMessageTrackerContractData } from "./safe-message-tracker-contract-data";
 
@@ -93,102 +84,26 @@ export const vincentPolicy = createVincentPolicy({
 
       /**
        * ====================================
-       * Get the Safe message from Safe Transaction Service
+       * Validate the Safe message
        * ====================================
        */
-      const rpcUrl = getRpcUrlFromLitChainIdentifier(userParams.litChainIdentifier);
-      const provider = new ethers.providers.StaticJsonRpcProvider(rpcUrl);
-
-      const safeMessage = await getSafeMessage({
-        safeTransactionServiceUrl: getSafeTransactionServiceUrl(userParams.litChainIdentifier),
+      const validationResult = await validateSafeMessage({
         safeAddress: userParams.safeAddress,
+        litChainIdentifier: userParams.litChainIdentifier,
         safeApiKey: safeConfig.safeApiKey,
-        messageHash: safeConfig.safeMessageHash,
-      });
-      console.log(`[SafeMultisigPolicy precheck] Retrieved Safe message: ${JSON.stringify(safeMessage, null, 2)}`);
-
-      if (safeMessage === null) {
-        return deny({
-          reason: "Safe message not found or not proposed",
-          safeAddress: userParams.safeAddress,
-          messageHash: safeConfig.safeMessageHash,
-        });
-      }
-
-      /**
-       * ====================================
-       * Check if the number of signatures is equal to or greater than the Safe's threshold
-       * ====================================
-       */
-      const threshold = await getSafeThreshold(
-        provider,
-        userParams.safeAddress
-      );
-      console.log(`[SafeMultisigPolicy precheck] Safe threshold: ${threshold}`);
-
-      if (safeMessage.confirmations.length < threshold) {
-        return deny({
-          reason: "Insufficient signatures",
-          safeAddress: userParams.safeAddress,
-          currentNumberOfSignatures: safeMessage.confirmations.length,
-          requiredNumberOfSignatures: threshold,
-        });
-      }
-
-      /**
-       * ====================================
-       * Validate the structure of the signed EIP-712 message.
-       * Also validate the parsed values match the App Id, App Version, Tool IPFS CID, and Tool parameters.
-       * ====================================
-       */
-      const eip712ValidationResult = parseAndValidateEIP712Message({
-        messageString: safeMessage.message as string,
-        expectedToolIpfsCid: toolIpfsCid,
-        expectedAgentAddress: delegatorPkpInfo.ethAddress,
-        expectedAppId: appId,
-        expectedAppVersion: appVersion,
-        expectedToolParametersString: createParametersString(executingToolParams),
+        safeMessageHash: safeConfig.safeMessageHash,
+        executingToolParams,
+        toolIpfsCid,
+        delegatorEthAddress: delegatorPkpInfo.ethAddress,
+        appId,
+        appVersion,
+        logPrefix: "SafeMultisigPolicy precheck",
       });
 
-      if (!eip712ValidationResult.success) {
+      if (!validationResult.success) {
         return deny({
-          reason: eip712ValidationResult.error || "EIP712 validation failed",
-          safeAddress: userParams.safeAddress,
-          messageHash: safeConfig.safeMessageHash,
-          expected: eip712ValidationResult.expected,
-          received: eip712ValidationResult.received,
-        });
-      }
-
-      /**
-       * ====================================
-       * Validate the signature returned by Safe Transaction Service against the Safe contract
-       * ====================================
-       */
-      console.log(`[SafeMultisigPolicy precheck] safeMessage.message: ${safeMessage.message}`);
-      const hashedSafeMessage = ethers.utils.hashMessage(
-        ethers.utils.toUtf8Bytes(safeMessage.message as string)
-      );
-      console.log(`[SafeMultisigPolicy precheck] hashedSafeMessage: ${hashedSafeMessage}`);
-
-      // Use the preparedSignature from Safe Transaction Service if available
-      const eip712Signature = safeMessage.preparedSignature || buildEIP712Signature(safeMessage.confirmations);
-      console.log(`[SafeMultisigPolicy precheck] eip712Signature: ${eip712Signature}`);
-
-      const isValid = await isValidSafeSignature(
-        {
-          provider,
-          safeAddress: userParams.safeAddress,
-          dataHash: hashedSafeMessage,
-          signature: eip712Signature,
-        }
-      );
-      console.log(`[SafeMultisigPolicy precheck] isValidSafeSignature: ${isValid}`);
-
-      if (!isValid) {
-        return deny({
-          reason: "Invalid Safe signature",
-          confirmations: safeMessage.confirmations,
+          reason: validationResult.error!,
+          ...validationResult.details,
         });
       }
 
@@ -251,7 +166,7 @@ export const vincentPolicy = createVincentPolicy({
       const parsedGetConsumedAtResponse = JSON.parse(getConsumedAtResponse);
       if (parsedGetConsumedAtResponse.consumedAt !== 0) {
         return deny({
-          reason: `[SafeMultisigPolicy precheck] Safe message already marked as consumed in SafeMessageTracker contract`,
+          reason: `[SafeMultisigPolicy evaluate] Safe message already marked as consumed in SafeMessageTracker contract`,
           safeMessageConsumer: delegatorPkpInfo.ethAddress,
           safeMessageConsumedAt: parsedGetConsumedAtResponse.consumedAt,
         });
@@ -260,102 +175,26 @@ export const vincentPolicy = createVincentPolicy({
 
       /**
        * ====================================
-       * Get the Safe message from Safe Transaction Service
+       * Validate the Safe message
        * ====================================
        */
-      const rpcUrl = getRpcUrlFromLitChainIdentifier(userParams.litChainIdentifier);
-      const provider = new ethers.providers.StaticJsonRpcProvider(rpcUrl);
-
-      const safeMessage = await getSafeMessage({
-        safeTransactionServiceUrl: getSafeTransactionServiceUrl(userParams.litChainIdentifier),
+      const validationResult = await validateSafeMessage({
         safeAddress: userParams.safeAddress,
+        litChainIdentifier: userParams.litChainIdentifier,
         safeApiKey: safeConfig.safeApiKey,
-        messageHash: safeConfig.safeMessageHash,
-      });
-      console.log("[SafeMultisigPolicy evaluate] Retrieved Safe message:", JSON.stringify(safeMessage, null, 2));
-
-      if (safeMessage === null) {
-        return deny({
-          reason: "Safe message not found or not proposed",
-          safeAddress: userParams.safeAddress,
-          messageHash: safeConfig.safeMessageHash,
-        });
-      }
-
-      /**
-       * ====================================
-       * Check if the number of signatures is equal to or greater than the Safe's threshold
-       * ====================================
-       */
-      const threshold = await getSafeThreshold(
-        provider,
-        userParams.safeAddress
-      );
-      console.log("[SafeMultisigPolicy evaluate] Safe threshold:", threshold);
-
-      if (safeMessage.confirmations.length < threshold) {
-        return deny({
-          reason: "Insufficient signatures",
-          safeAddress: userParams.safeAddress,
-          currentNumberOfSignatures: safeMessage.confirmations.length,
-          requiredNumberOfSignatures: threshold,
-        });
-      }
-
-      /**
-       * ====================================
-       * Validate the structure of the signed EIP-712 message.
-       * Also validate the parsed values match the App Id, App Version, Tool IPFS CID, and Tool parameters.
-       * ====================================
-       */
-      const eip712ValidationResult = parseAndValidateEIP712Message({
-        messageString: safeMessage.message as string,
-        expectedToolIpfsCid: toolIpfsCid,
-        expectedAgentAddress: delegatorPkpInfo.ethAddress,
-        expectedAppId: appId,
-        expectedAppVersion: appVersion,
-        expectedToolParametersString: createParametersString(executingToolParams),
+        safeMessageHash: safeConfig.safeMessageHash,
+        executingToolParams,
+        toolIpfsCid,
+        delegatorEthAddress: delegatorPkpInfo.ethAddress,
+        appId,
+        appVersion,
+        logPrefix: "SafeMultisigPolicy evaluate",
       });
 
-      if (!eip712ValidationResult.success) {
+      if (!validationResult.success) {
         return deny({
-          reason: eip712ValidationResult.error || "EIP712 validation failed",
-          safeAddress: userParams.safeAddress,
-          messageHash: safeConfig.safeMessageHash,
-          expected: eip712ValidationResult.expected,
-          received: eip712ValidationResult.received,
-        });
-      }
-
-      /**
-       * ====================================
-       * Validate the signature returned by Safe Transaction Service against the Safe contract
-       * ====================================
-       */
-      console.log(`[SafeMultisigPolicy precheck] safeMessage.message: ${safeMessage.message}`);
-      const hashedSafeMessage = ethers.utils.hashMessage(
-        ethers.utils.toUtf8Bytes(safeMessage.message as string)
-      );
-      console.log(`[SafeMultisigPolicy precheck] hashedSafeMessage: ${hashedSafeMessage}`);
-
-      // Use the preparedSignature from Safe Transaction Service if available
-      const eip712Signature = safeMessage.preparedSignature || buildEIP712Signature(safeMessage.confirmations);
-      console.log(`[SafeMultisigPolicy precheck] eip712Signature: ${eip712Signature}`);
-
-      const isValid = await isValidSafeSignature(
-        {
-          provider,
-          safeAddress: userParams.safeAddress,
-          dataHash: hashedSafeMessage,
-          signature: eip712Signature,
-        }
-      );
-      console.log(`[SafeMultisigPolicy precheck] isValidSafeSignature: ${isValid}`);
-
-      if (!isValid) {
-        return deny({
-          reason: "Invalid Safe signature",
-          confirmations: safeMessage.confirmations,
+          reason: validationResult.error!,
+          ...validationResult.details,
         });
       }
 
