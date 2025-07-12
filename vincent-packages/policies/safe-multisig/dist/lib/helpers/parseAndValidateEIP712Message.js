@@ -9,7 +9,7 @@ import { ethers } from "ethers";
 export function parseAndValidateEIP712Message({ messageString, expectedToolIpfsCid, expectedAgentAddress, expectedAppId, expectedAppVersion, expectedToolParametersString, }) {
     try {
         const parsedMessage = JSON.parse(messageString);
-        console.log("[EIP712 Helper] Parsed EIP712 message:", parsedMessage);
+        console.log("[parseAndValidateEIP712Message] Parsed EIP712 message:", parsedMessage);
         if (!parsedMessage.types || !parsedMessage.domain || !parsedMessage.message) {
             return {
                 success: false,
@@ -26,7 +26,7 @@ export function parseAndValidateEIP712Message({ messageString, expectedToolIpfsC
             };
         }
         const encodedData = ethers.utils._TypedDataEncoder.encode(domain, types, message);
-        console.log("[EIP712 Helper] EIP712 encoded data:", encodedData);
+        console.log("[parseAndValidateEIP712Message] EIP712 encoded data:", encodedData);
         const requiredFields = ['appId', 'appVersion', 'toolIpfsCid', 'toolParametersString', 'agentWalletAddress', 'expiry', 'nonce'];
         for (const field of requiredFields) {
             if (!(field in message)) {
@@ -86,7 +86,7 @@ export function parseAndValidateEIP712Message({ messageString, expectedToolIpfsC
                 received: message.toolParametersString
             };
         }
-        console.log("[EIP712 Helper] EIP712 message validation passed");
+        console.log("[parseAndValidateEIP712Message] EIP712 message validation passed");
         return {
             success: true,
             domain,
@@ -96,7 +96,7 @@ export function parseAndValidateEIP712Message({ messageString, expectedToolIpfsC
         };
     }
     catch (parseError) {
-        console.error("[EIP712 Helper] Error parsing EIP712 message:", parseError);
+        console.error("[parseAndValidateEIP712Message] Error parsing EIP712 message:", parseError);
         return {
             success: false,
             error: parseError instanceof Error ? parseError.message : "Unknown parse error"

@@ -1,8 +1,10 @@
 import { createVincentPolicy } from "@lit-protocol/vincent-tool-sdk";
+import { laUtils } from "@lit-protocol/vincent-scaffold-sdk";
 import { ethers } from "ethers";
 import {
   commitAllowResultSchema,
   commitDenyResultSchema,
+  commitParamsSchema,
   evalAllowResultSchema,
   evalDenyResultSchema,
   precheckAllowResultSchema,
@@ -20,6 +22,7 @@ import {
   buildEIP712Signature,
   createParametersString,
 } from "./helpers";
+import { safeMessageTrackerSignatures, safeMessageTrackerContractAddress } from "./safe-message-tracker-signatures";
 
 export const vincentPolicy = createVincentPolicy({
   packageName: "@lit-protocol/vincent-policy-safe-multisig" as const,
@@ -33,6 +36,7 @@ export const vincentPolicy = createVincentPolicy({
   evalAllowResultSchema,
   evalDenyResultSchema,
 
+  commitParamsSchema,
   commitAllowResultSchema,
   commitDenyResultSchema,
 
@@ -252,18 +256,38 @@ export const vincentPolicy = createVincentPolicy({
     }
   },
 
-  commit: async (commitParams, { allow, deny }) => {
-    console.log("SafeMultisigPolicy commit");
+  commit: async (
+    { safeMessageHash },
+    { allow, deny, delegation: { delegatorPkpInfo } }
+  ) => {
+    console.log("SafeMultisigPolicy commit", { safeMessageHash });
 
     try {
-      // const { txHash } = commitParams as any;
-      // console.log(`Tool execution completed with txHash: ${txHash}`);
-      console.log(`Safe message should be recorded as executed`);
+      console.log(`[SafeMultisigPolicy commit] Consumer: ${delegatorPkpInfo.ethAddress}`);
+      console.log(`[SafeMultisigPolicy commit] Consuming Safe message hash: ${safeMessageHash}`);
+      console.log(`[SafeMultisigPolicy commit] SafeMessageTracker contract address: ${safeMessageTrackerContractAddress}`);
 
-      return allow({
-        message: "Safe message should be recorded as executed",
-        // txHash,
+      const provider = new ethers.providers.JsonRpcProvider(
+        "https://yellowstone-rpc.litprotocol.com/"
+      );
+
+      // Call contract directly without Lit.Actions.runOnce wrapper
+      const txHash = await laUtils.transaction.handler.contractCall({
+        provider,
+        pkpPublicKey: delegatorPkpInfo.publicKey,
+        callerAddress: delegatorPkpInfo.ethAddress,
+        abi: [safeMessageTrackerSignatures.SafeMessageTracker.methods.consume],
+        contractAddress: safeMessageTrackerContractAddress,
+        functionName: "consume",
+        args: [[safeMessageHash]],
+        overrides: {
+          gasLimit: 100000,
+        },
       });
+
+      console.log(`[SafeMultisigPolicy commit] Safe message consumed successfully. Tx Hash: ${txHash}`);
+
+      return allow({ txHash });
     } catch (error) {
       console.error("Commit error:", error);
       return deny({

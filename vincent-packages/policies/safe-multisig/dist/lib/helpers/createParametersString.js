@@ -18,6 +18,6 @@ export function createParametersString(toolParams) {
         return result;
     };
     const processedParams = convertBigInts(toolParams);
-    console.log("[createParametersString] Creating parameters string for tool params: ", JSON.stringify(processedParams, null, 2));
+    console.log("[createParametersString] Creating parameters string for tool params: ", deterministicStringify(processedParams));
     return deterministicStringify(processedParams);
 }

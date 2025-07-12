@@ -33,6 +33,7 @@ export const precheckFailSchema = z.object({
  */
 export const executeSuccessSchema = z.object({
     txHash: z.string(),
+    safeMultisigPolicyCommitTxHash: z.string().optional(),
     to: z.string(),
     amount: z.string(),
     timestamp: z.number(),

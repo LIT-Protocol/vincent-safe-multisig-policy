@@ -8,12 +8,12 @@ import { LIT_CHAINS } from '@lit-protocol/constants';
 export function getRpcUrlFromLitChainIdentifier(litChainIdentifier) {
     const chain = LIT_CHAINS[litChainIdentifier];
     if (!chain) {
-        throw new Error(`Chain identifier '${litChainIdentifier}' not found in LIT_CHAINS`);
+        throw new Error(`[getRpcUrlFromLitChainIdentifier] Chain identifier '${litChainIdentifier}' not found in LIT_CHAINS`);
     }
     // Check for rpcUrls property (most common in LIT_CHAINS)
     if (chain.rpcUrls && Array.isArray(chain.rpcUrls) && chain.rpcUrls.length > 0) {
         return chain.rpcUrls[0];
     }
     // If no RPC URL found, provide a helpful error message
-    throw new Error(`No RPC URL found for chain identifier '${litChainIdentifier}'. Available properties: ${Object.keys(chain).join(', ')}`);
+    throw new Error(`[getRpcUrlFromLitChainIdentifier] No RPC URL found for chain identifier '${litChainIdentifier}'`);
 }
