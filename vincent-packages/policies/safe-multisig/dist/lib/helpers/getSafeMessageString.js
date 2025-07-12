@@ -1,16 +1,19 @@
 import { EIP712_DOMAIN, EIP712_MESSAGE_TYPES } from "../schemas";
 import { deterministicStringify } from "./deterministicStringify";
-export function getSafeMessageString(vincentToolExecution) {
-    const eip712Message = createEIP712Message(vincentToolExecution);
+export function getSafeMessageString({ vincentToolExecution, eip712VerifyingContract, }) {
+    const eip712Message = createEIP712Message(eip712VerifyingContract, vincentToolExecution);
     console.log("[getSafeMessageString] eip712Message: ", JSON.stringify(eip712Message, null, 2));
     const messageString = deterministicStringify(eip712Message);
     console.log("[getSafeMessageString] messageString: ", messageString);
     return messageString;
 }
-function createEIP712Message(params) {
+function createEIP712Message(eip712VerifyingContract, params) {
     return {
         types: EIP712_MESSAGE_TYPES,
-        domain: EIP712_DOMAIN,
+        domain: {
+            ...EIP712_DOMAIN,
+            verifyingContract: eip712VerifyingContract,
+        },
         primaryType: "VincentToolExecution",
         message: {
             appId: params.appId.toString(),

@@ -425,7 +425,10 @@ import { safeMessageTrackerContractAddress, safeMessageTrackerContractData } fro
   };
   console.log("🔏 Raw Vincent execution object:", vincentExecution);
 
-  const safeMessageString = getSafeMessageString(vincentExecution);
+  const safeMessageString = getSafeMessageString({
+    vincentToolExecution: vincentExecution,
+    eip712VerifyingContract: safeAddress,
+  });
   const safeMessageHash = generateSafeMessageHash(
     {
       safeMessageString,

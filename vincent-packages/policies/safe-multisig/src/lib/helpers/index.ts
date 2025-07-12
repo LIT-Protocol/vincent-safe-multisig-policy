@@ -12,3 +12,4 @@ export * from "./getSafeThreshold";
 export * from "./deterministicStringify";
 export * from "./buildEIP712Signature";
 export * from "./getSafeMessageString";
+export * from "./validateSafeMessage";
