@@ -23,6 +23,19 @@ import {
   createParametersString,
 } from "./helpers";
 import { safeMessageTrackerSignatures, safeMessageTrackerContractAddress } from "./safe-message-tracker-signatures";
+import { safeMessageTrackerContractData } from "./safe-message-tracker-contract-data";
+
+declare const Lit: {
+  Actions: {
+    runOnce: (
+      params: {
+        waitForResponse: boolean;
+        name: string;
+      },
+      callback: () => Promise<unknown>,
+    ) => Promise<string>;
+  };
+};
 
 export const vincentPolicy = createVincentPolicy({
   packageName: "@lit-protocol/vincent-policy-safe-multisig" as const,
@@ -55,6 +68,24 @@ export const vincentPolicy = createVincentPolicy({
     const { safeConfig, ...executingToolParams } = toolParams;
 
     try {
+      const safeMessageTrackerContract = new ethers.Contract(
+        safeMessageTrackerContractAddress,
+        safeMessageTrackerContractData[0].SafeMessageTracker,
+        new ethers.providers.StaticJsonRpcProvider(
+          "https://yellowstone-rpc.litprotocol.com/"
+        )
+      );
+
+      const consumedAt = await safeMessageTrackerContract.getConsumedAt(delegatorPkpInfo.ethAddress, safeConfig.safeMessageHash);
+      if (consumedAt.gt(ethers.BigNumber.from(0))) {
+        return deny({
+          reason: `[SafeMultisigPolicy precheck] Safe message already marked as consumed in SafeMessageTracker contract`,
+          safeMessageConsumer: delegatorPkpInfo.ethAddress,
+          safeMessageConsumedAt: consumedAt.toNumber(),
+        });
+      }
+      console.log(`[SafeMultisigPolicy precheck] Safe message not marked as consumed in SafeMessageTracker contract`);
+
       const rpcUrl = getRpcUrlFromLitChainIdentifier(userParams.litChainIdentifier);
       const provider = new ethers.providers.StaticJsonRpcProvider(rpcUrl);
 
@@ -130,7 +161,7 @@ export const vincentPolicy = createVincentPolicy({
 
       if (!isValid) {
         return deny({
-          reason: "Invalid signature",
+          reason: "Invalid Safe signature",
           confirmations: safeMessage.confirmations,
         });
       }
@@ -163,6 +194,34 @@ export const vincentPolicy = createVincentPolicy({
     const { safeConfig, ...executingToolParams } = toolParams;
 
     try {
+      const getConsumedAtResponse = await Lit.Actions.runOnce(
+        { waitForResponse: true, name: "getConsumedAt" },
+        async () => {
+          const yellowStoneProvider = new ethers.providers.StaticJsonRpcProvider(
+            "https://yellowstone-rpc.litprotocol.com/"
+          );
+
+          const safeMessageTrackerContract = new ethers.Contract(
+            safeMessageTrackerContractAddress,
+            safeMessageTrackerContractData[0].SafeMessageTracker,
+            yellowStoneProvider
+          );
+
+          const consumedAt = await safeMessageTrackerContract.getConsumedAt(delegatorPkpInfo.ethAddress, safeConfig.safeMessageHash);
+          return JSON.stringify({ consumedAt: consumedAt.toNumber() });
+        }
+      );
+
+      const parsedGetConsumedAtResponse = JSON.parse(getConsumedAtResponse);
+      if (parsedGetConsumedAtResponse.consumedAt !== 0) {
+        return deny({
+          reason: `[SafeMultisigPolicy precheck] Safe message already marked as consumed in SafeMessageTracker contract`,
+          safeMessageConsumer: delegatorPkpInfo.ethAddress,
+          safeMessageConsumedAt: parsedGetConsumedAtResponse.consumedAt,
+        });
+      }
+      console.log(`[SafeMultisigPolicy evaluate] Safe message not marked as consumed in SafeMessageTracker contract`);
+
       const rpcUrl = getRpcUrlFromLitChainIdentifier(userParams.litChainIdentifier);
       const provider = new ethers.providers.StaticJsonRpcProvider(rpcUrl);
 
@@ -238,7 +297,7 @@ export const vincentPolicy = createVincentPolicy({
 
       if (!isValid) {
         return deny({
-          reason: "Invalid signature",
+          reason: "Invalid Safe signature",
           confirmations: safeMessage.confirmations,
         });
       }

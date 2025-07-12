@@ -6,12 +6,12 @@ import {
 } from "@lit-protocol/vincent-scaffold-sdk/e2e";
 
 // Apply log suppression FIRST, before any imports that might trigger logs
-suppressLitLogs(false);
+suppressLitLogs(true);
 
 import { getVincentToolClient } from "@lit-protocol/vincent-app-sdk";
 import { ethers } from "ethers";
 import { LIT_CHAINS } from '@lit-protocol/constants';
-import Safe, { hashSafeMessage } from "@safe-global/protocol-kit";
+import Safe from "@safe-global/protocol-kit";
 import SafeApiKit from "@safe-global/api-kit";
 
 import { vincentPolicyMetadata as safeMultisigPolicyMetadata } from "../../vincent-packages/policies/safe-multisig/dist/index.js";

@@ -38,6 +38,8 @@ export const precheckDenyResultSchema = z.object({
         owner: z.string().optional(),
         signatureType: z.string().optional(),
     })).optional(),
+    safeMessageConsumer: z.string().optional(),
+    safeMessageConsumedAt: z.number().optional(),
 });
 export const evalAllowResultSchema = z.object({
     safeAddress: z.string(),
@@ -60,6 +62,8 @@ export const evalDenyResultSchema = z.object({
         owner: z.string().optional(),
         signatureType: z.string().optional(),
     })).optional(),
+    safeMessageConsumer: z.string().optional(),
+    safeMessageConsumedAt: z.number().optional(),
 });
 export const commitAllowResultSchema = z.object({
     txHash: z.string().describe("The transaction hash of the consume transaction"),
