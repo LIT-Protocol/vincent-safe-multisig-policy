@@ -68,6 +68,11 @@ export const vincentPolicy = createVincentPolicy({
     const { safeConfig, ...executingToolParams } = toolParams;
 
     try {
+      /**
+       * ====================================
+       * Check if the Safe message has been marked as consumed in the SafeMessageTracker contract
+       * ====================================
+       */
       const safeMessageTrackerContract = new ethers.Contract(
         safeMessageTrackerContractAddress,
         safeMessageTrackerContractData[0].SafeMessageTracker,
@@ -86,6 +91,11 @@ export const vincentPolicy = createVincentPolicy({
       }
       console.log(`[SafeMultisigPolicy precheck] Safe message not marked as consumed in SafeMessageTracker contract`);
 
+      /**
+       * ====================================
+       * Get the Safe message from Safe Transaction Service
+       * ====================================
+       */
       const rpcUrl = getRpcUrlFromLitChainIdentifier(userParams.litChainIdentifier);
       const provider = new ethers.providers.StaticJsonRpcProvider(rpcUrl);
 
@@ -105,6 +115,11 @@ export const vincentPolicy = createVincentPolicy({
         });
       }
 
+      /**
+       * ====================================
+       * Check if the number of signatures is equal to or greater than the Safe's threshold
+       * ====================================
+       */
       const threshold = await getSafeThreshold(
         provider,
         userParams.safeAddress
@@ -120,6 +135,12 @@ export const vincentPolicy = createVincentPolicy({
         });
       }
 
+      /**
+       * ====================================
+       * Validate the structure of the signed EIP-712 message.
+       * Also validate the parsed values match the App Id, App Version, Tool IPFS CID, and Tool parameters.
+       * ====================================
+       */
       const eip712ValidationResult = parseAndValidateEIP712Message({
         messageString: safeMessage.message as string,
         expectedToolIpfsCid: toolIpfsCid,
@@ -139,6 +160,11 @@ export const vincentPolicy = createVincentPolicy({
         });
       }
 
+      /**
+       * ====================================
+       * Validate the signature returned by Safe Transaction Service against the Safe contract
+       * ====================================
+       */
       console.log(`[SafeMultisigPolicy precheck] safeMessage.message: ${safeMessage.message}`);
       const hashedSafeMessage = ethers.utils.hashMessage(
         ethers.utils.toUtf8Bytes(safeMessage.message as string)
@@ -166,6 +192,11 @@ export const vincentPolicy = createVincentPolicy({
         });
       }
 
+      /**
+       * ====================================
+       * Allow the Tool execution
+       * ====================================
+       */
       return allow({
         safeAddress: userParams.safeAddress,
         litChainIdentifier: userParams.litChainIdentifier,
@@ -194,6 +225,11 @@ export const vincentPolicy = createVincentPolicy({
     const { safeConfig, ...executingToolParams } = toolParams;
 
     try {
+      /**
+       * ====================================
+       * Check if the Safe message has been marked as consumed in the SafeMessageTracker contract
+       * ====================================
+       */
       const getConsumedAtResponse = await Lit.Actions.runOnce(
         { waitForResponse: true, name: "getConsumedAt" },
         async () => {
@@ -222,6 +258,11 @@ export const vincentPolicy = createVincentPolicy({
       }
       console.log(`[SafeMultisigPolicy evaluate] Safe message not marked as consumed in SafeMessageTracker contract`);
 
+      /**
+       * ====================================
+       * Get the Safe message from Safe Transaction Service
+       * ====================================
+       */
       const rpcUrl = getRpcUrlFromLitChainIdentifier(userParams.litChainIdentifier);
       const provider = new ethers.providers.StaticJsonRpcProvider(rpcUrl);
 
@@ -241,6 +282,11 @@ export const vincentPolicy = createVincentPolicy({
         });
       }
 
+      /**
+       * ====================================
+       * Check if the number of signatures is equal to or greater than the Safe's threshold
+       * ====================================
+       */
       const threshold = await getSafeThreshold(
         provider,
         userParams.safeAddress
@@ -256,6 +302,12 @@ export const vincentPolicy = createVincentPolicy({
         });
       }
 
+      /**
+       * ====================================
+       * Validate the structure of the signed EIP-712 message.
+       * Also validate the parsed values match the App Id, App Version, Tool IPFS CID, and Tool parameters.
+       * ====================================
+       */
       const eip712ValidationResult = parseAndValidateEIP712Message({
         messageString: safeMessage.message as string,
         expectedToolIpfsCid: toolIpfsCid,
@@ -275,6 +327,11 @@ export const vincentPolicy = createVincentPolicy({
         });
       }
 
+      /**
+       * ====================================
+       * Validate the signature returned by Safe Transaction Service against the Safe contract
+       * ====================================
+       */
       console.log(`[SafeMultisigPolicy precheck] safeMessage.message: ${safeMessage.message}`);
       const hashedSafeMessage = ethers.utils.hashMessage(
         ethers.utils.toUtf8Bytes(safeMessage.message as string)
@@ -302,6 +359,11 @@ export const vincentPolicy = createVincentPolicy({
         });
       }
 
+      /**
+       * ====================================
+       * Allow the Tool execution
+       * ====================================
+       */
       return allow({
         safeAddress: userParams.safeAddress,
         litChainIdentifier: userParams.litChainIdentifier,
@@ -330,7 +392,11 @@ export const vincentPolicy = createVincentPolicy({
         "https://yellowstone-rpc.litprotocol.com/"
       );
 
-      // Call contract directly without Lit.Actions.runOnce wrapper
+      /**
+       * ====================================
+       * Mark the Safe message as consumed in the SafeMessageTracker contract
+       * ====================================
+       */
       const txHash = await laUtils.transaction.handler.contractCall({
         provider,
         pkpPublicKey: delegatorPkpInfo.publicKey,
