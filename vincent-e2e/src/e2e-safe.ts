@@ -6,7 +6,7 @@ import {
 } from "@lit-protocol/vincent-scaffold-sdk/e2e";
 
 // Apply log suppression FIRST, before any imports that might trigger logs
-suppressLitLogs(true);
+suppressLitLogs(false);
 
 import { getVincentToolClient } from "@lit-protocol/vincent-app-sdk";
 import { ethers } from "ethers";

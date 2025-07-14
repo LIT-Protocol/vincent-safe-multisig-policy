@@ -1,4 +1,3 @@
-export * from "./hashToolParameters";
 export * from "./getSafeMessage";
 export * from "./isValidSafeSignature";
 export * from "./generateSafeMessageHash";
