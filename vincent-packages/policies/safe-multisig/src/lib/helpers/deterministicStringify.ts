@@ -1,23 +1,32 @@
-export function deterministicStringify(obj: any): string {
-    if (obj === null) return "null";
-    if (obj === undefined) return undefined as any;
-    if (typeof obj === "boolean" || typeof obj === "number") return JSON.stringify(obj);
-    if (typeof obj === "string") return JSON.stringify(obj);
-    if (typeof obj === "bigint") return JSON.stringify(obj.toString());
+import stringify from "json-stable-stringify";
+
+/**
+ * Converts bigints to strings for serialization
+ */
+function convertBigInts(obj: any): any {
+    if (obj === null || typeof obj !== "object") {
+        if (typeof obj === "bigint") {
+            return obj.toString();
+        }
+        return obj;
+    }
 
     if (Array.isArray(obj)) {
-        const items = obj.map(item => deterministicStringify(item));
-        return "[" + items.join(",") + "]";
+        return obj.map(convertBigInts);
     }
 
-    if (typeof obj === "object") {
-        const keys = Object.keys(obj).sort();
-        const pairs = keys.map(key => {
-            const value = deterministicStringify(obj[key]);
-            return JSON.stringify(key) + ":" + value;
-        });
-        return "{" + pairs.join(",") + "}";
+    const result: Record<string, any> = {};
+    for (const key of Object.keys(obj)) {
+        result[key] = convertBigInts(obj[key]);
     }
+    return result;
+}
 
-    return JSON.stringify(obj);
+/**
+ * Stringify an object with proper handling of bigints
+ * Converts bigints to strings before stringifying to ensure deterministic output
+ */
+export function deterministicStringify(obj: any): string {
+    const processedObj = convertBigInts(obj);
+    return stringify(processedObj);
 }

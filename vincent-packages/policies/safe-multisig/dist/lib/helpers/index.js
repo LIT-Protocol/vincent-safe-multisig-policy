@@ -8,7 +8,7 @@ export * from "./parseAndValidateEIP712Message";
 export * from "./getRpcUrlFromLitChainIdentifier";
 export * from "./getSafeTransactionServiceUrl";
 export * from "./getSafeThreshold";
-export * from "./deterministicStringify";
 export * from "./buildEIP712Signature";
 export * from "./getSafeMessageString";
 export * from "./validateSafeMessage";
+export * from "./deterministicStringify";
