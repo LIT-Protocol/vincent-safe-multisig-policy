@@ -12,7 +12,7 @@ import {
   toolParamsSchema,
   userParamsSchema,
 } from "./schemas";
-import { validateSafeMessage } from "./helpers";
+import { getRpcUrlFromLitChainIdentifier, validateSafeMessage } from "./helpers";
 import { safeMessageTrackerSignatures, safeMessageTrackerContractAddress } from "./safe-message-tracker-signatures";
 import { safeMessageTrackerContractData } from "./safe-message-tracker-contract-data";
 
@@ -25,6 +25,7 @@ declare const Lit: {
       },
       callback: () => Promise<unknown>,
     ) => Promise<string>;
+    getRpcUrl: ({ chain }: { chain: string }) => Promise<string>;
   };
 };
 
@@ -88,6 +89,7 @@ export const vincentPolicy = createVincentPolicy({
        * ====================================
        */
       const validationResult = await validateSafeMessage({
+        safeRpcUrl: getRpcUrlFromLitChainIdentifier(userParams.litChainIdentifier),
         safeAddress: userParams.safeAddress,
         litChainIdentifier: userParams.litChainIdentifier,
         safeApiKey: safeConfig.safeApiKey,
@@ -179,6 +181,7 @@ export const vincentPolicy = createVincentPolicy({
        * ====================================
        */
       const validationResult = await validateSafeMessage({
+        safeRpcUrl: await Lit.Actions.getRpcUrl({ chain: userParams.litChainIdentifier }),
         safeAddress: userParams.safeAddress,
         litChainIdentifier: userParams.litChainIdentifier,
         safeApiKey: safeConfig.safeApiKey,
