@@ -1,20 +1,18 @@
 import { ethers } from "ethers";
 import { buildEIP712Signature } from "./buildEIP712Signature";
-import { getRpcUrlFromLitChainIdentifier } from "./getRpcUrlFromLitChainIdentifier";
 import { getSafeMessage } from "./getSafeMessage";
 import { getSafeThreshold } from "./getSafeThreshold";
 import { getSafeTransactionServiceUrl } from "./getSafeTransactionServiceUrl";
 import { isValidSafeSignature } from "./isValidSafeSignature";
 import { parseAndValidateEIP712Message } from "./parseAndValidateEIP712Message";
 import { deterministicStringify } from "./deterministicStringify";
-export async function validateSafeMessage({ safeAddress, litChainIdentifier, safeApiKey, safeMessageHash, executingToolParams, toolIpfsCid, delegatorEthAddress, appId, appVersion, logPrefix, }) {
+export async function validateSafeMessage({ safeRpcUrl, safeAddress, litChainIdentifier, safeApiKey, safeMessageHash, executingToolParams, toolIpfsCid, delegatorEthAddress, appId, appVersion, logPrefix, }) {
     /**
      * ====================================
      * Get the Safe message from Safe Transaction Service
      * ====================================
      */
-    const rpcUrl = getRpcUrlFromLitChainIdentifier(litChainIdentifier);
-    const safeProvider = new ethers.providers.StaticJsonRpcProvider(rpcUrl);
+    const safeProvider = new ethers.providers.StaticJsonRpcProvider(safeRpcUrl);
     const safeMessage = await getSafeMessage({
         safeTransactionServiceUrl: getSafeTransactionServiceUrl(litChainIdentifier),
         safeAddress,

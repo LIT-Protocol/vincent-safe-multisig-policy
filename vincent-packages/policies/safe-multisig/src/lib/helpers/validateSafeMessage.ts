@@ -9,6 +9,7 @@ import { parseAndValidateEIP712Message } from "./parseAndValidateEIP712Message";
 import { deterministicStringify } from "./deterministicStringify";
 
 interface ValidateSafeMessageParams {
+  safeRpcUrl: string;
   safeAddress: string;
   litChainIdentifier: string;
   safeApiKey?: string;
@@ -29,6 +30,7 @@ interface ValidateSafeMessageResult {
 }
 
 export async function validateSafeMessage({
+  safeRpcUrl,
   safeAddress,
   litChainIdentifier,
   safeApiKey,
@@ -45,8 +47,7 @@ export async function validateSafeMessage({
    * Get the Safe message from Safe Transaction Service
    * ====================================
    */
-  const rpcUrl = getRpcUrlFromLitChainIdentifier(litChainIdentifier);
-  const safeProvider = new ethers.providers.StaticJsonRpcProvider(rpcUrl);
+  const safeProvider = new ethers.providers.StaticJsonRpcProvider(safeRpcUrl);
 
   const safeMessage = await getSafeMessage({
     safeTransactionServiceUrl: getSafeTransactionServiceUrl(litChainIdentifier),
