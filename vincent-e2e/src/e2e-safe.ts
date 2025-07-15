@@ -19,7 +19,7 @@ import { bundledVincentTool as nativeSendTool } from "../../vincent-packages/too
 
 // Import helpers from built policy
 import {
-  createParametersString,
+  deterministicStringify,
   generateSafeMessageHash,
   generateNonce,
   generateExpiry,
@@ -411,7 +411,7 @@ import { safeMessageTrackerContractAddress, safeMessageTrackerContractData } fro
    * Create and sign Safe message for testing
    * ====================================
    */
-  const toolParametersString = createParametersString(TEST_TOOL_PARAMS);
+  const toolParametersString = deterministicStringify(TEST_TOOL_PARAMS);
   console.log("🔏 Tool parameters string:", toolParametersString);
 
   const vincentExecution = {

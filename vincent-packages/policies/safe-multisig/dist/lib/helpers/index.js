@@ -1,7 +1,6 @@
 export * from "./getSafeMessage";
 export * from "./isValidSafeSignature";
 export * from "./generateSafeMessageHash";
-export * from "./createParametersString";
 export * from "./generateNonce";
 export * from "./generateExpiry";
 export * from "./parseAndValidateEIP712Message";
