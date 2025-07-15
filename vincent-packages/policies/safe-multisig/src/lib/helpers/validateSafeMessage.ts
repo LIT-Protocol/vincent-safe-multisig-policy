@@ -1,12 +1,12 @@
 import { ethers } from "ethers";
 import { buildEIP712Signature } from "./buildEIP712Signature";
-import { createParametersString } from "./createParametersString";
 import { getRpcUrlFromLitChainIdentifier } from "./getRpcUrlFromLitChainIdentifier";
 import { getSafeMessage } from "./getSafeMessage";
 import { getSafeThreshold } from "./getSafeThreshold";
 import { getSafeTransactionServiceUrl } from "./getSafeTransactionServiceUrl";
 import { isValidSafeSignature } from "./isValidSafeSignature";
 import { parseAndValidateEIP712Message } from "./parseAndValidateEIP712Message";
+import { deterministicStringify } from "./deterministicStringify";
 
 interface ValidateSafeMessageParams {
   safeAddress: string;
@@ -99,7 +99,7 @@ export async function validateSafeMessage({
     expectedAgentAddress: delegatorEthAddress,
     expectedAppId: appId,
     expectedAppVersion: appVersion,
-    expectedToolParametersString: createParametersString(executingToolParams),
+    expectedToolParametersString: deterministicStringify(executingToolParams),
   });
 
   if (!eip712ValidationResult.success) {
