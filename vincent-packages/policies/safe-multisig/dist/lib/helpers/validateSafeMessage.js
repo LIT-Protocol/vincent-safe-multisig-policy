@@ -1,11 +1,5 @@
 import { ethers } from "ethers";
-import { buildEIP712Signature } from "./buildEIP712Signature";
-import { getSafeMessage } from "./getSafeMessage";
-import { getSafeThreshold } from "./getSafeThreshold";
-import { getSafeTransactionServiceUrl } from "./getSafeTransactionServiceUrl";
-import { isValidSafeSignature } from "./isValidSafeSignature";
-import { parseAndValidateEIP712Message } from "./parseAndValidateEIP712Message";
-import { deterministicStringify } from "./deterministicStringify";
+import { deterministicStringify, buildEIP712Signature, getSafeMessage, getSafeThreshold, getSafeTransactionServiceUrl, isValidSafeSignature, parseAndValidateEIP712Message, } from "@lit-protocol/vincent-safe-multisig-sdk";
 export async function validateSafeMessage({ safeRpcUrl, safeAddress, litChainIdentifier, safeApiKey, safeMessageHash, executingToolParams, toolIpfsCid, delegatorEthAddress, appId, appVersion, logPrefix, }) {
     /**
      * ====================================

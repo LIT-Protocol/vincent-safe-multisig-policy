@@ -91,6 +91,8 @@ function removeFromRoot(targets) {
  * Perform hard reset - equivalent to:
  * find vincent-packages -type d \( -name 'dist' -o -name 'node_modules' -o -name 'generated' \) -exec rm -rf {} + 2>/dev/null || true && 
  * find vincent-packages -name 'package-lock.json' -delete && 
+ * find sdk -type d \( -name 'dist' -o -name 'node_modules' -o -name 'generated' \) -exec rm -rf {} + 2>/dev/null || true && 
+ * find sdk -name 'package-lock.json' -delete && 
  * rm -rf node_modules package-lock.json .e2e-state.json
  */
 async function hardReset() {
@@ -104,6 +106,14 @@ async function hardReset() {
     // Remove package-lock.json files from vincent-packages
     console.log(chalk.gray('Removing package-lock.json files from vincent-packages...'));
     findAndRemoveFiles('vincent-packages', ['package-lock.json']);
+    
+    // Remove dist, node_modules, and generated directories from sdk
+    console.log(chalk.gray('Removing dist, node_modules, and generated directories from sdk...'));
+    findAndRemoveDirectories('sdk', ['dist', 'node_modules', 'generated']);
+    
+    // Remove package-lock.json files from sdk
+    console.log(chalk.gray('Removing package-lock.json files from sdk...'));
+    findAndRemoveFiles('sdk', ['package-lock.json']);
     
     // Remove root level files/directories
     console.log(chalk.gray('Removing root level files and directories...'));

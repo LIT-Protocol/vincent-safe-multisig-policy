@@ -6,18 +6,13 @@ import {
 } from "@lit-protocol/vincent-scaffold-sdk/e2e";
 
 // Apply log suppression FIRST, before any imports that might trigger logs
-suppressLitLogs(true);
+suppressLitLogs(false);
 
 import { getVincentToolClient } from "@lit-protocol/vincent-app-sdk";
 import { ethers } from "ethers";
 import { LIT_CHAINS } from '@lit-protocol/constants';
 import Safe from "@safe-global/protocol-kit";
 import SafeApiKit from "@safe-global/api-kit";
-
-import { vincentPolicyMetadata as safeMultisigPolicyMetadata } from "../../vincent-packages/policies/safe-multisig/dist/index.js";
-import { bundledVincentTool as nativeSendTool } from "../../vincent-packages/tools/native-send/dist/index.js";
-
-// Import helpers from built policy
 import {
   deterministicStringify,
   generateSafeMessageHash,
@@ -25,7 +20,13 @@ import {
   generateExpiry,
   getRpcUrlFromLitChainIdentifier,
   getSafeMessageString
-} from "../../vincent-packages/policies/safe-multisig/dist/lib/helpers/index.js";
+} from "@lit-protocol/vincent-safe-multisig-sdk";
+
+import { vincentPolicyMetadata as safeMultisigPolicyMetadata } from "../../vincent-packages/policies/safe-multisig/dist/index.js";
+import { bundledVincentTool as nativeSendTool } from "../../vincent-packages/tools/native-send/dist/index.js";
+
+
+// Import contract data from built policy (not included in SDK)
 import { safeMessageTrackerContractAddress, safeMessageTrackerContractData } from "../../vincent-packages/policies/safe-multisig/dist/lib/safe-message-tracker-contract-data.js";
 
 (async () => {
@@ -142,7 +143,7 @@ import { safeMessageTrackerContractAddress, safeMessageTrackerContractData } fro
     throw new Error("SAFE_CHAIN_LIT_IDENTIFIER environment variable is required");
   }
 
-  const rpcUrl = getRpcUrlFromLitChainIdentifier(safeChainLitIdentifier);
+  const rpcUrl = getRpcUrlFromLitChainIdentifier({ litChainIdentifier: safeChainLitIdentifier });
   const safeChainId = LIT_CHAINS[safeChainLitIdentifier].chainId;
 
   console.log("🔐 Using Safe wallet:", safeAddress);
@@ -415,8 +416,8 @@ import { safeMessageTrackerContractAddress, safeMessageTrackerContractData } fro
   console.log("🔏 Tool parameters string:", toolParametersString);
 
   const vincentExecution = {
-    appId: BigInt(registeredAppId),
-    appVersion: BigInt(registeredAppVersion),
+    appId: Number(registeredAppId),
+    appVersion: Number(registeredAppVersion),
     toolIpfsCid: nativeSendTool.ipfsCid,
     toolParametersString,
     agentWalletAddress,
@@ -427,6 +428,7 @@ import { safeMessageTrackerContractAddress, safeMessageTrackerContractData } fro
 
   const safeMessageString = getSafeMessageString({
     vincentToolExecution: vincentExecution,
+    eip712ChainId: safeChainId,
     eip712VerifyingContract: safeAddress,
   });
   const safeMessageHash = generateSafeMessageHash(

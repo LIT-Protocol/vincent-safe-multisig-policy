@@ -87,6 +87,40 @@ async function buildPackagesInDirectory(baseDir, type) {
 }
 
 /**
+ * Build a single package directory
+ */
+async function buildSinglePackage(packagePath, name) {
+  const packageJsonPath = path.join(packagePath, "package.json");
+  
+  if (!fs.existsSync(packageJsonPath)) {
+    console.log(chalk.yellow(`Skipping ${name} - no package.json found`));
+    return;
+  }
+
+  console.log(chalk.cyan(`Building ${name}...`));
+  
+  const originalDir = process.cwd();
+  
+  try {
+    process.chdir(packagePath);
+    
+    console.log(chalk.gray(`  Installing dependencies...`));
+    await executeCommand("npm", ["install"]);
+    
+    console.log(chalk.gray(`  Building package...`));
+    await executeCommand("npm", ["run", "build"]);
+    
+    console.log(chalk.green(`  ✅ Built ${name}`));
+  } catch (error) {
+    console.log(chalk.red(`  ❌ Failed to build ${name}`));
+    console.log(chalk.red(`     Error: ${error.message}`));
+    throw error;
+  } finally {
+    process.chdir(originalDir);
+  }
+}
+
+/**
  * Main build function
  */
 async function buildPackages() {
@@ -94,6 +128,11 @@ async function buildPackages() {
 
   try {
     console.log(chalk.cyan("🔨 Building Vincent packages..."));
+
+    // Build SDK first (since other packages might depend on it)
+    if (fs.existsSync("sdk")) {
+      await buildSinglePackage("sdk", "SDK");
+    }
 
     // Build policies
     await buildPackagesInDirectory("vincent-packages/policies", "policy");
@@ -117,4 +156,4 @@ if (require.main === module) {
   buildPackages();
 }
 
-module.exports = { buildPackages };
+module.exports = { buildPackages, buildSinglePackage };
