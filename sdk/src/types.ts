@@ -72,7 +72,7 @@ export interface ValidateSafeMessageParams {
   delegatorEthAddress: string;
   appId: number;
   appVersion: number;
-  logPrefix: string;
+  logPrefix?: string;
 }
 
 export interface ValidateSafeMessageResult {
@@ -107,5 +107,26 @@ export interface IsValidSafeSignatureParams {
   safeAddress: string;
   dataHash: string;
   signature: string;
+}
+
+export interface CreateVincentSafeMessageParams {
+  appId: number;
+  appVersion: number;
+  toolIpfsCid: string;
+  toolParameters: Record<string, any>;
+  agentWalletAddress: string;
+  expiry: number; // Unix timestamp
+  safeConfig: {
+    safeAddress: string;
+    chainId: number;
+    litChainIdentifier: string;
+  };
+  nonce?: string; // Optional - will be generated if not provided
+}
+
+export interface CreateVincentSafeMessageResult {
+  vincentExecution: VincentToolExecution;
+  safeMessageString: string;
+  safeMessageHash: string;
 }
 

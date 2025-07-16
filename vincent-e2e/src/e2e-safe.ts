@@ -13,18 +13,11 @@ import { ethers } from "ethers";
 import { LIT_CHAINS } from '@lit-protocol/constants';
 import Safe from "@safe-global/protocol-kit";
 import SafeApiKit from "@safe-global/api-kit";
-import {
-  deterministicStringify,
-  generateSafeMessageHash,
-  generateNonce,
-  generateExpiry,
-  getRpcUrlFromLitChainIdentifier,
-  getSafeMessageString
-} from "@lit-protocol/vincent-safe-multisig-sdk";
+import { createVincentSafeMessage } from "@lit-protocol/vincent-safe-multisig-sdk";
 
 import { vincentPolicyMetadata as safeMultisigPolicyMetadata } from "../../vincent-packages/policies/safe-multisig/dist/index.js";
 import { bundledVincentTool as nativeSendTool } from "../../vincent-packages/tools/native-send/dist/index.js";
-
+import { getRpcUrlFromLitChainIdentifier } from "../../vincent-packages/policies/safe-multisig/dist/lib/helpers/getRpcUrlFromLitChainIdentifier.js";
 
 // Import contract data from built policy (not included in SDK)
 import { safeMessageTrackerContractAddress, safeMessageTrackerContractData } from "../../vincent-packages/policies/safe-multisig/dist/lib/safe-message-tracker-contract-data.js";
@@ -412,33 +405,20 @@ import { safeMessageTrackerContractAddress, safeMessageTrackerContractData } fro
    * Create and sign Safe message for testing
    * ====================================
    */
-  const toolParametersString = deterministicStringify(TEST_TOOL_PARAMS);
-  console.log("🔏 Tool parameters string:", toolParametersString);
-
-  const vincentExecution = {
+  const { vincentToolExecution, safeMessageString, safeMessageHash } = createVincentSafeMessage({
     appId: Number(registeredAppId),
     appVersion: Number(registeredAppVersion),
     toolIpfsCid: nativeSendTool.ipfsCid,
-    toolParametersString,
+    toolParameters: TEST_TOOL_PARAMS,
     agentWalletAddress,
-    expiry: generateExpiry(),
-    nonce: generateNonce(),
-  };
-  console.log("🔏 Raw Vincent execution object:", vincentExecution);
-
-  const safeMessageString = getSafeMessageString({
-    vincentToolExecution: vincentExecution,
-    eip712ChainId: safeChainId,
-    eip712VerifyingContract: safeAddress,
-  });
-  const safeMessageHash = generateSafeMessageHash(
-    {
-      safeMessageString,
+    expiryUnixTimestamp: Math.floor(Date.now() / 1000) + (24 * 60 * 60), // 24 hours from now
+    safeConfig: {
       safeAddress,
-      chainId: safeChainId,
-    }
-  );
+      litChainIdentifier: safeChainLitIdentifier,
+    },
+  });
 
+  console.log("🔏 Vincent execution object:", vincentToolExecution);
   console.log("🔏 Safe message string:", safeMessageString);
   console.log("🔏 Safe message hash:", safeMessageHash);
 

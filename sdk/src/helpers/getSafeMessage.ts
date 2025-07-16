@@ -1,4 +1,4 @@
-import { SafeMessageResponse, GetSafeMessageParams } from "../types";
+import type { SafeMessageResponse, GetSafeMessageParams } from "../types";
 
 export async function getSafeMessage({
     safeTransactionServiceUrl,

@@ -1,4 +1,4 @@
-import { ParseAndValidateEIP712MessageParams, ParseAndValidateEIP712MessageResult, VincentToolExecution } from "../types";
+import type { ParseAndValidateEIP712MessageParams, ParseAndValidateEIP712MessageResult, VincentToolExecution } from "../types";
 
 export function parseAndValidateEIP712Message({
     expectedEip712Message,

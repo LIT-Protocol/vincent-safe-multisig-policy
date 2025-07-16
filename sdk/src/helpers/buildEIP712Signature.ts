@@ -1,4 +1,4 @@
-import { SafeConfirmation } from "../types";
+import type { SafeConfirmation } from "../types";
 
 export function buildEIP712Signature(
     confirmations: Array<SafeConfirmation>

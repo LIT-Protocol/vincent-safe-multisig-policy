@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
-import { SafeMessageHashConfig } from "../types";
+
+import type { SafeMessageHashConfig } from "../types";
 
 export function generateSafeMessageHash({
   safeMessageString,

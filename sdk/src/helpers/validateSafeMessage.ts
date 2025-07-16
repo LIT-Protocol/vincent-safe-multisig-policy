@@ -8,8 +8,8 @@ import { getSafeTransactionServiceUrl } from "./getSafeTransactionServiceUrl";
 import { isValidSafeSignature } from "./isValidSafeSignature";
 import { parseAndValidateEIP712Message } from "./parseAndValidateEIP712Message";
 import { deterministicStringify } from "./deterministicStringify";
-import { EIP712Message, ValidateSafeMessageParams, ValidateSafeMessageResult } from "../types";
 import { EIP712_DOMAIN, EIP712_MESSAGE_TYPES } from "../constants";
+import type { EIP712Message, ValidateSafeMessageParams, ValidateSafeMessageResult } from "../types";
 
 export async function validateSafeMessage({
   safeRpcUrl,
@@ -24,6 +24,8 @@ export async function validateSafeMessage({
   appVersion,
   logPrefix,
 }: ValidateSafeMessageParams): Promise<ValidateSafeMessageResult> {
+  logPrefix = logPrefix || "validateSafeMessage";
+
   /**
    * ====================================
    * Get the Safe message from Safe Transaction Service
@@ -37,7 +39,7 @@ export async function validateSafeMessage({
     safeApiKey,
     messageHash: safeMessageHash,
   });
-  console.log(`[SafeMultisigPolicy precheck] Retrieved Safe message: ${JSON.stringify(retrievedSafeMessage, null, 2)}`);
+  console.log(`[${logPrefix}] Retrieved Safe message: ${JSON.stringify(retrievedSafeMessage, null, 2)}`);
 
   /**
    * ====================================

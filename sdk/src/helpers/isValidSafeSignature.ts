@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { IsValidSafeSignatureParams } from "../types";
+import type { IsValidSafeSignatureParams } from "../types";
 
 export async function isValidSafeSignature({
     provider,

@@ -1,5 +1,5 @@
 import { EIP712_DOMAIN, EIP712_MESSAGE_TYPES } from '../constants';
-import { VincentToolExecution, EIP712Message, SafeMessageConfig } from '../types';
+import type { VincentToolExecution, EIP712Message, SafeMessageConfig } from '../types';
 import { deterministicStringify } from './deterministicStringify';
 
 export function getSafeMessageString({

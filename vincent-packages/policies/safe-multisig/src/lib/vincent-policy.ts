@@ -1,7 +1,9 @@
 import { createVincentPolicy } from "@lit-protocol/vincent-tool-sdk";
 import { laUtils } from "@lit-protocol/vincent-scaffold-sdk";
 import { ethers } from "ethers";
-import { getRpcUrlFromLitChainIdentifier, validateSafeMessage } from "@lit-protocol/vincent-safe-multisig-sdk";
+import { validateSafeMessage } from "@lit-protocol/vincent-safe-multisig-sdk";
+
+import { getRpcUrlFromLitChainIdentifier } from "./helpers/getRpcUrlFromLitChainIdentifier";
 
 import {
   commitAllowResultSchema,
