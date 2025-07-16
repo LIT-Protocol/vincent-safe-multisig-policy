@@ -29,7 +29,7 @@ function executeCommand(command, args, options = {}) {
 }
 
 /**
- * Build packages in a directory (policies or tools)
+ * Build packages in a directory (policies, tools, or single package)
  */
 async function buildPackagesInDirectory(baseDir, type) {
   const fullPath = path.resolve(baseDir);
@@ -41,6 +41,34 @@ async function buildPackagesInDirectory(baseDir, type) {
     return;
   }
 
+  const originalDir = process.cwd();
+
+  // Check if this is a single package directory (has package.json)
+  const packageJsonPath = path.join(fullPath, "package.json");
+  if (fs.existsSync(packageJsonPath)) {
+    // This is a single package directory
+    console.log(chalk.cyan(`Building ${type}: ${path.basename(baseDir)}`));
+    
+    try {
+      process.chdir(fullPath);
+      
+      console.log(chalk.gray(`  Installing dependencies...`));
+      await executeCommand("npm", ["install"]);
+      
+      console.log(chalk.gray(`  Building package...`));
+      await executeCommand("npm", ["run", "build"]);
+      
+      console.log(chalk.green(`  ✅ Built ${type}: ${path.basename(baseDir)}`));
+    } catch (error) {
+      console.log(chalk.red(`  ❌ Failed to build ${type}: ${path.basename(baseDir)}`));
+      console.log(chalk.red(`     Error: ${error.message}`));
+    } finally {
+      process.chdir(originalDir);
+    }
+    return;
+  }
+
+  // This is a directory containing multiple packages
   const items = fs.readdirSync(fullPath, { withFileTypes: true });
   const directories = items
     .filter((item) => item.isDirectory())
@@ -50,8 +78,6 @@ async function buildPackagesInDirectory(baseDir, type) {
     console.log(chalk.gray(`No ${type} packages found in ${baseDir}`));
     return;
   }
-
-  const originalDir = process.cwd();
 
   for (const dir of directories) {
     const packagePath = path.join(fullPath, dir);
@@ -86,39 +112,6 @@ async function buildPackagesInDirectory(baseDir, type) {
   }
 }
 
-/**
- * Build a single package directory
- */
-async function buildSinglePackage(packagePath, name) {
-  const packageJsonPath = path.join(packagePath, "package.json");
-  
-  if (!fs.existsSync(packageJsonPath)) {
-    console.log(chalk.yellow(`Skipping ${name} - no package.json found`));
-    return;
-  }
-
-  console.log(chalk.cyan(`Building ${name}...`));
-  
-  const originalDir = process.cwd();
-  
-  try {
-    process.chdir(packagePath);
-    
-    console.log(chalk.gray(`  Installing dependencies...`));
-    await executeCommand("npm", ["install"]);
-    
-    console.log(chalk.gray(`  Building package...`));
-    await executeCommand("npm", ["run", "build"]);
-    
-    console.log(chalk.green(`  ✅ Built ${name}`));
-  } catch (error) {
-    console.log(chalk.red(`  ❌ Failed to build ${name}`));
-    console.log(chalk.red(`     Error: ${error.message}`));
-    throw error;
-  } finally {
-    process.chdir(originalDir);
-  }
-}
 
 /**
  * Main build function
@@ -131,7 +124,7 @@ async function buildPackages() {
 
     // Build SDK first (since other packages might depend on it)
     if (fs.existsSync("sdk")) {
-      await buildSinglePackage("sdk", "SDK");
+      await buildPackagesInDirectory("sdk", "SDK");
     }
 
     // Build policies
@@ -156,4 +149,4 @@ if (require.main === module) {
   buildPackages();
 }
 
-module.exports = { buildPackages, buildSinglePackage };
+module.exports = { buildPackages, buildPackagesInDirectory };

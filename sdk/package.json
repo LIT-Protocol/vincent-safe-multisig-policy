@@ -9,8 +9,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
+    "build": "node esbuild.config.js",
     "type-check": "tsc --noEmit"
   },
   "keywords": [
@@ -28,7 +27,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
-    "tsup": "^8.0.2",
+    "esbuild": "^0.19.0",
     "typescript": "^5.7.2"
   },
   "exports": {
