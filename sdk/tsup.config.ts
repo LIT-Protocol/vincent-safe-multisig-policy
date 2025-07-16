@@ -7,6 +7,8 @@ export default defineConfig({
   clean: true,
   splitting: false,
   sourcemap: true,
-  minify: false,
-  shims: true,
+  minify: true,
+  shims: false,
+  platform: 'browser',
+  target: 'es2020',
 })
