@@ -8,7 +8,7 @@ import { getSafeTransactionServiceUrl } from "./getSafeTransactionServiceUrl";
 import { isValidSafeSignature } from "./isValidSafeSignature";
 import { parseAndValidateEIP712Message } from "./parseAndValidateEIP712Message";
 import { deterministicStringify } from "./deterministicStringify";
-import { EIP712Message, ValidateSafeMessageParams, ValidateSafeMessageResult, VincentToolExecution } from "../types";
+import { EIP712Message, ValidateSafeMessageParams, ValidateSafeMessageResult } from "../types";
 import { EIP712_DOMAIN, EIP712_MESSAGE_TYPES } from "../constants";
 
 export async function validateSafeMessage({
@@ -111,7 +111,7 @@ export async function validateSafeMessage({
    */
   console.log(`[${logPrefix}] retrievedSafeMessage.message: ${retrievedSafeMessage.message}`);
   const hashedSafeMessage = ethers.utils.hashMessage(
-    ethers.utils.toUtf8Bytes(JSON.stringify(retrievedSafeMessage.message))
+    ethers.utils.toUtf8Bytes(retrievedSafeMessage.message as string)
   );
   console.log(`[${logPrefix}] hashedSafeMessage: ${hashedSafeMessage}`);
 
