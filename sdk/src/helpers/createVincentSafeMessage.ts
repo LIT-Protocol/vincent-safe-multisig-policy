@@ -11,6 +11,7 @@ import { deterministicStringify } from './deterministicStringify';
 import { generateNonce } from './generateNonce';
 import { getSafeMessageString } from './getSafeMessageString';
 import { generateSafeMessageHash } from './generateSafeMessageHash';
+import { isChainSupportedBySafe } from './isChainSupportedBySafe';
 
 /**
  * @function createVincentSafeMessage
@@ -77,6 +78,14 @@ export function createVincentSafeMessage({
   safeConfig,
   nonce = generateNonce(),
 }: CreateVincentSafeMessageParams): CreateVincentSafeMessageResult {
+  // Validate chain support before proceeding
+  if (!isChainSupportedBySafe(safeConfig.litChainIdentifier)) {
+    throw new Error(
+      `[createVincentSafeMessage] Chain '${safeConfig.litChainIdentifier}' is not supported by Safe Transaction Service. ` +
+      `Use getSupportedSafeChains() to get a list of supported chains.`
+    );
+  }
+
   // Validate and convert expiry timestamp to string
   const expiryString = validateAndConvertExpiry(expiryUnixTimestamp);
   

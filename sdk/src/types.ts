@@ -7,11 +7,48 @@
 import type { ethers } from "ethers";
 
 // Re-export serialization types for external use
-export type { 
-  SerializableValue, 
-  SerializableObject, 
-  SerializableArray 
+export type {
+  SerializableValue,
+  SerializableObject,
+  SerializableArray
 } from './helpers/deterministicStringify';
+
+/**
+ * @type SupportedLitChainIdentifier
+ * @description Union type of all Lit Protocol chain identifiers that are supported by Safe Transaction Service.
+ * This type ensures compile-time validation of chain identifiers and prevents usage of unsupported chains.
+ * 
+ * @example
+ * ```typescript
+ * // Valid chain identifiers
+ * const validChain: SupportedLitChainIdentifier = 'ethereum'; // ✓
+ * const anotherValid: SupportedLitChainIdentifier = 'polygon'; // ✓
+ * 
+ * // Invalid chain identifier (TypeScript error)
+ * const invalidChain: SupportedLitChainIdentifier = 'unsupported-chain'; // ✗
+ * ```
+ * 
+ * @see {@link getSupportedSafeChains} for runtime list of supported chains
+ * @see {@link isChainSupportedBySafe} for runtime validation
+ */
+export type SupportedLitChainIdentifier = 
+  | 'arbitrum'
+  | 'aurora' 
+  | 'avalanche'
+  | 'base'
+  | 'baseSepolia'
+  | 'bsc'
+  | 'celo'
+  | 'chiado'
+  | 'ethereum'
+  | 'mantle'
+  | 'optimism'
+  | 'polygon'
+  | 'scroll'
+  | 'sepolia'
+  | 'sonicMainnet'
+  | 'zkEvm'
+  | 'zksync';
 
 /**
  * @interface VincentToolExecution
@@ -152,8 +189,8 @@ export interface ValidateSafeMessageParams {
   safeRpcUrl: string;
   /** @description Address of the Safe multisig wallet */
   safeAddress: string;
-  /** @description Lit Protocol chain identifier */
-  litChainIdentifier: string;
+  /** @description Lit Protocol chain identifier (must be supported by Safe Transaction Service) */
+  litChainIdentifier: SupportedLitChainIdentifier;
   /** @description API key for Safe Transaction Service */
   safeApiKey: string;
   /** @description Hash of the Safe message to validate */
@@ -266,8 +303,8 @@ export interface CreateVincentSafeMessageParams {
   safeConfig: {
     /** @description Address of the Safe multisig wallet */
     safeAddress: string;
-    /** @description Lit Protocol chain identifier */
-    litChainIdentifier: string;
+    /** @description Lit Protocol chain identifier (must be supported by Safe Transaction Service) */
+    litChainIdentifier: SupportedLitChainIdentifier;
   };
   /** @description Optional nonce - will be generated if not provided */
   nonce?: string;

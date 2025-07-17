@@ -67,3 +67,4 @@ export * from './helpers/createVincentSafeMessage';
 export * from './helpers/validateSafeMessage';
 export * from './helpers/getSupportedSafeChains';
 export * from './helpers/isChainSupportedBySafe';
+export type { SupportedLitChainIdentifier } from './types';

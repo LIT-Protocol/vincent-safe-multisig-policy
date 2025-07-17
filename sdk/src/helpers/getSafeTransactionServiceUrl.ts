@@ -5,6 +5,7 @@
  */
 
 import { LIT_CHAINS } from '@lit-protocol/constants';
+import type { SupportedLitChainIdentifier } from '../types';
 
 /**
  * @interface ChainMapping
@@ -118,7 +119,7 @@ export const SAFE_CHAIN_MAPPINGS: Record<keyof typeof LIT_CHAINS, ChainMapping> 
  * for new chains without modifying the core logic.
  */
 export function getSafeTransactionServiceUrl(
-    { litChainIdentifier }: { litChainIdentifier: keyof typeof LIT_CHAINS }
+    { litChainIdentifier }: { litChainIdentifier: SupportedLitChainIdentifier }
 ): string {
     // Validate that the chain exists in Lit Protocol
     const litChain = LIT_CHAINS[litChainIdentifier];

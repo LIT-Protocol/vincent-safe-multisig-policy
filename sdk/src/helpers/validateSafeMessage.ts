@@ -15,6 +15,7 @@ import { getSafeTransactionServiceUrl } from "./getSafeTransactionServiceUrl";
 import { isValidSafeSignature } from "./isValidSafeSignature";
 import { parseAndValidateEIP712Message } from "./parseAndValidateEIP712Message";
 import { deterministicStringify, type SerializableValue } from "./deterministicStringify";
+import { isChainSupportedBySafe } from "./isChainSupportedBySafe";
 import { EIP712_DOMAIN, EIP712_MESSAGE_TYPES } from "../constants";
 import type { EIP712Message, ValidateSafeMessageParams, ValidateSafeMessageResult } from "../types";
 
@@ -97,6 +98,16 @@ export async function validateSafeMessage({
   logPrefix,
 }: ValidateSafeMessageParams): Promise<ValidateSafeMessageResult> {
   logPrefix = logPrefix || "validateSafeMessage";
+
+  // Validate chain support before proceeding
+  if (!isChainSupportedBySafe(litChainIdentifier)) {
+    return {
+      success: false,
+      error: `Chain '${litChainIdentifier}' is not supported by Safe Transaction Service. ` +
+              `Use getSupportedSafeChains() to get a list of supported chains.`,
+      details: { chainSupported: false }
+    };
+  }
 
   /**
    * ====================================
