@@ -6,6 +6,13 @@
 
 import type { ethers } from "ethers";
 
+// Re-export serialization types for external use
+export type { 
+  SerializableValue, 
+  SerializableObject, 
+  SerializableArray 
+} from './helpers/deterministicStringify';
+
 /**
  * @interface VincentToolExecution
  * @description Represents the core parameters for a Vincent tool execution within a Safe multisig context.

@@ -52,9 +52,7 @@ export function getSafeMessageString({
   eip712ChainId,
   eip712VerifyingContract,
 }: SafeMessageConfig): string {
-  const eip712Message = createEIP712Message(eip712ChainId, eip712VerifyingContract, vincentToolExecution);
-  const messageString = deterministicStringify(eip712Message);
-  return messageString;
+  return deterministicStringify(createEIP712Message(eip712ChainId, eip712VerifyingContract, vincentToolExecution));
 }
 
 /**
@@ -78,7 +76,7 @@ function createEIP712Message(
 ): Omit<EIP712Message, "message"> & { message: VincentToolExecution } {
   return {
     types: {
-      VincentToolExecution: [...EIP712_MESSAGE_TYPES.VincentToolExecution]
+      VincentToolExecution: EIP712_MESSAGE_TYPES.VincentToolExecution
     },
     domain: {
       ...EIP712_DOMAIN,

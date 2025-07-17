@@ -73,9 +73,23 @@ export function parseAndValidateEIP712Message({
         }
 
         const retrievedEip712MessageDomain = retrievedEip712Message.domain;
-        const retrievedEip712MessageTypes = retrievedEip712Message.types;
-        const retrievedEip712MessageToolExecution = retrievedEip712Message.message;
+        const domainFields: Array<keyof typeof retrievedEip712MessageDomain> = [
+            "name",
+            "verifyingContract",
+            "version"
+        ];
+        for (const field of domainFields) {
+            if (retrievedEip712MessageDomain[field] !== expectedEip712Message.domain[field]) {
+                return {
+                    success: false,
+                    error: `Domain ${field} does not match expected domain ${field}`,
+                    expected: expectedEip712Message.domain[field],
+                    received: retrievedEip712MessageDomain[field]
+                };
+            }
+        }
 
+        const retrievedEip712MessageTypes = retrievedEip712Message.types;
         if (!retrievedEip712MessageTypes.VincentToolExecution) {
             return {
                 success: false,
@@ -94,6 +108,7 @@ export function parseAndValidateEIP712Message({
             "nonce"
         ];
 
+        const retrievedEip712MessageToolExecution = retrievedEip712Message.message;
         for (const field of requiredFields) {
             // Check for missing field
             if (!(field in retrievedEip712MessageToolExecution)) {

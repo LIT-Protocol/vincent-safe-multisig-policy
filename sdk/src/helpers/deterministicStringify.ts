@@ -7,6 +7,35 @@
 import stringify from "json-stable-stringify";
 
 /**
+ * @type SerializableValue
+ * @description Union type representing all values that can be safely serialized to JSON,
+ * including BigInt values which will be converted to strings.
+ */
+export type SerializableValue = 
+  | string 
+  | number 
+  | boolean 
+  | bigint 
+  | null 
+  | undefined
+  | SerializableObject 
+  | SerializableArray;
+
+/**
+ * @type SerializableObject
+ * @description Object type with string keys and serializable values, allowing for nested structures.
+ */
+export type SerializableObject = {
+  [key: string]: SerializableValue;
+};
+
+/**
+ * @type SerializableArray
+ * @description Array containing serializable values.
+ */
+export type SerializableArray = SerializableValue[];
+
+/**
  * @function deterministicStringify
  * @description Converts a JavaScript object to a deterministic JSON string with proper BigInt handling.
  * This function ensures that the same object will always produce the same string output,
@@ -22,6 +51,7 @@ import stringify from "json-stable-stringify";
  * @returns A deterministic JSON string representation of the object
  * 
  * @throws {Error} When the stringify operation returns undefined
+ * @throws {Error} When the input contains non-serializable values (functions, symbols, etc.)
  * 
  * @example
  * ```typescript
@@ -44,8 +74,9 @@ import stringify from "json-stable-stringify";
  * ```
  * 
  * @see {@link convertBigInts} for BigInt conversion logic
+ * @see {@link SerializableValue} for supported input types
  */
-export function deterministicStringify(obj: any): string {
+export function deterministicStringify(obj: SerializableValue): string {
   const processedObj = convertBigInts(obj);
 
   const result = stringify(processedObj);
@@ -55,6 +86,33 @@ export function deterministicStringify(obj: any): string {
 
   return result;
 }
+
+/**
+ * @type ProcessedValue
+ * @description Union type representing values after BigInt conversion, where BigInt values become strings.
+ */
+type ProcessedValue = 
+  | string 
+  | number 
+  | boolean 
+  | null 
+  | undefined
+  | ProcessedObject 
+  | ProcessedArray;
+
+/**
+ * @type ProcessedObject
+ * @description Object type with string keys and processed values (BigInts converted to strings).
+ */
+type ProcessedObject = {
+  [key: string]: ProcessedValue;
+};
+
+/**
+ * @type ProcessedArray
+ * @description Array containing processed values (BigInts converted to strings).
+ */
+type ProcessedArray = ProcessedValue[];
 
 /**
  * @function convertBigInts
@@ -73,21 +131,24 @@ export function deterministicStringify(obj: any): string {
  * 
  * @internal This is an internal helper function used by deterministicStringify
  */
-function convertBigInts(obj: any): any {
+function convertBigInts(obj: SerializableValue): ProcessedValue {
+  // Handle null and primitive types
   if (obj === null || typeof obj !== "object") {
     if (typeof obj === "bigint") {
       return obj.toString();
     }
-    return obj;
+    return obj as ProcessedValue;
   }
 
+  // Handle arrays
   if (Array.isArray(obj)) {
-    return obj.map(convertBigInts);
+    return obj.map(convertBigInts) as ProcessedArray;
   }
 
-  const result: Record<string, any> = {};
+  // Handle objects
+  const result: ProcessedObject = {};
   for (const key of Object.keys(obj)) {
-    result[key] = convertBigInts(obj[key]);
+    result[key] = convertBigInts((obj as SerializableObject)[key]);
   }
   return result;
 }
