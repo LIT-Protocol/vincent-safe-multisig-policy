@@ -19,7 +19,6 @@ import { vincentPolicyMetadata as safeMultisigPolicyMetadata } from "../../vince
 import { bundledVincentTool as nativeSendTool } from "../../vincent-packages/tools/native-send/dist/index.js";
 import { getRpcUrlFromLitChainIdentifier } from "../../vincent-packages/policies/safe-multisig/dist/lib/helpers/getRpcUrlFromLitChainIdentifier.js";
 
-// Import contract data from built policy (not included in SDK)
 import { safeMessageTrackerContractAddress, safeMessageTrackerContractData } from "../../vincent-packages/policies/safe-multisig/dist/lib/safe-message-tracker-contract-data.js";
 
 (async () => {
