@@ -1,30 +1,10 @@
 import { LIT_CHAINS } from '@lit-protocol/constants';
 
-import type { VincentToolExecution } from '../types';
+import type { CreateVincentSafeMessageParams, CreateVincentSafeMessageResult, VincentToolExecution } from '../types';
 import { deterministicStringify } from './deterministicStringify';
 import { generateNonce } from './generateNonce';
 import { getSafeMessageString } from './getSafeMessageString';
 import { generateSafeMessageHash } from './generateSafeMessageHash';
-
-export interface CreateVincentSafeMessageParams {
-  appId: number;
-  appVersion: number;
-  toolIpfsCid: string;
-  toolParameters: Record<string, any>;
-  agentWalletAddress: string;
-  expiryUnixTimestamp: number; // Unix timestamp
-  safeConfig: {
-    safeAddress: string;
-    litChainIdentifier: string;
-  };
-  nonce?: string; // Optional - will be generated if not provided
-}
-
-export interface CreateVincentSafeMessageResult {
-  vincentToolExecution: VincentToolExecution;
-  safeMessageString: string;
-  safeMessageHash: string;
-}
 
 /**
  * Creates a Vincent Safe message with all necessary components for Safe multisig execution.

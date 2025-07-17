@@ -115,18 +115,16 @@ export interface CreateVincentSafeMessageParams {
   toolIpfsCid: string;
   toolParameters: Record<string, any>;
   agentWalletAddress: string;
-  expiry: number; // Unix timestamp
+  expiryUnixTimestamp: number | string; // Unix timestamp
   safeConfig: {
     safeAddress: string;
-    chainId: number;
     litChainIdentifier: string;
   };
   nonce?: string; // Optional - will be generated if not provided
 }
 
 export interface CreateVincentSafeMessageResult {
-  vincentExecution: VincentToolExecution;
+  vincentToolExecution: VincentToolExecution;
   safeMessageString: string;
   safeMessageHash: string;
 }
-
