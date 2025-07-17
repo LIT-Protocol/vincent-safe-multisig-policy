@@ -33,7 +33,7 @@ import { generateSafeMessageHash } from './generateSafeMessageHash';
  * @param expiryUnixTimestamp - Unix timestamp when the execution expires
  * @param safeConfig - Safe wallet configuration
  * @param safeConfig.safeAddress - Address of the Safe multisig wallet
- * @param safeConfig.litChainIdentifier - Lit Protocol chain identifier
+ * @param safeConfig.litChainIdentifier - Lit Protocol chain identifier for where the Safe is deployed
  * @param nonce - Optional unique nonce (generated if not provided)
  * 
  * @returns Object containing the complete Vincent Safe message components
