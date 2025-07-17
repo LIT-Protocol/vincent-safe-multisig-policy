@@ -14,16 +14,13 @@ import type { SupportedLitChainIdentifier } from '../types';
 interface ChainMapping {
     /** @description The Safe Transaction Service chain identifier (may differ from Lit identifier) */
     safeIdentifier: string;
-    /** @description Whether this chain is supported by Safe Transaction Service */
-    supported: boolean;
-    /** @description Optional reason why a chain is not supported */
-    unsupportedReason?: string;
 }
 
 /**
  * @constant SAFE_CHAIN_MAPPINGS
- * @description Mapping configuration for all Lit Protocol chains to Safe Transaction Service identifiers.
+ * @description Mapping configuration for Lit Protocol chains that are supported by Safe Transaction Service.
  * This centralizes the chain mapping logic and makes it easier to maintain when new chains are added.
+ * Only supported chains are included in this mapping.
  * 
  * @example
  * ```typescript
@@ -31,49 +28,32 @@ interface ChainMapping {
  * SAFE_CHAIN_MAPPINGS.ethereum.safeIdentifier // 'mainnet'
  * SAFE_CHAIN_MAPPINGS.baseSepolia.safeIdentifier // 'base-sepolia'
  * 
- * // Unsupported chains
- * SAFE_CHAIN_MAPPINGS.berachain.supported // false
+ * // Direct mappings
+ * SAFE_CHAIN_MAPPINGS.arbitrum.safeIdentifier // 'arbitrum'
  * ```
  */
-export const SAFE_CHAIN_MAPPINGS: Record<keyof typeof LIT_CHAINS, ChainMapping> = {
+export const SAFE_CHAIN_MAPPINGS: Record<SupportedLitChainIdentifier, ChainMapping> = {
     // Supported chains with direct mapping (Lit identifier = Safe identifier)
-    arbitrum: { safeIdentifier: 'arbitrum', supported: true },
-    aurora: { safeIdentifier: 'aurora', supported: true },
-    avalanche: { safeIdentifier: 'avalanche', supported: true },
-    base: { safeIdentifier: 'base', supported: true },
-    bsc: { safeIdentifier: 'bsc', supported: true },
-    celo: { safeIdentifier: 'celo', supported: true },
-    chiado: { safeIdentifier: 'chiado', supported: true },
-    mantle: { safeIdentifier: 'mantle', supported: true },
-    optimism: { safeIdentifier: 'optimism', supported: true },
-    polygon: { safeIdentifier: 'polygon', supported: true },
-    scroll: { safeIdentifier: 'scroll', supported: true },
-    sepolia: { safeIdentifier: 'sepolia', supported: true },
-    zkEvm: { safeIdentifier: 'zkEvm', supported: true },
-    zksync: { safeIdentifier: 'zksync', supported: true },
+    arbitrum: { safeIdentifier: 'arbitrum' },
+    aurora: { safeIdentifier: 'aurora' },
+    avalanche: { safeIdentifier: 'avalanche' },
+    base: { safeIdentifier: 'base' },
+    bsc: { safeIdentifier: 'bsc' },
+    celo: { safeIdentifier: 'celo' },
+    chiado: { safeIdentifier: 'chiado' },
+    mantle: { safeIdentifier: 'mantle' },
+    optimism: { safeIdentifier: 'optimism' },
+    polygon: { safeIdentifier: 'polygon' },
+    scroll: { safeIdentifier: 'scroll' },
+    sepolia: { safeIdentifier: 'sepolia' },
+    zkEvm: { safeIdentifier: 'zkEvm' },
+    zksync: { safeIdentifier: 'zksync' },
 
     // Supported chains with different identifiers
-    baseSepolia: { safeIdentifier: 'base-sepolia', supported: true },
-    ethereum: { safeIdentifier: 'mainnet', supported: true },
-    sonicMainnet: { safeIdentifier: 'sonic', supported: true },
-
-    // Unsupported chains (Safe Transaction Service does not support these chains)
-    ...Object.fromEntries([
-        'berachain',
-        'gnosis-chain',
-        'hemi',
-        'ink',
-        'lens',
-        'linea',
-        'unichain',
-        'worldchain',
-        'xlayer'
-    ].map(chain => [chain, {
-        safeIdentifier: '',
-        supported: false,
-        unsupportedReason: `Safe Transaction Service does not support ${chain}`
-    }])),
-} as const;
+    baseSepolia: { safeIdentifier: 'base-sepolia' },
+    ethereum: { safeIdentifier: 'mainnet' },
+    sonicMainnet: { safeIdentifier: 'sonic' },
+};
 
 /**
  * @function getSafeTransactionServiceUrl
@@ -81,7 +61,7 @@ export const SAFE_CHAIN_MAPPINGS: Record<keyof typeof LIT_CHAINS, ChainMapping> 
  * This function handles the translation between Lit's chain naming conventions and Safe's
  * Transaction Service API endpoints, using a configuration-based approach for better maintainability.
  * 
- * The function performs validation to ensure the chain is supported by both Lit Protocol
+ * The function validates at runtime that the chain is supported by both Lit Protocol
  * and Safe's Transaction Service, throwing descriptive errors for unsupported chains.
  * 
  * @param params - Configuration for URL generation
@@ -106,7 +86,7 @@ export const SAFE_CHAIN_MAPPINGS: Record<keyof typeof LIT_CHAINS, ChainMapping> 
  * try {
  *   getSafeTransactionServiceUrl({ litChainIdentifier: 'berachain' });
  * } catch (error) {
- *   console.log(error.message); // 'Safe Transaction Service does not support Berachain'
+ *   console.log(error.message); // 'Chain 'berachain' is not supported by Safe Transaction Service...'
  * }
  * ```
  * 
@@ -119,7 +99,7 @@ export const SAFE_CHAIN_MAPPINGS: Record<keyof typeof LIT_CHAINS, ChainMapping> 
  * for new chains without modifying the core logic.
  */
 export function getSafeTransactionServiceUrl(
-    { litChainIdentifier }: { litChainIdentifier: SupportedLitChainIdentifier }
+    { litChainIdentifier }: { litChainIdentifier: keyof typeof LIT_CHAINS }
 ): string {
     // Validate that the chain exists in Lit Protocol
     const litChain = LIT_CHAINS[litChainIdentifier];
@@ -129,19 +109,13 @@ export function getSafeTransactionServiceUrl(
         );
     }
 
-    // Get the Safe chain mapping configuration
-    const chainMapping = SAFE_CHAIN_MAPPINGS[litChainIdentifier];
+    // Check if the chain is supported by Safe Transaction Service
+    const chainMapping = SAFE_CHAIN_MAPPINGS[litChainIdentifier as SupportedLitChainIdentifier];
     if (!chainMapping) {
         throw new Error(
-            `[getSafeTransactionServiceUrl] No mapping configuration found for chain '${litChainIdentifier}'`
+            `[getSafeTransactionServiceUrl] Chain '${litChainIdentifier}' is not supported by Safe Transaction Service. ` +
+            `Use getSupportedSafeChains() to get a list of supported chains.`
         );
-    }
-
-    // Check if the chain is supported by Safe Transaction Service
-    if (!chainMapping.supported) {
-        const reason = chainMapping.unsupportedReason ||
-            `Chain '${litChainIdentifier}' is not supported by Safe Transaction Service`;
-        throw new Error(`[getSafeTransactionServiceUrl] ${reason}`);
     }
 
     // Construct and return the Safe Transaction Service URL

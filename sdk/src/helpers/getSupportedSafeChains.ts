@@ -2,8 +2,7 @@
  * @fileoverview Safe chain support utilities
  * @description This module provides utility functions for checking Safe Transaction Service chain support.
  */
-
-import { LIT_CHAINS } from '@lit-protocol/constants';
+import type { SupportedLitChainIdentifier } from '../types';
 import { SAFE_CHAIN_MAPPINGS } from './getSafeTransactionServiceUrl';
 
 /**
@@ -27,8 +26,6 @@ import { SAFE_CHAIN_MAPPINGS } from './getSafeTransactionServiceUrl';
  * 
  * @see {@link isChainSupportedBySafe} for checking individual chain support
  */
-export function getSupportedSafeChains(): Array<keyof typeof LIT_CHAINS> {
-  return Object.entries(SAFE_CHAIN_MAPPINGS)
-    .filter(([, mapping]) => mapping.supported)
-    .map(([chainId]) => chainId as keyof typeof LIT_CHAINS);
+export function getSupportedSafeChains(): SupportedLitChainIdentifier[] {
+  return Object.keys(SAFE_CHAIN_MAPPINGS) as SupportedLitChainIdentifier[];
 }

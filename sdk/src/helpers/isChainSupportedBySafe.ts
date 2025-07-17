@@ -4,7 +4,8 @@
  */
 
 import { LIT_CHAINS } from '@lit-protocol/constants';
-import { SAFE_CHAIN_MAPPINGS } from './getSafeTransactionServiceUrl';
+import { getSupportedSafeChains } from './getSupportedSafeChains';
+import { SupportedLitChainIdentifier } from '../types';
 
 /**
  * @function isChainSupportedBySafe
@@ -40,6 +41,6 @@ import { SAFE_CHAIN_MAPPINGS } from './getSafeTransactionServiceUrl';
 export function isChainSupportedBySafe(
   litChainIdentifier: keyof typeof LIT_CHAINS
 ): boolean {
-  const chainMapping = SAFE_CHAIN_MAPPINGS[litChainIdentifier];
-  return chainMapping?.supported ?? false;
+  const supportedChains = getSupportedSafeChains();
+  return supportedChains.includes(litChainIdentifier as SupportedLitChainIdentifier);
 }
