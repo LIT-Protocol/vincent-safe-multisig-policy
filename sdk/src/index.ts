@@ -1,5 +1,2 @@
-// Vincent Safe Multisig SDK - Simple API for Safe multisig operations
-export {
-  createVincentSafeMessage,
-  validateSafeMessage,
-} from './helpers';
+export * from './helpers/createVincentSafeMessage';
+export * from './helpers/validateSafeMessage';
