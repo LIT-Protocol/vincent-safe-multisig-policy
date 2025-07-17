@@ -26,12 +26,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lit-protocol/vincent-safe-multisig-policy.git",
+    "url": "git+https://github.com/LIT-Protocol/vincent-safe-multisig-policy.git",
     "directory": "sdk"
   },
-  "homepage": "https://github.com/lit-protocol/vincent-safe-multisig-policy#readme",
+  "homepage": "https://github.com/LIT-Protocol/vincent-safe-multisig-policy#readme",
   "bugs": {
-    "url": "https://github.com/lit-protocol/vincent-safe-multisig-policy/issues"
+    "url": "https://github.com/LIT-Protocol/vincent-safe-multisig-policy/issues"
   },
   "dependencies": {
     "@lit-protocol/constants": "^7.0.0",
