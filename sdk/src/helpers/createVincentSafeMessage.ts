@@ -25,16 +25,16 @@ import { generateSafeMessageHash } from './generateSafeMessageHash';
  * 4. Computes the Safe message hash for on-chain verification
  * 
  * @param params - Configuration parameters for creating the Vincent Safe message
- * @param params.appId - Vincent application identifier
- * @param params.appVersion - Version of the Vincent application
- * @param params.toolIpfsCid - IPFS Content Identifier for the tool to execute
- * @param params.toolParameters - Parameters object for the tool execution
- * @param params.agentWalletAddress - Ethereum address of the agent wallet
- * @param params.expiryUnixTimestamp - Unix timestamp when the execution expires
- * @param params.safeConfig - Safe wallet configuration
- * @param params.safeConfig.safeAddress - Address of the Safe multisig wallet
- * @param params.safeConfig.litChainIdentifier - Lit Protocol chain identifier
- * @param params.nonce - Optional unique nonce (generated if not provided)
+ * @param appId - Vincent application identifier
+ * @param appVersion - Version of the Vincent application
+ * @param toolIpfsCid - IPFS Content Identifier for the tool to execute
+ * @param toolParameters - Parameters object for the tool execution
+ * @param agentWalletAddress - Ethereum address of the agent wallet
+ * @param expiryUnixTimestamp - Unix timestamp when the execution expires
+ * @param safeConfig - Safe wallet configuration
+ * @param safeConfig.safeAddress - Address of the Safe multisig wallet
+ * @param safeConfig.litChainIdentifier - Lit Protocol chain identifier
+ * @param nonce - Optional unique nonce (generated if not provided)
  * 
  * @returns Object containing the complete Vincent Safe message components
  * @returns returns.vincentToolExecution - The structured Vincent tool execution data
@@ -66,18 +66,16 @@ import { generateSafeMessageHash } from './generateSafeMessageHash';
  * @see {@link generateSafeMessageHash} for Safe message hash computation
  * @see {@link deterministicStringify} for parameter serialization
  */
-export function createVincentSafeMessage(params: CreateVincentSafeMessageParams): CreateVincentSafeMessageResult {
-  const {
-    appId,
-    appVersion,
-    toolIpfsCid,
-    toolParameters,
-    agentWalletAddress,
-    expiryUnixTimestamp,
-    safeConfig,
-    nonce = generateNonce(),
-  } = params;
-
+export function createVincentSafeMessage({
+  appId,
+  appVersion,
+  toolIpfsCid,
+  toolParameters,
+  agentWalletAddress,
+  expiryUnixTimestamp,
+  safeConfig,
+  nonce = generateNonce(),
+}: CreateVincentSafeMessageParams): CreateVincentSafeMessageResult {
   // Serialize tool parameters
   const toolParametersString = deterministicStringify(toolParameters);
 
