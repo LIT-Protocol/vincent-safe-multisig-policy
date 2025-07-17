@@ -13,7 +13,7 @@ import { ethers } from "ethers";
 import { LIT_CHAINS } from '@lit-protocol/constants';
 import Safe from "@safe-global/protocol-kit";
 import SafeApiKit from "@safe-global/api-kit";
-import { createVincentSafeMessage } from "@lit-protocol/vincent-policy-safe-multisig-sdk";
+import { createVincentSafeMessage, SupportedLitChainIdentifier } from "@lit-protocol/vincent-policy-safe-multisig-sdk";
 
 import { vincentPolicyMetadata as safeMultisigPolicyMetadata } from "../../vincent-packages/policies/safe-multisig/dist/index.js";
 import { bundledVincentTool as nativeSendTool } from "../../vincent-packages/tools/native-send/dist/index.js";
@@ -413,7 +413,7 @@ import { safeMessageTrackerContractAddress, safeMessageTrackerContractData } fro
     expiryUnixTimestamp: Math.floor(Date.now() / 1000) + (24 * 60 * 60), // 24 hours from now
     safeConfig: {
       safeAddress,
-      litChainIdentifier: safeChainLitIdentifier,
+      litChainIdentifier: safeChainLitIdentifier as SupportedLitChainIdentifier,
     },
   });
 

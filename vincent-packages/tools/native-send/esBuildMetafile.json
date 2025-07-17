@@ -78362,7 +78362,7 @@
       "format": "esm"
     },
     "../../../sdk/dist/index.mjs": {
-      "bytes": 1941728,
+      "bytes": 1944103,
       "imports": [
         {
           "path": "../../../node_modules/ethers/lib/index.js",
@@ -78396,6 +78396,11 @@
         },
         {
           "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/process.js",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "<runtime>",
           "kind": "import-statement",
           "external": true
         }
@@ -79251,7 +79256,7 @@
       "format": "esm"
     },
     "../../policies/safe-multisig/dist/lib/schemas.js": {
-      "bytes": 2927,
+      "bytes": 3535,
       "imports": [
         {
           "path": "../../../node_modules/zod/dist/esm/index.js",
@@ -79590,7 +79595,7 @@
           "bytesInOutput": 146
         },
         "../../../node_modules/@jspm/core/nodelibs/browser/chunk-DtuTasat.js": {
-          "bytesInOutput": 63787
+          "bytesInOutput": 63816
         },
         "../../../node_modules/@jspm/core/nodelibs/browser/buffer.js": {
           "bytesInOutput": 735
@@ -79671,13 +79676,13 @@
           "bytesInOutput": 5192
         },
         "../../../node_modules/bn.js/lib/bn.js": {
-          "bytesInOutput": 100169
+          "bytesInOutput": 100376
         },
         "../../../node_modules/@ethersproject/logger/lib/_version.js": {
           "bytesInOutput": 358
         },
         "../../../node_modules/@ethersproject/logger/lib/index.js": {
-          "bytesInOutput": 12418
+          "bytesInOutput": 12433
         },
         "../../../node_modules/@ethersproject/bytes/lib/_version.js": {
           "bytesInOutput": 357
@@ -79779,7 +79784,7 @@
           "bytesInOutput": 1387
         },
         "../../../node_modules/@ethersproject/strings/lib/idna.js": {
-          "bytesInOutput": 11217
+          "bytesInOutput": 11221
         },
         "../../../node_modules/@ethersproject/strings/lib/index.js": {
           "bytesInOutput": 2161
@@ -79806,13 +79811,13 @@
           "bytesInOutput": 636
         },
         "../../../node_modules/@ethersproject/hash/lib/ens-normalize/decoder.js": {
-          "bytesInOutput": 7970
+          "bytesInOutput": 7972
         },
         "../../../node_modules/@ethersproject/hash/lib/ens-normalize/include.js": {
           "bytesInOutput": 15315
         },
         "../../../node_modules/@ethersproject/hash/lib/ens-normalize/lib.js": {
-          "bytesInOutput": 4251
+          "bytesInOutput": 4255
         },
         "../../../node_modules/@ethersproject/hash/lib/namehash.js": {
           "bytesInOutput": 2930
@@ -79821,7 +79826,7 @@
           "bytesInOutput": 938
         },
         "../../../node_modules/@ethersproject/hash/lib/typed-data.js": {
-          "bytesInOutput": 22745
+          "bytesInOutput": 22750
         },
         "../../../node_modules/@ethersproject/hash/lib/index.js": {
           "bytesInOutput": 1794
@@ -79848,13 +79853,13 @@
           "bytesInOutput": 1811
         },
         "../../../node_modules/elliptic/node_modules/bn.js/lib/bn.js": {
-          "bytesInOutput": 97334
+          "bytesInOutput": 97541
         },
         "../../../node_modules/minimalistic-assert/index.js": {
           "bytesInOutput": 513
         },
         "../../../node_modules/minimalistic-crypto-utils/lib/utils.js": {
-          "bytesInOutput": 1652
+          "bytesInOutput": 1655
         },
         "../../../node_modules/elliptic/lib/elliptic/utils.js": {
           "bytesInOutput": 3030
@@ -79872,19 +79877,19 @@
           "bytesInOutput": 1033
         },
         "../../../node_modules/elliptic/lib/elliptic/curve/short.js": {
-          "bytesInOutput": 24046
+          "bytesInOutput": 24020
         },
         "../../../node_modules/elliptic/lib/elliptic/curve/mont.js": {
           "bytesInOutput": 4699
         },
         "../../../node_modules/elliptic/lib/elliptic/curve/edwards.js": {
-          "bytesInOutput": 10824
+          "bytesInOutput": 10811
         },
         "../../../node_modules/elliptic/lib/elliptic/curve/index.js": {
           "bytesInOutput": 387
         },
         "../../../node_modules/hash.js/lib/hash/utils.js": {
-          "bytesInOutput": 7687
+          "bytesInOutput": 7695
         },
         "../../../node_modules/hash.js/lib/hash/common.js": {
           "bytesInOutput": 2741
@@ -79956,7 +79961,7 @@
           "bytesInOutput": 370
         },
         "../../../node_modules/@ethersproject/signing-key/lib/index.js": {
-          "bytesInOutput": 4633
+          "bytesInOutput": 4635
         },
         "../../../node_modules/@ethersproject/transactions/lib/_version.js": {
           "bytesInOutput": 372
@@ -79968,7 +79973,7 @@
           "bytesInOutput": 386
         },
         "../../../node_modules/ethers/node_modules/@ethersproject/contracts/lib/index.js": {
-          "bytesInOutput": 53431
+          "bytesInOutput": 53471
         },
         "../../../node_modules/@ethersproject/basex/lib/index.js": {
           "bytesInOutput": 3389
@@ -80031,7 +80036,7 @@
           "bytesInOutput": 360
         },
         "../../../node_modules/@ethersproject/hdnode/lib/index.js": {
-          "bytesInOutput": 14419
+          "bytesInOutput": 14422
         },
         "../../../node_modules/@ethersproject/random/lib/_version.js": {
           "bytesInOutput": 360
@@ -80046,7 +80051,7 @@
           "bytesInOutput": 699
         },
         "../../../node_modules/aes-js/index.js": {
-          "bytesInOutput": 59366
+          "bytesInOutput": 59361
         },
         "../../../node_modules/@ethersproject/json-wallets/lib/_version.js": {
           "bytesInOutput": 372
@@ -80061,7 +80066,7 @@
           "bytesInOutput": 1641
         },
         "../../../node_modules/scrypt-js/scrypt.js": {
-          "bytesInOutput": 16204
+          "bytesInOutput": 16185
         },
         "../../../node_modules/@ethersproject/json-wallets/lib/keystore.js": {
           "bytesInOutput": 17925
@@ -80100,7 +80105,7 @@
           "bytesInOutput": 18545
         },
         "../../../node_modules/ethers/node_modules/@ethersproject/providers/lib/base-provider.js": {
-          "bytesInOutput": 119137
+          "bytesInOutput": 119147
         },
         "../../../node_modules/ethers/node_modules/@ethersproject/providers/lib/json-rpc-provider.js": {
           "bytesInOutput": 38855
@@ -80355,7 +80360,7 @@
           "bytesInOutput": 285
         },
         "../../../node_modules/@noble/hashes/esm/utils.js": {
-          "bytesInOutput": 5738
+          "bytesInOutput": 5745
         },
         "../../../node_modules/@noble/hashes/esm/sha3.js": {
           "bytesInOutput": 6410
@@ -80502,16 +80507,16 @@
           "bytesInOutput": 9482
         },
         "../../../node_modules/viem/node_modules/@noble/curves/esm/abstract/curve.js": {
-          "bytesInOutput": 9607
+          "bytesInOutput": 9613
         },
         "../../../node_modules/viem/node_modules/@noble/curves/esm/abstract/weierstrass.js": {
-          "bytesInOutput": 36503
+          "bytesInOutput": 36553
         },
         "../../../node_modules/viem/node_modules/@noble/curves/esm/_shortw_utils.js": {
           "bytesInOutput": 388
         },
         "../../../node_modules/viem/node_modules/@noble/curves/esm/abstract/hash-to-curve.js": {
-          "bytesInOutput": 5537
+          "bytesInOutput": 5539
         },
         "../../../node_modules/viem/node_modules/@noble/curves/esm/secp256k1.js": {
           "bytesInOutput": 9347
@@ -81117,10 +81122,10 @@
           "bytesInOutput": 11317
         },
         "../../../node_modules/@noble/curves/esm/abstract/curve.js": {
-          "bytesInOutput": 9990
+          "bytesInOutput": 9996
         },
         "../../../node_modules/@noble/curves/esm/abstract/weierstrass.js": {
-          "bytesInOutput": 34989
+          "bytesInOutput": 35045
         },
         "../../../node_modules/@noble/curves/esm/_shortw_utils.js": {
           "bytesInOutput": 374
@@ -81135,7 +81140,7 @@
           "bytesInOutput": 9589
         },
         "../../../node_modules/@noble/hashes/esm/pbkdf2.js": {
-          "bytesInOutput": 1730
+          "bytesInOutput": 1736
         },
         "../../../node_modules/@scure/bip39/esm/index.js": {
           "bytesInOutput": 823
@@ -81480,7 +81485,7 @@
           "bytesInOutput": 1331
         },
         "../../../node_modules/alchemy-sdk/dist/esm/api/utils.js": {
-          "bytesInOutput": 18482
+          "bytesInOutput": 18486
         },
         "../../../node_modules/axios/lib/helpers/bind.js": {
           "bytesInOutput": 297
@@ -81648,7 +81653,7 @@
           "bytesInOutput": 16074
         },
         "../../../node_modules/@ethersproject/providers/lib.esm/base-provider.js": {
-          "bytesInOutput": 76093
+          "bytesInOutput": 76097
         },
         "../../../node_modules/@ethersproject/providers/lib.esm/json-rpc-provider.js": {
           "bytesInOutput": 27128
@@ -81741,13 +81746,13 @@
           "bytesInOutput": 1215
         },
         "../../../node_modules/@segment/analytics-generic-utils/dist/esm/create-deferred/create-deferred.js": {
-          "bytesInOutput": 1108
+          "bytesInOutput": 1118
         },
         "../../../node_modules/@segment/analytics-generic-utils/dist/esm/create-deferred/index.js": {
           "bytesInOutput": 246
         },
         "../../../node_modules/@segment/analytics-generic-utils/dist/esm/emitter/emitter.js": {
-          "bytesInOutput": 2555
+          "bytesInOutput": 2565
         },
         "../../../node_modules/@segment/analytics-generic-utils/dist/esm/emitter/index.js": {
           "bytesInOutput": 222
@@ -81759,7 +81764,7 @@
           "bytesInOutput": 576
         },
         "../../../node_modules/@segment/analytics-core/dist/esm/priority-queue/index.js": {
-          "bytesInOutput": 3730
+          "bytesInOutput": 3735
         },
         "../../../node_modules/@lukeed/uuid/dist/index.mjs": {
           "bytesInOutput": 812
@@ -81768,7 +81773,7 @@
           "bytesInOutput": 2234
         },
         "../../../node_modules/@segment/analytics-core/dist/esm/stats/index.js": {
-          "bytesInOutput": 2983
+          "bytesInOutput": 3003
         },
         "../../../node_modules/@segment/analytics-core/dist/esm/context/index.js": {
           "bytesInOutput": 3165
@@ -81786,7 +81791,7 @@
           "bytesInOutput": 2161
         },
         "../../../node_modules/@segment/analytics-core/dist/esm/queue/event-queue.js": {
-          "bytesInOutput": 14068
+          "bytesInOutput": 14073
         },
         "../../../node_modules/@segment/analytics-core/dist/esm/analytics/index.js": {
           "bytesInOutput": 194
@@ -81801,7 +81806,7 @@
           "bytesInOutput": 553
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/arguments-resolver/index.js": {
-          "bytesInOutput": 4129
+          "bytesInOutput": 4134
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/environment/index.js": {
           "bytesInOutput": 327
@@ -81816,7 +81821,7 @@
           "bytesInOutput": 596
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/lib/fetch.js": {
-          "bytesInOutput": 539
+          "bytesInOutput": 544
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/generated/version.js": {
           "bytesInOutput": 240
@@ -81867,7 +81872,7 @@
           "bytesInOutput": 987
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/lib/bind-all.js": {
-          "bytesInOutput": 634
+          "bytesInOutput": 638
         },
         "../../../node_modules/js-cookie/dist/js.cookie.mjs": {
           "bytesInOutput": 3316
@@ -81891,7 +81896,7 @@
           "bytesInOutput": 501
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/storage/universalStorage.js": {
-          "bytesInOutput": 1957
+          "bytesInOutput": 1961
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/storage/index.js": {
           "bytesInOutput": 1364
@@ -81906,7 +81911,7 @@
           "bytesInOutput": 378
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/buffer/index.js": {
-          "bytesInOutput": 11918
+          "bytesInOutput": 11959
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/callback/index.js": {
           "bytesInOutput": 217
@@ -81975,7 +81980,7 @@
           "bytesInOutput": 998
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/plugins/middleware/index.js": {
-          "bytesInOutput": 4264
+          "bytesInOutput": 4269
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/query-string/pickPrefix.js": {
           "bytesInOutput": 466
@@ -81987,7 +81992,7 @@
           "bytesInOutput": 1778
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/analytics/index.js": {
-          "bytesInOutput": 24864
+          "bytesInOutput": 24931
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/lib/get-process-env.js": {
           "bytesInOutput": 366
@@ -82002,16 +82007,16 @@
           "bytesInOutput": 718
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/plugins/env-enrichment/index.js": {
-          "bytesInOutput": 5984
+          "bytesInOutput": 5988
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/lib/load-script.js": {
-          "bytesInOutput": 2331
+          "bytesInOutput": 2335
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/stats/metric-helpers.js": {
           "bytesInOutput": 633
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/plugins/remote-loader/index.js": {
-          "bytesInOutput": 13236
+          "bytesInOutput": 13241
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/lib/on-page-change.js": {
           "bytesInOutput": 756
@@ -82026,13 +82031,13 @@
           "bytesInOutput": 1180
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/plugins/segmentio/normalize.js": {
-          "bytesInOutput": 2301
+          "bytesInOutput": 2305
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/lib/p-while.js": {
           "bytesInOutput": 1222
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/plugins/segmentio/schedule-flush.js": {
-          "bytesInOutput": 2908
+          "bytesInOutput": 2913
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/plugins/segmentio/index.js": {
           "bytesInOutput": 4162
@@ -82056,7 +82061,7 @@
           "bytesInOutput": 1143
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/plugins/ajs-destination/index.js": {
-          "bytesInOutput": 16673
+          "bytesInOutput": 16680
         },
         "../../../node_modules/@segment/analytics.js-video-plugins/dist/index.umd.js": {
           "bytesInOutput": 19003
@@ -82413,7 +82418,7 @@
           "bytesInOutput": 2523
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@noble/curves/esm/abstract/utils.js": {
-          "bytesInOutput": 7753
+          "bytesInOutput": 7760
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@noble/curves/esm/abstract/modular.js": {
           "bytesInOutput": 8991
@@ -82422,7 +82427,7 @@
           "bytesInOutput": 8131
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@noble/curves/esm/abstract/weierstrass.js": {
-          "bytesInOutput": 35249
+          "bytesInOutput": 35248
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@noble/curves/esm/_shortw_utils.js": {
           "bytesInOutput": 645
@@ -83160,13 +83165,13 @@
           "bytesInOutput": 7329
         },
         "../../../sdk/dist/index.mjs": {
-          "bytesInOutput": 2219292
+          "bytesInOutput": 2219191
         },
         "../../policies/safe-multisig/dist/lib/helpers/getRpcUrlFromLitChainIdentifier.js": {
           "bytesInOutput": 644
         },
         "../../policies/safe-multisig/dist/lib/schemas.js": {
-          "bytesInOutput": 3663
+          "bytesInOutput": 4087
         },
         "../../policies/safe-multisig/dist/lib/safe-message-tracker-signatures.js": {
           "bytesInOutput": 3203
@@ -83181,7 +83186,7 @@
           "bytesInOutput": 1330
         }
       },
-      "bytes": 13145358
+      "bytes": 13146898
     }
   }
 }

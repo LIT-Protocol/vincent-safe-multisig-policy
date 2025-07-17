@@ -1,4 +1,27 @@
 import { z } from "zod";
+// Supported Lit chain identifiers that work with Safe Transaction Service
+const supportedLitChainIdentifiers = [
+    'arbitrum',
+    'aurora',
+    'avalanche',
+    'base',
+    'baseSepolia',
+    'bsc',
+    'celo',
+    'chiado',
+    'ethereum',
+    'mantle',
+    'optimism',
+    'polygon',
+    'scroll',
+    'sepolia',
+    'sonicMainnet',
+    'zkEvm',
+    'zksync'
+];
+// Zod schema for supported chain identifiers
+const litChainIdentifierSchema = z.enum(supportedLitChainIdentifiers)
+    .describe("The chain identifier of the LIT chain where the Safe multisig contract is deployed (must be supported by Safe Transaction Service)");
 export const toolParamsSchema = z.object({
     safeConfig: z.object({
         safeApiKey: z
@@ -9,7 +32,7 @@ export const toolParamsSchema = z.object({
 }).passthrough();
 export const userParamsSchema = z.object({
     safeAddress: z.string().describe("The Safe multisig contract address"),
-    litChainIdentifier: z.string().describe("The chain identifier of the LIT chain where the Safe multisig contract is deployed"),
+    litChainIdentifier: litChainIdentifierSchema,
 });
 /**
  * Commit parameters schema - data passed to commit phase
@@ -19,12 +42,12 @@ export const commitParamsSchema = z.object({
 });
 export const precheckAllowResultSchema = z.object({
     safeAddress: z.string(),
-    litChainIdentifier: z.string(),
+    litChainIdentifier: litChainIdentifierSchema,
     messageHash: z.string(),
 });
 export const precheckDenyResultSchema = z.object({
     reason: z.string(),
-    litChainIdentifier: z.string().optional(),
+    litChainIdentifier: litChainIdentifierSchema.optional(),
     safeAddress: z.string().optional(),
     messageHash: z.string().optional(),
     expected: z.any().optional(),
@@ -43,12 +66,12 @@ export const precheckDenyResultSchema = z.object({
 });
 export const evalAllowResultSchema = z.object({
     safeAddress: z.string(),
-    litChainIdentifier: z.string(),
+    litChainIdentifier: litChainIdentifierSchema,
     messageHash: z.string(),
 });
 export const evalDenyResultSchema = z.object({
     reason: z.string(),
-    litChainIdentifier: z.string().optional(),
+    litChainIdentifier: litChainIdentifierSchema.optional(),
     safeAddress: z.string().optional(),
     messageHash: z.string().optional(),
     expected: z.any().optional(),
