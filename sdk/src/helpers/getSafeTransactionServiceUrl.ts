@@ -1,10 +1,50 @@
+/**
+ * @fileoverview Safe Transaction Service URL mapping utility
+ * @description This module provides functionality to map Lit Protocol chain identifiers
+ * to the corresponding Safe Transaction Service API URLs.
+ */
+
 import { LIT_CHAINS } from '@lit-protocol/constants';
 
 /**
- * Get Safe Transaction Service URL from LIT chain identifier
- * @param litChainIdentifier - The LIT chain identifier (must be a valid key from LIT_CHAINS)
- * @returns The Safe Transaction Service URL for the chain
- * @throws Error if chain identifier is not found or Safe doesn't support the chain
+ * @function getSafeTransactionServiceUrl
+ * @description Maps a Lit Protocol chain identifier to the corresponding Safe Transaction Service URL.
+ * This function handles the translation between Lit's chain naming conventions and Safe's
+ * Transaction Service API endpoints, including special cases where the naming differs.
+ * 
+ * The function performs validation to ensure the chain is supported by both Lit Protocol
+ * and Safe's Transaction Service, throwing descriptive errors for unsupported chains.
+ * 
+ * @param params - Configuration for URL generation
+ * @param params.litChainIdentifier - The Lit Protocol chain identifier (must be a valid key from LIT_CHAINS)
+ * 
+ * @returns The complete Safe Transaction Service URL for the specified chain
+ * 
+ * @throws {Error} When the chain identifier is not supported by Lit Protocol
+ * @throws {Error} When the chain is not supported by Safe's Transaction Service
+ * 
+ * @example
+ * ```typescript
+ * // Standard mapping
+ * const mainnetUrl = getSafeTransactionServiceUrl({ litChainIdentifier: 'ethereum' });
+ * console.log(mainnetUrl); // 'https://safe-transaction-mainnet.safe.global'
+ * 
+ * // Special case mapping
+ * const baseSepoliaUrl = getSafeTransactionServiceUrl({ litChainIdentifier: 'baseSepolia' });
+ * console.log(baseSepoliaUrl); // 'https://safe-transaction-base-sepolia.safe.global'
+ * 
+ * // Unsupported chain
+ * try {
+ *   getSafeTransactionServiceUrl({ litChainIdentifier: 'berachain' });
+ * } catch (error) {
+ *   console.log(error.message); // 'Berachain is not supported by Lit'
+ * }
+ * ```
+ * 
+ * @see {@link https://docs.safe.global/safe-core-api/transaction-service-api} Safe Transaction Service API documentation
+ * 
+ * @note This function includes a comprehensive mapping for all major EVM chains supported
+ * by both Lit Protocol and Safe, with explicit error handling for unsupported chains.
  */
 export function getSafeTransactionServiceUrl(
     { litChainIdentifier }: { litChainIdentifier: keyof typeof LIT_CHAINS }
