@@ -1,43 +1,42 @@
 import { ethers } from "ethers";
-import { deterministicStringify, buildEIP712Signature, getSafeMessage, getSafeThreshold, getSafeTransactionServiceUrl, isValidSafeSignature, parseAndValidateEIP712Message, } from "@lit-protocol/vincent-safe-multisig-sdk";
+import { LIT_CHAINS } from "@lit-protocol/constants";
+import { buildEIP712Signature } from "./buildEIP712Signature";
+import { getSafeMessage } from "./getSafeMessage";
+import { getSafeThreshold } from "./getSafeThreshold";
+import { getSafeTransactionServiceUrl } from "./getSafeTransactionServiceUrl";
+import { isValidSafeSignature } from "./isValidSafeSignature";
+import { parseAndValidateEIP712Message } from "./parseAndValidateEIP712Message";
+import { deterministicStringify } from "./deterministicStringify";
+import { EIP712_DOMAIN, EIP712_MESSAGE_TYPES } from "../constants";
 export async function validateSafeMessage({ safeRpcUrl, safeAddress, litChainIdentifier, safeApiKey, safeMessageHash, executingToolParams, toolIpfsCid, delegatorEthAddress, appId, appVersion, logPrefix, }) {
+    logPrefix = logPrefix || "validateSafeMessage";
     /**
      * ====================================
      * Get the Safe message from Safe Transaction Service
      * ====================================
      */
     const safeProvider = new ethers.providers.StaticJsonRpcProvider(safeRpcUrl);
-    const safeMessage = await getSafeMessage({
-        safeTransactionServiceUrl: getSafeTransactionServiceUrl(litChainIdentifier),
+    const retrievedSafeMessage = await getSafeMessage({
+        safeTransactionServiceUrl: getSafeTransactionServiceUrl({ litChainIdentifier }),
         safeAddress,
         safeApiKey,
         messageHash: safeMessageHash,
     });
-    console.log(`[SafeMultisigPolicy precheck] Retrieved Safe message: ${JSON.stringify(safeMessage, null, 2)}`);
-    if (safeMessage === null) {
-        return {
-            success: false,
-            error: "Safe message not found or not proposed",
-            details: {
-                safeAddress,
-                messageHash: safeMessageHash,
-            }
-        };
-    }
+    console.log(`[${logPrefix}] Retrieved Safe message: ${JSON.stringify(retrievedSafeMessage, null, 2)}`);
     /**
      * ====================================
      * Check if the number of signatures is equal to or greater than the Safe's threshold
      * ====================================
      */
-    const threshold = await getSafeThreshold(safeProvider, safeAddress);
+    const threshold = await getSafeThreshold({ provider: safeProvider, safeAddress });
     console.log(`[${logPrefix}] Safe threshold: ${threshold}`);
-    if (safeMessage.confirmations.length < threshold) {
+    if (retrievedSafeMessage.confirmations.length < threshold) {
         return {
             success: false,
             error: "Insufficient signatures",
             details: {
                 safeAddress,
-                currentNumberOfSignatures: safeMessage.confirmations.length,
+                currentNumberOfSignatures: retrievedSafeMessage.confirmations.length,
                 requiredNumberOfSignatures: threshold,
             }
         };
@@ -48,13 +47,29 @@ export async function validateSafeMessage({ safeRpcUrl, safeAddress, litChainIde
      * Also validate the parsed values match the App Id, App Version, Tool IPFS CID, and Tool parameters.
      * ====================================
      */
+    const retrievedEip712Message = JSON.parse(retrievedSafeMessage.message);
     const eip712ValidationResult = parseAndValidateEIP712Message({
-        messageString: safeMessage.message,
-        expectedToolIpfsCid: toolIpfsCid,
-        expectedAgentAddress: delegatorEthAddress,
-        expectedAppId: appId,
-        expectedAppVersion: appVersion,
-        expectedToolParametersString: deterministicStringify(executingToolParams),
+        expectedEip712Message: {
+            types: {
+                VincentToolExecution: [...EIP712_MESSAGE_TYPES.VincentToolExecution]
+            },
+            domain: {
+                ...EIP712_DOMAIN,
+                chainId: LIT_CHAINS[litChainIdentifier].chainId,
+                verifyingContract: safeAddress,
+            },
+            primaryType: "VincentToolExecution",
+            message: {
+                appId,
+                appVersion,
+                toolIpfsCid,
+                toolParametersString: deterministicStringify(executingToolParams),
+                agentWalletAddress: delegatorEthAddress,
+                expiry: retrievedEip712Message.message.expiry,
+                nonce: retrievedEip712Message.message.nonce,
+            },
+        },
+        retrievedEip712Message,
     });
     if (!eip712ValidationResult.success) {
         return {
@@ -73,11 +88,11 @@ export async function validateSafeMessage({ safeRpcUrl, safeAddress, litChainIde
      * Validate the signature returned by Safe Transaction Service against the Safe contract
      * ====================================
      */
-    console.log(`[${logPrefix}] safeMessage.message: ${safeMessage.message}`);
-    const hashedSafeMessage = ethers.utils.hashMessage(ethers.utils.toUtf8Bytes(safeMessage.message));
+    console.log(`[${logPrefix}] retrievedSafeMessage.message: ${retrievedSafeMessage.message}`);
+    const hashedSafeMessage = ethers.utils.hashMessage(ethers.utils.toUtf8Bytes(retrievedSafeMessage.message));
     console.log(`[${logPrefix}] hashedSafeMessage: ${hashedSafeMessage}`);
     // Use the preparedSignature from Safe Transaction Service if available
-    const eip712Signature = safeMessage.preparedSignature || buildEIP712Signature(safeMessage.confirmations);
+    const eip712Signature = retrievedSafeMessage.preparedSignature || buildEIP712Signature(retrievedSafeMessage.confirmations);
     console.log(`[${logPrefix}] eip712Signature: ${eip712Signature}`);
     const isValid = await isValidSafeSignature({
         provider: safeProvider,
@@ -91,12 +106,12 @@ export async function validateSafeMessage({ safeRpcUrl, safeAddress, litChainIde
             success: false,
             error: "Invalid Safe signature",
             details: {
-                confirmations: safeMessage.confirmations,
+                confirmations: retrievedSafeMessage.confirmations,
             }
         };
     }
     return {
         success: true,
-        safeMessage,
+        safeMessage: retrievedSafeMessage,
     };
 }

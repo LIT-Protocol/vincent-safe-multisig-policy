@@ -10,6 +10,6 @@ export async function isValidSafeSignature({ provider, safeAddress, dataHash, si
     }
     catch (error) {
         console.error("[isValidSafeSignature] Error validating Safe signature:", error);
-        return false;
+        throw error;
     }
 }

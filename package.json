@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "Vincent project with tools and policies",
   "private": true,
+  "workspaces": [
+    "sdk",
+    "vincent-packages/policies/*",
+    "vincent-packages/tools/*"
+  ],
   "scripts": {
     "vincent:hardreset": "node vincent-scripts/hardReset.js",
     "vincent:build": "node vincent-scripts/buildPackages.js && npm run vincent:e2e:reset",

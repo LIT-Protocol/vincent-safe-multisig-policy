@@ -1,5 +1,17 @@
 import stringify from "json-stable-stringify";
 /**
+ * Stringify an object with proper handling of bigints
+ * Converts bigints to strings before stringifying to ensure deterministic output
+ */
+export function deterministicStringify(obj) {
+    const processedObj = convertBigInts(obj);
+    const result = stringify(processedObj);
+    if (result === undefined) {
+        throw new Error("[deterministicStringify] Stringify result is undefined");
+    }
+    return result;
+}
+/**
  * Converts bigints to strings for serialization
  */
 function convertBigInts(obj) {
@@ -17,12 +29,4 @@ function convertBigInts(obj) {
         result[key] = convertBigInts(obj[key]);
     }
     return result;
-}
-/**
- * Stringify an object with proper handling of bigints
- * Converts bigints to strings before stringifying to ensure deterministic output
- */
-export function deterministicStringify(obj) {
-    const processedObj = convertBigInts(obj);
-    return stringify(processedObj);
 }

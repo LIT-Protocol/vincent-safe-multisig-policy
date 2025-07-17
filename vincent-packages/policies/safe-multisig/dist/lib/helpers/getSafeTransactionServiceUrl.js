@@ -5,7 +5,7 @@ import { LIT_CHAINS } from '@lit-protocol/constants';
  * @returns The Safe Transaction Service URL for the chain
  * @throws Error if chain identifier is not found or Safe doesn't support the chain
  */
-export function getSafeTransactionServiceUrl(litChainIdentifier) {
+export function getSafeTransactionServiceUrl({ litChainIdentifier }) {
     const chain = LIT_CHAINS[litChainIdentifier];
     if (!chain) {
         throw new Error(`[getSafeTransactionServiceUrl] Chain identifier '${litChainIdentifier}' not supported by Lit`);

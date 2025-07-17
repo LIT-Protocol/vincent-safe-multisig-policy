@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 /**
  * Get Safe threshold from contract
  */
-export async function getSafeThreshold(provider, safeAddress) {
+export async function getSafeThreshold({ provider, safeAddress }) {
     try {
         const safeContract = new ethers.Contract(safeAddress, ["function getThreshold() view returns (uint256)"], provider);
         const threshold = await safeContract.getThreshold();

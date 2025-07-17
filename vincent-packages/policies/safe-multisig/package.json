@@ -12,6 +12,7 @@
     "clean": "vincent-scaffold pkg clean"
   },
   "devDependencies": {
+    "@lit-protocol/vincent-policy-safe-multisig-sdk": "1.0.0",
     "@types/bun": "latest",
     "typescript": "^5"
   },
@@ -21,7 +22,6 @@
   "dependencies": {
     "@lit-protocol/vincent-scaffold-sdk": "^1.1.4",
     "@lit-protocol/vincent-tool-sdk": "^1.0.2",
-    "@lit-protocol/vincent-safe-multisig-sdk": "file:../../../sdk",
     "ethers": "^5.7.2",
     "zod": "^3.22.4"
   },

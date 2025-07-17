@@ -1,5 +1,5 @@
 {
-  "name": "@lit-protocol/vincent-safe-multisig-sdk",
+  "name": "@lit-protocol/vincent-policy-safe-multisig-sdk",
   "version": "1.0.0",
   "description": "SDK for creating Safe messages compatible with Vincent Safe Multisig Policy",
   "main": "dist/index.js",

@@ -17,7 +17,7 @@ export async function getSafeMessage({ safeTransactionServiceUrl, safeAddress, m
         if (!response.ok) {
             if (response.status === 404) {
                 console.log(`[getSafeMessage] Safe message not found for hash: ${messageHash}`);
-                return null;
+                throw new Error(`[getSafeMessage] Safe message not found for hash: ${messageHash}`);
             }
             throw new Error(`[getSafeMessage] Failed to fetch Safe message: ${response.status} ${response.statusText}`);
         }
@@ -27,12 +27,12 @@ export async function getSafeMessage({ safeTransactionServiceUrl, safeAddress, m
         if (message.safe &&
             message.safe.toLowerCase() !== safeAddress.toLowerCase()) {
             console.log(`[getSafeMessage] Message found but for different Safe. Expected: ${safeAddress}, Got: ${message.safe}`);
-            return null;
+            throw new Error(`[getSafeMessage] Message found but for different Safe. Expected: ${safeAddress}, Got: ${message.safe}`);
         }
         return message;
     }
     catch (error) {
         console.error("[getSafeMessage] Error checking Safe message:", error);
-        return null;
+        throw error;
     }
 }
