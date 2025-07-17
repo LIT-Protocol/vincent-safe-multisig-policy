@@ -1,6 +1,10 @@
 import { createVincentPolicy } from "@lit-protocol/vincent-tool-sdk";
 import { laUtils } from "@lit-protocol/vincent-scaffold-sdk";
 import { ethers } from "ethers";
+import { validateSafeMessage } from "@lit-protocol/vincent-policy-safe-multisig-sdk";
+
+import { getRpcUrlFromLitChainIdentifier } from "./helpers/getRpcUrlFromLitChainIdentifier";
+
 import {
   commitAllowResultSchema,
   commitDenyResultSchema,
@@ -12,7 +16,6 @@ import {
   toolParamsSchema,
   userParamsSchema,
 } from "./schemas";
-import { getRpcUrlFromLitChainIdentifier, validateSafeMessage } from "./helpers";
 import { safeMessageTrackerSignatures, safeMessageTrackerContractAddress } from "./safe-message-tracker-signatures";
 import { safeMessageTrackerContractData } from "./safe-message-tracker-contract-data";
 
@@ -89,7 +92,7 @@ export const vincentPolicy = createVincentPolicy({
        * ====================================
        */
       const validationResult = await validateSafeMessage({
-        safeRpcUrl: getRpcUrlFromLitChainIdentifier(userParams.litChainIdentifier),
+        safeRpcUrl: getRpcUrlFromLitChainIdentifier({ litChainIdentifier: userParams.litChainIdentifier }),
         safeAddress: userParams.safeAddress,
         litChainIdentifier: userParams.litChainIdentifier,
         safeApiKey: safeConfig.safeApiKey,

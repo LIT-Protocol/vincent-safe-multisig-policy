@@ -5,12 +5,11 @@ import { LIT_CHAINS } from '@lit-protocol/constants';
  * @returns The RPC URL for the chain
  * @throws Error if chain identifier is not found or has no RPC URL
  */
-export function getRpcUrlFromLitChainIdentifier(litChainIdentifier) {
+export function getRpcUrlFromLitChainIdentifier({ litChainIdentifier }) {
     const chain = LIT_CHAINS[litChainIdentifier];
     if (!chain) {
         throw new Error(`[getRpcUrlFromLitChainIdentifier] Chain identifier '${litChainIdentifier}' not found in LIT_CHAINS`);
     }
-    // Check for rpcUrls property (most common in LIT_CHAINS)
     if (chain.rpcUrls && Array.isArray(chain.rpcUrls) && chain.rpcUrls.length > 0) {
         return chain.rpcUrls[0];
     }

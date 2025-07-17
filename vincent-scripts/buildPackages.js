@@ -29,7 +29,7 @@ function executeCommand(command, args, options = {}) {
 }
 
 /**
- * Build packages in a directory (policies or tools)
+ * Build packages in a directory (policies, tools, or single package)
  */
 async function buildPackagesInDirectory(baseDir, type) {
   const fullPath = path.resolve(baseDir);
@@ -41,6 +41,34 @@ async function buildPackagesInDirectory(baseDir, type) {
     return;
   }
 
+  const originalDir = process.cwd();
+
+  // Check if this is a single package directory (has package.json)
+  const packageJsonPath = path.join(fullPath, "package.json");
+  if (fs.existsSync(packageJsonPath)) {
+    // This is a single package directory
+    console.log(chalk.cyan(`Building ${type}: ${path.basename(baseDir)}`));
+    
+    try {
+      process.chdir(fullPath);
+      
+      console.log(chalk.gray(`  Installing dependencies...`));
+      await executeCommand("npm", ["install"]);
+      
+      console.log(chalk.gray(`  Building package...`));
+      await executeCommand("npm", ["run", "build"]);
+      
+      console.log(chalk.green(`  ✅ Built ${type}: ${path.basename(baseDir)}`));
+    } catch (error) {
+      console.log(chalk.red(`  ❌ Failed to build ${type}: ${path.basename(baseDir)}`));
+      console.log(chalk.red(`     Error: ${error.message}`));
+    } finally {
+      process.chdir(originalDir);
+    }
+    return;
+  }
+
+  // This is a directory containing multiple packages
   const items = fs.readdirSync(fullPath, { withFileTypes: true });
   const directories = items
     .filter((item) => item.isDirectory())
@@ -50,8 +78,6 @@ async function buildPackagesInDirectory(baseDir, type) {
     console.log(chalk.gray(`No ${type} packages found in ${baseDir}`));
     return;
   }
-
-  const originalDir = process.cwd();
 
   for (const dir of directories) {
     const packagePath = path.join(fullPath, dir);
@@ -86,6 +112,7 @@ async function buildPackagesInDirectory(baseDir, type) {
   }
 }
 
+
 /**
  * Main build function
  */
@@ -94,6 +121,11 @@ async function buildPackages() {
 
   try {
     console.log(chalk.cyan("🔨 Building Vincent packages..."));
+
+    // Build SDK first (since other packages might depend on it)
+    if (fs.existsSync("sdk")) {
+      await buildPackagesInDirectory("sdk", "SDK");
+    }
 
     // Build policies
     await buildPackagesInDirectory("vincent-packages/policies", "policy");
@@ -117,4 +149,4 @@ if (require.main === module) {
   buildPackages();
 }
 
-module.exports = { buildPackages };
+module.exports = { buildPackages, buildPackagesInDirectory };
