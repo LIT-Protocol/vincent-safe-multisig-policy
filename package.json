@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "Vincent project with tools and policies",
   "private": true,
+  "workspaces": [
+    "sdk",
+    "vincent-packages/policies/*",
+    "vincent-packages/tools/*"
+  ],
   "scripts": {
     "vincent:hardreset": "node vincent-scripts/hardReset.js",
     "vincent:build": "node vincent-scripts/buildPackages.js && npm run vincent:e2e:reset",
@@ -20,7 +25,6 @@
   },
   "dependencies": {
     "@lit-protocol/constants": "^7.2.0",
-    "@lit-protocol/vincent-safe-multisig-sdk": "file:./sdk",
     "@safe-global/api-kit": "^4.0.0",
     "@safe-global/protocol-kit": "^6.1.0",
     "json-stable-stringify": "^1.3.0"

@@ -13,7 +13,7 @@ import { ethers } from "ethers";
 import { LIT_CHAINS } from '@lit-protocol/constants';
 import Safe from "@safe-global/protocol-kit";
 import SafeApiKit from "@safe-global/api-kit";
-import { createVincentSafeMessage } from "@lit-protocol/vincent-safe-multisig-sdk";
+import { createVincentSafeMessage } from "@lit-protocol/vincent-policy-safe-multisig-sdk";
 
 import { vincentPolicyMetadata as safeMultisigPolicyMetadata } from "../../vincent-packages/policies/safe-multisig/dist/index.js";
 import { bundledVincentTool as nativeSendTool } from "../../vincent-packages/tools/native-send/dist/index.js";
