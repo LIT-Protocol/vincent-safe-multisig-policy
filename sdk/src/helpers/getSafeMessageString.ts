@@ -5,7 +5,7 @@
 
 import { EIP712_DOMAIN, EIP712_MESSAGE_TYPES } from '../constants';
 import type { VincentToolExecution, EIP712Message, SafeMessageConfig } from '../types';
-import { deterministicStringify } from './deterministicStringify';
+import { deterministicStringify, type SerializableObject } from './deterministicStringify';
 
 /**
  * @function getSafeMessageString
@@ -52,7 +52,15 @@ export function getSafeMessageString({
   eip712ChainId,
   eip712VerifyingContract,
 }: SafeMessageConfig): string {
-  return deterministicStringify(createEIP712Message(eip712ChainId, eip712VerifyingContract, vincentToolExecution));
+  // Safe type assertion: EIP712 message structure contains only primitive types and plain objects
+  // which are all serializable (strings, numbers, arrays, and plain objects)
+  return deterministicStringify(
+    createEIP712Message(
+      eip712ChainId,
+      eip712VerifyingContract,
+      vincentToolExecution
+    ) as unknown as SerializableObject
+  );
 }
 
 /**
@@ -76,7 +84,7 @@ function createEIP712Message(
 ): Omit<EIP712Message, "message"> & { message: VincentToolExecution } {
   return {
     types: {
-      VincentToolExecution: EIP712_MESSAGE_TYPES.VincentToolExecution
+      VincentToolExecution: [...EIP712_MESSAGE_TYPES.VincentToolExecution]
     },
     domain: {
       ...EIP712_DOMAIN,

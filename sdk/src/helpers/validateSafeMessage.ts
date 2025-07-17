@@ -14,7 +14,7 @@ import { getSafeThreshold } from "./getSafeThreshold";
 import { getSafeTransactionServiceUrl } from "./getSafeTransactionServiceUrl";
 import { isValidSafeSignature } from "./isValidSafeSignature";
 import { parseAndValidateEIP712Message } from "./parseAndValidateEIP712Message";
-import { deterministicStringify } from "./deterministicStringify";
+import { deterministicStringify, type SerializableValue } from "./deterministicStringify";
 import { EIP712_DOMAIN, EIP712_MESSAGE_TYPES } from "../constants";
 import type { EIP712Message, ValidateSafeMessageParams, ValidateSafeMessageResult } from "../types";
 
@@ -156,7 +156,7 @@ export async function validateSafeMessage({
         appId,
         appVersion,
         toolIpfsCid,
-        toolParametersString: deterministicStringify(executingToolParams),
+        toolParametersString: deterministicStringify(executingToolParams as SerializableValue),
         agentWalletAddress: delegatorEthAddress,
         expiry: retrievedEip712Message.message.expiry,
         nonce: retrievedEip712Message.message.nonce,
