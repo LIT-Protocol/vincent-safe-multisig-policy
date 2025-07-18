@@ -1,6 +1,6 @@
 {
   "name": "@lit-protocol/vincent-policy-safe-multisig-sdk",
-  "version": "1.0.0",
+  "version": "0.0.4",
   "description": "SDK for creating Safe messages compatible with Vincent Safe Multisig Policy",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -34,7 +34,6 @@
     "url": "https://github.com/LIT-Protocol/vincent-safe-multisig-policy/issues"
   },
   "dependencies": {
-    "@lit-protocol/constants": "^7.0.0",
     "json-stable-stringify": "^1.3.0"
   },
   "peerDependencies": {

@@ -3,9 +3,7 @@
  * @description This module provides the main entry point for creating EIP-712 compliant
  * Safe messages that contain Vincent tool execution data.
  */
-
-import { LIT_CHAINS } from '@lit-protocol/constants';
-
+import { LIT_CHAINS } from './LIT_CHAINS';
 import type { CreateVincentSafeMessageParams, CreateVincentSafeMessageResult, VincentToolExecution } from '../types';
 import { deterministicStringify } from './deterministicStringify';
 import { generateNonce } from './generateNonce';
@@ -79,7 +77,7 @@ export function createVincentSafeMessage({
   nonce = generateNonce(),
 }: CreateVincentSafeMessageParams): CreateVincentSafeMessageResult {
   // Validate chain support before proceeding
-  if (!isChainSupportedBySafe(safeConfig.litChainIdentifier)) {
+  if (!isChainSupportedBySafe(safeConfig.litChainIdentifier as keyof typeof LIT_CHAINS)) {
     throw new Error(
       `[createVincentSafeMessage] Chain '${safeConfig.litChainIdentifier}' is not supported by Safe Transaction Service. ` +
       `Use getSupportedSafeChains() to get a list of supported chains.`
@@ -88,7 +86,7 @@ export function createVincentSafeMessage({
 
   // Validate and convert expiry timestamp to string
   const expiryString = validateAndConvertExpiry(expiryUnixTimestamp);
-  
+
   // Serialize tool parameters
   const toolParametersString = deterministicStringify(toolParameters);
 
@@ -106,7 +104,7 @@ export function createVincentSafeMessage({
   // Generate Safe message string
   const safeMessageString = getSafeMessageString({
     vincentToolExecution,
-    eip712ChainId: LIT_CHAINS[safeConfig.litChainIdentifier].chainId,
+    eip712ChainId: LIT_CHAINS[safeConfig.litChainIdentifier as keyof typeof LIT_CHAINS].chainId,
     eip712VerifyingContract: safeConfig.safeAddress,
   });
 
@@ -114,7 +112,7 @@ export function createVincentSafeMessage({
   const safeMessageHash = generateSafeMessageHash({
     safeMessageString,
     safeAddress: safeConfig.safeAddress,
-    chainId: LIT_CHAINS[safeConfig.litChainIdentifier].chainId,
+    chainId: LIT_CHAINS[safeConfig.litChainIdentifier as keyof typeof LIT_CHAINS].chainId,
   });
 
   return {
@@ -156,17 +154,17 @@ function validateAndConvertExpiry(expiry: number | string): string {
     if (!Number.isFinite(expiry)) {
       throw new Error('[createVincentSafeMessage] Expiry timestamp must be a finite number');
     }
-    
+
     // Validate it's a positive integer (Unix timestamps should be positive)
     if (expiry < 0) {
       throw new Error('[createVincentSafeMessage] Expiry timestamp must be a positive number');
     }
-    
+
     // Validate it's not a decimal (Unix timestamps are integers)
     if (!Number.isInteger(expiry)) {
       throw new Error('[createVincentSafeMessage] Expiry timestamp must be an integer');
     }
-    
+
     return expiry.toString();
   }
 
@@ -176,26 +174,26 @@ function validateAndConvertExpiry(expiry: number | string): string {
     if (expiry.trim() === '') {
       throw new Error('[createVincentSafeMessage] Expiry timestamp string cannot be empty');
     }
-    
+
     // Validate it's a valid numeric string
     const numericValue = Number(expiry);
     if (Number.isNaN(numericValue)) {
       throw new Error('[createVincentSafeMessage] Expiry timestamp string must represent a valid number');
     }
-    
+
     // Apply same validations as for numbers
     if (!Number.isFinite(numericValue)) {
       throw new Error('[createVincentSafeMessage] Expiry timestamp must represent a finite number');
     }
-    
+
     if (numericValue < 0) {
       throw new Error('[createVincentSafeMessage] Expiry timestamp must represent a positive number');
     }
-    
+
     if (!Number.isInteger(numericValue)) {
       throw new Error('[createVincentSafeMessage] Expiry timestamp must represent an integer');
     }
-    
+
     // Return the original string to preserve any specific formatting
     return expiry.trim();
   }

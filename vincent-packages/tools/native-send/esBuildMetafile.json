@@ -7599,27 +7599,6 @@
       ],
       "format": "cjs"
     },
-    "../../policies/send-counter-limit/dist/lib/abi/counterSignatures.js": {
-      "bytes": 2571,
-      "imports": [
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/buffer.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/process.js",
-          "kind": "import-statement",
-          "external": true
-        }
-      ],
-      "format": "esm"
-    },
     "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/dist/exports/la-utils/la-chain/yellowstone/yellowstoneConfig.js": {
       "bytes": 753,
       "imports": [
@@ -23415,7 +23394,7 @@
       "format": "esm"
     },
     "../../../node_modules/@noble/curves/esm/abstract/weierstrass.js": {
-      "bytes": 56345,
+      "bytes": 56362,
       "imports": [
         {
           "path": "../../../node_modules/@noble/hashes/esm/hmac.js",
@@ -46780,7 +46759,7 @@
       "format": "esm"
     },
     "../../../node_modules/@aa-sdk/core/dist/esm/middleware/defaults/7702gasEstimator.js": {
-      "bytes": 2472,
+      "bytes": 2829,
       "imports": [
         {
           "path": "../../../node_modules/viem/_esm/index.js",
@@ -77218,7 +77197,7 @@
       "format": "esm"
     },
     "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@account-kit/smart-contracts/dist/esm/src/ma-v2/utils.js": {
-      "bytes": 14457,
+      "bytes": 14577,
       "imports": [
         {
           "path": "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/index.js",
@@ -77624,7 +77603,7 @@
       "format": "esm"
     },
     "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@account-kit/smart-contracts/dist/esm/src/ma-v2/account/modularAccountV2.js": {
-      "bytes": 7390,
+      "bytes": 7431,
       "imports": [
         {
           "path": "../../../node_modules/@aa-sdk/core/dist/esm/index.js",
@@ -77730,8 +77709,29 @@
       ],
       "format": "esm"
     },
+    "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@account-kit/smart-contracts/dist/esm/src/ma-v2/abis/semiModularAccountBytecodeAbi.js": {
+      "bytes": 36272,
+      "imports": [
+        {
+          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/buffer.js",
+          "kind": "import-statement",
+          "external": true
+        },
+        {
+          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/process.js",
+          "kind": "import-statement",
+          "external": true
+        }
+      ],
+      "format": "esm"
+    },
     "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@account-kit/smart-contracts/dist/esm/src/index.js": {
-      "bytes": 4623,
+      "bytes": 4718,
       "imports": [
         {
           "path": "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@account-kit/smart-contracts/dist/esm/src/light-account/accounts/account.js",
@@ -77952,6 +77952,11 @@
           "path": "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@account-kit/smart-contracts/dist/esm/src/ma-v2/account/predictAddress.js",
           "kind": "import-statement",
           "original": "./ma-v2/account/predictAddress.js"
+        },
+        {
+          "path": "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@account-kit/smart-contracts/dist/esm/src/ma-v2/abis/semiModularAccountBytecodeAbi.js",
+          "kind": "import-statement",
+          "original": "./ma-v2/abis/semiModularAccountBytecodeAbi.js"
         },
         {
           "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
@@ -78182,187 +78187,8 @@
       ],
       "format": "cjs"
     },
-    "../../policies/send-counter-limit/dist/lib/helpers/index.js": {
-      "bytes": 4467,
-      "imports": [
-        {
-          "path": "../../../node_modules/ethers/lib/index.js",
-          "kind": "import-statement",
-          "original": "ethers"
-        },
-        {
-          "path": "../../policies/send-counter-limit/dist/lib/abi/counterSignatures.js",
-          "kind": "import-statement",
-          "original": "../abi/counterSignatures"
-        },
-        {
-          "path": "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/dist/exports/la-utils/index.js",
-          "kind": "import-statement",
-          "original": "@lit-protocol/vincent-scaffold-sdk/la-utils"
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/buffer.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/process.js",
-          "kind": "import-statement",
-          "external": true
-        }
-      ],
-      "format": "esm"
-    },
-    "../../policies/send-counter-limit/dist/lib/schemas.js": {
-      "bytes": 1993,
-      "imports": [
-        {
-          "path": "../../../node_modules/zod/dist/esm/index.js",
-          "kind": "import-statement",
-          "original": "zod"
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/buffer.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/process.js",
-          "kind": "import-statement",
-          "external": true
-        }
-      ],
-      "format": "esm"
-    },
-    "../../policies/send-counter-limit/dist/lib/vincent-policy.js": {
-      "bytes": 10551,
-      "imports": [
-        {
-          "path": "../../../node_modules/@lit-protocol/vincent-tool-sdk/dist/src/index.js",
-          "kind": "import-statement",
-          "original": "@lit-protocol/vincent-tool-sdk"
-        },
-        {
-          "path": "../../policies/send-counter-limit/dist/lib/helpers/index.js",
-          "kind": "import-statement",
-          "original": "./helpers/index"
-        },
-        {
-          "path": "../../policies/send-counter-limit/dist/lib/schemas.js",
-          "kind": "import-statement",
-          "original": "./schemas"
-        },
-        {
-          "path": "../../policies/send-counter-limit/dist/lib/abi/counterSignatures.js",
-          "kind": "import-statement",
-          "original": "./abi/counterSignatures"
-        },
-        {
-          "path": "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/dist/exports/la-utils/index.js",
-          "kind": "import-statement",
-          "original": "@lit-protocol/vincent-scaffold-sdk"
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/buffer.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/process.js",
-          "kind": "import-statement",
-          "external": true
-        }
-      ],
-      "format": "esm"
-    },
-    "../../policies/send-counter-limit/dist/generated/vincent-policy-metadata.json": {
-      "bytes": 68,
-      "imports": []
-    },
-    "../../policies/send-counter-limit/dist/generated/vincent-bundled-policy.js": {
-      "bytes": 432,
-      "imports": [
-        {
-          "path": "../../../node_modules/@lit-protocol/vincent-tool-sdk/dist/src/index.js",
-          "kind": "import-statement",
-          "original": "@lit-protocol/vincent-tool-sdk"
-        },
-        {
-          "path": "../../policies/send-counter-limit/dist/lib/vincent-policy.js",
-          "kind": "import-statement",
-          "original": "../lib/vincent-policy"
-        },
-        {
-          "path": "../../policies/send-counter-limit/dist/generated/vincent-policy-metadata.json",
-          "kind": "import-statement",
-          "original": "./vincent-policy-metadata.json"
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/buffer.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/process.js",
-          "kind": "import-statement",
-          "external": true
-        }
-      ],
-      "format": "esm"
-    },
-    "../../policies/send-counter-limit/dist/index.js": {
-      "bytes": 230,
-      "imports": [
-        {
-          "path": "../../policies/send-counter-limit/dist/generated/vincent-bundled-policy.js",
-          "kind": "import-statement",
-          "original": "./generated/vincent-bundled-policy"
-        },
-        {
-          "path": "../../policies/send-counter-limit/dist/generated/vincent-policy-metadata.json",
-          "kind": "import-statement",
-          "original": "./generated/vincent-policy-metadata.json"
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/buffer.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/process.js",
-          "kind": "import-statement",
-          "external": true
-        }
-      ],
-      "format": "esm"
-    },
     "../../../sdk/dist/index.mjs": {
-      "bytes": 1944103,
+      "bytes": 59564,
       "imports": [
         {
           "path": "../../../node_modules/ethers/lib/index.js",
@@ -79281,50 +79107,8 @@
       ],
       "format": "esm"
     },
-    "../../policies/safe-multisig/dist/lib/safe-message-tracker-signatures.js": {
-      "bytes": 4192,
-      "imports": [
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/buffer.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/process.js",
-          "kind": "import-statement",
-          "external": true
-        }
-      ],
-      "format": "esm"
-    },
-    "../../policies/safe-multisig/dist/lib/safe-message-tracker-contract-data.js": {
-      "bytes": 3997,
-      "imports": [
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/buffer.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/process.js",
-          "kind": "import-statement",
-          "external": true
-        }
-      ],
-      "format": "esm"
-    },
     "../../policies/safe-multisig/dist/lib/vincent-policy.js": {
-      "bytes": 9542,
+      "bytes": 9436,
       "imports": [
         {
           "path": "../../../node_modules/@lit-protocol/vincent-tool-sdk/dist/src/index.js",
@@ -79355,16 +79139,6 @@
           "path": "../../policies/safe-multisig/dist/lib/schemas.js",
           "kind": "import-statement",
           "original": "./schemas"
-        },
-        {
-          "path": "../../policies/safe-multisig/dist/lib/safe-message-tracker-signatures.js",
-          "kind": "import-statement",
-          "original": "./safe-message-tracker-signatures"
-        },
-        {
-          "path": "../../policies/safe-multisig/dist/lib/safe-message-tracker-contract-data.js",
-          "kind": "import-statement",
-          "original": "./safe-message-tracker-contract-data"
         },
         {
           "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
@@ -79487,7 +79261,7 @@
       "format": "esm"
     },
     "src/lib/vincent-tool.ts": {
-      "bytes": 9705,
+      "bytes": 6975,
       "imports": [
         {
           "path": "../../../node_modules/@lit-protocol/vincent-tool-sdk/dist/src/index.js",
@@ -79498,11 +79272,6 @@
           "path": "../../../node_modules/@lit-protocol/vincent-tool-sdk/dist/src/internal.js",
           "kind": "import-statement",
           "original": "@lit-protocol/vincent-tool-sdk/internal"
-        },
-        {
-          "path": "../../policies/send-counter-limit/dist/index.js",
-          "kind": "import-statement",
-          "original": "../../../../policies/send-counter-limit/dist/index.js"
         },
         {
           "path": "../../policies/safe-multisig/dist/index.js",
@@ -79595,7 +79364,7 @@
           "bytesInOutput": 146
         },
         "../../../node_modules/@jspm/core/nodelibs/browser/chunk-DtuTasat.js": {
-          "bytesInOutput": 63816
+          "bytesInOutput": 63813
         },
         "../../../node_modules/@jspm/core/nodelibs/browser/buffer.js": {
           "bytesInOutput": 735
@@ -79604,7 +79373,7 @@
           "bytesInOutput": 143
         },
         "../../../node_modules/zod/dist/cjs/v3/helpers/util.js": {
-          "bytesInOutput": 4822
+          "bytesInOutput": 4827
         },
         "../../../node_modules/zod/dist/cjs/v3/ZodError.js": {
           "bytesInOutput": 4322
@@ -79625,16 +79394,16 @@
           "bytesInOutput": 639
         },
         "../../../node_modules/zod/dist/cjs/v3/types.js": {
-          "bytesInOutput": 135379
+          "bytesInOutput": 135382
         },
         "../../../node_modules/zod/dist/cjs/v3/external.js": {
-          "bytesInOutput": 1394
+          "bytesInOutput": 1409
         },
         "../../../node_modules/zod/dist/cjs/v3/index.js": {
-          "bytesInOutput": 1947
+          "bytesInOutput": 1966
         },
         "../../../node_modules/zod/dist/cjs/index.js": {
-          "bytesInOutput": 1391
+          "bytesInOutput": 1406
         },
         "../../../node_modules/@lit-protocol/vincent-tool-sdk/dist/src/lib/policyCore/policyConfig/context/policyConfigContext.js": {
           "bytesInOutput": 1281
@@ -79661,7 +79430,7 @@
           "bytesInOutput": 1416
         },
         "../../../node_modules/@lit-protocol/vincent-tool-sdk/dist/src/lib/toolCore/toolConfig/context/toolContext.js": {
-          "bytesInOutput": 2007
+          "bytesInOutput": 2010
         },
         "../../../node_modules/@lit-protocol/vincent-tool-sdk/dist/src/lib/toolCore/helpers/resultCreators.js": {
           "bytesInOutput": 1794
@@ -79676,19 +79445,19 @@
           "bytesInOutput": 5192
         },
         "../../../node_modules/bn.js/lib/bn.js": {
-          "bytesInOutput": 100376
+          "bytesInOutput": 100415
         },
         "../../../node_modules/@ethersproject/logger/lib/_version.js": {
           "bytesInOutput": 358
         },
         "../../../node_modules/@ethersproject/logger/lib/index.js": {
-          "bytesInOutput": 12433
+          "bytesInOutput": 12418
         },
         "../../../node_modules/@ethersproject/bytes/lib/_version.js": {
           "bytesInOutput": 357
         },
         "../../../node_modules/@ethersproject/bytes/lib/index.js": {
-          "bytesInOutput": 14197
+          "bytesInOutput": 14193
         },
         "../../../node_modules/@ethersproject/bignumber/lib/_version.js": {
           "bytesInOutput": 365
@@ -79712,13 +79481,13 @@
           "bytesInOutput": 353
         },
         "../../../node_modules/@ethersproject/abi/lib/fragments.js": {
-          "bytesInOutput": 35829
+          "bytesInOutput": 35841
         },
         "../../../node_modules/@ethersproject/abi/lib/coders/abstract-coder.js": {
           "bytesInOutput": 7196
         },
         "../../../node_modules/js-sha3/src/sha3.js": {
-          "bytesInOutput": 24901
+          "bytesInOutput": 24885
         },
         "../../../node_modules/@ethersproject/keccak256/lib/index.js": {
           "bytesInOutput": 734
@@ -79733,7 +79502,7 @@
           "bytesInOutput": 361
         },
         "../../../node_modules/@ethersproject/address/lib/index.js": {
-          "bytesInOutput": 5607
+          "bytesInOutput": 5609
         },
         "../../../node_modules/@ethersproject/abi/lib/coders/address.js": {
           "bytesInOutput": 2364
@@ -79778,13 +79547,13 @@
           "bytesInOutput": 361
         },
         "../../../node_modules/@ethersproject/strings/lib/utf8.js": {
-          "bytesInOutput": 8458
+          "bytesInOutput": 8483
         },
         "../../../node_modules/@ethersproject/strings/lib/bytes32.js": {
           "bytesInOutput": 1387
         },
         "../../../node_modules/@ethersproject/strings/lib/idna.js": {
-          "bytesInOutput": 11221
+          "bytesInOutput": 11217
         },
         "../../../node_modules/@ethersproject/strings/lib/index.js": {
           "bytesInOutput": 2161
@@ -79811,13 +79580,13 @@
           "bytesInOutput": 636
         },
         "../../../node_modules/@ethersproject/hash/lib/ens-normalize/decoder.js": {
-          "bytesInOutput": 7972
+          "bytesInOutput": 7991
         },
         "../../../node_modules/@ethersproject/hash/lib/ens-normalize/include.js": {
           "bytesInOutput": 15315
         },
         "../../../node_modules/@ethersproject/hash/lib/ens-normalize/lib.js": {
-          "bytesInOutput": 4255
+          "bytesInOutput": 4251
         },
         "../../../node_modules/@ethersproject/hash/lib/namehash.js": {
           "bytesInOutput": 2930
@@ -79832,7 +79601,7 @@
           "bytesInOutput": 1794
         },
         "../../../node_modules/@ethersproject/abi/lib/interface.js": {
-          "bytesInOutput": 27833
+          "bytesInOutput": 27835
         },
         "../../../node_modules/@ethersproject/abi/lib/index.js": {
           "bytesInOutput": 2830
@@ -79853,16 +79622,16 @@
           "bytesInOutput": 1811
         },
         "../../../node_modules/elliptic/node_modules/bn.js/lib/bn.js": {
-          "bytesInOutput": 97541
+          "bytesInOutput": 97584
         },
         "../../../node_modules/minimalistic-assert/index.js": {
-          "bytesInOutput": 513
+          "bytesInOutput": 510
         },
         "../../../node_modules/minimalistic-crypto-utils/lib/utils.js": {
           "bytesInOutput": 1655
         },
         "../../../node_modules/elliptic/lib/elliptic/utils.js": {
-          "bytesInOutput": 3030
+          "bytesInOutput": 3037
         },
         "../../../node_modules/esbuild-plugin-polyfill-node/polyfills/empty.js": {
           "bytesInOutput": 326
@@ -79871,37 +79640,37 @@
           "bytesInOutput": 1847
         },
         "../../../node_modules/elliptic/lib/elliptic/curve/base.js": {
-          "bytesInOutput": 10699
+          "bytesInOutput": 10740
         },
         "../../../node_modules/inherits/inherits_browser.js": {
           "bytesInOutput": 1033
         },
         "../../../node_modules/elliptic/lib/elliptic/curve/short.js": {
-          "bytesInOutput": 24020
+          "bytesInOutput": 24066
         },
         "../../../node_modules/elliptic/lib/elliptic/curve/mont.js": {
-          "bytesInOutput": 4699
+          "bytesInOutput": 4706
         },
         "../../../node_modules/elliptic/lib/elliptic/curve/edwards.js": {
-          "bytesInOutput": 10811
+          "bytesInOutput": 10841
         },
         "../../../node_modules/elliptic/lib/elliptic/curve/index.js": {
           "bytesInOutput": 387
         },
         "../../../node_modules/hash.js/lib/hash/utils.js": {
-          "bytesInOutput": 7695
+          "bytesInOutput": 7747
         },
         "../../../node_modules/hash.js/lib/hash/common.js": {
-          "bytesInOutput": 2741
+          "bytesInOutput": 2744
         },
         "../../../node_modules/hash.js/lib/hash/sha/common.js": {
           "bytesInOutput": 1314
         },
         "../../../node_modules/hash.js/lib/hash/sha/1.js": {
-          "bytesInOutput": 2142
+          "bytesInOutput": 2147
         },
         "../../../node_modules/hash.js/lib/hash/sha/256.js": {
-          "bytesInOutput": 4034
+          "bytesInOutput": 4039
         },
         "../../../node_modules/hash.js/lib/hash/sha/224.js": {
           "bytesInOutput": 1035
@@ -79916,7 +79685,7 @@
           "bytesInOutput": 383
         },
         "../../../node_modules/hash.js/lib/hash/ripemd.js": {
-          "bytesInOutput": 6922
+          "bytesInOutput": 6948
         },
         "../../../node_modules/hash.js/lib/hash/hmac.js": {
           "bytesInOutput": 1452
@@ -79940,7 +79709,7 @@
           "bytesInOutput": 4329
         },
         "../../../node_modules/elliptic/lib/elliptic/ec/index.js": {
-          "bytesInOutput": 7696
+          "bytesInOutput": 7708
         },
         "../../../node_modules/elliptic/lib/elliptic/eddsa/key.js": {
           "bytesInOutput": 2766
@@ -79961,22 +79730,22 @@
           "bytesInOutput": 370
         },
         "../../../node_modules/@ethersproject/signing-key/lib/index.js": {
-          "bytesInOutput": 4635
+          "bytesInOutput": 4633
         },
         "../../../node_modules/@ethersproject/transactions/lib/_version.js": {
           "bytesInOutput": 372
         },
         "../../../node_modules/@ethersproject/transactions/lib/index.js": {
-          "bytesInOutput": 16749
+          "bytesInOutput": 16767
         },
         "../../../node_modules/ethers/node_modules/@ethersproject/contracts/lib/_version.js": {
           "bytesInOutput": 386
         },
         "../../../node_modules/ethers/node_modules/@ethersproject/contracts/lib/index.js": {
-          "bytesInOutput": 53471
+          "bytesInOutput": 53427
         },
         "../../../node_modules/@ethersproject/basex/lib/index.js": {
-          "bytesInOutput": 3389
+          "bytesInOutput": 3411
         },
         "../../../node_modules/@ethersproject/sha2/lib/types.js": {
           "bytesInOutput": 589
@@ -79991,7 +79760,7 @@
           "bytesInOutput": 1163
         },
         "../../../node_modules/@ethersproject/pbkdf2/lib/browser-pbkdf2.js": {
-          "bytesInOutput": 1765
+          "bytesInOutput": 1768
         },
         "../../../node_modules/@ethersproject/pbkdf2/lib/index.js": {
           "bytesInOutput": 488
@@ -80009,16 +79778,16 @@
           "bytesInOutput": 13459
         },
         "../../../node_modules/@ethersproject/wordlists/lib/lang-es.js": {
-          "bytesInOutput": 14988
+          "bytesInOutput": 14999
         },
         "../../../node_modules/@ethersproject/wordlists/lib/lang-fr.js": {
-          "bytesInOutput": 17726
+          "bytesInOutput": 17737
         },
         "../../../node_modules/@ethersproject/wordlists/lib/lang-ja.js": {
-          "bytesInOutput": 13394
+          "bytesInOutput": 13397
         },
         "../../../node_modules/@ethersproject/wordlists/lib/lang-ko.js": {
-          "bytesInOutput": 15108
+          "bytesInOutput": 15112
         },
         "../../../node_modules/@ethersproject/wordlists/lib/lang-it.js": {
           "bytesInOutput": 16376
@@ -80036,7 +79805,7 @@
           "bytesInOutput": 360
         },
         "../../../node_modules/@ethersproject/hdnode/lib/index.js": {
-          "bytesInOutput": 14422
+          "bytesInOutput": 14419
         },
         "../../../node_modules/@ethersproject/random/lib/_version.js": {
           "bytesInOutput": 360
@@ -80045,13 +79814,13 @@
           "bytesInOutput": 1730
         },
         "../../../node_modules/@ethersproject/random/lib/shuffle.js": {
-          "bytesInOutput": 652
+          "bytesInOutput": 655
         },
         "../../../node_modules/@ethersproject/random/lib/index.js": {
           "bytesInOutput": 699
         },
         "../../../node_modules/aes-js/index.js": {
-          "bytesInOutput": 59361
+          "bytesInOutput": 59401
         },
         "../../../node_modules/@ethersproject/json-wallets/lib/_version.js": {
           "bytesInOutput": 372
@@ -80066,7 +79835,7 @@
           "bytesInOutput": 1641
         },
         "../../../node_modules/scrypt-js/scrypt.js": {
-          "bytesInOutput": 16185
+          "bytesInOutput": 16212
         },
         "../../../node_modules/@ethersproject/json-wallets/lib/keystore.js": {
           "bytesInOutput": 17925
@@ -80093,10 +79862,10 @@
           "bytesInOutput": 6407
         },
         "../../../node_modules/@ethersproject/web/lib/index.js": {
-          "bytesInOutput": 20528
+          "bytesInOutput": 20530
         },
         "../../../node_modules/ethers/node_modules/bech32/index.js": {
-          "bytesInOutput": 5357
+          "bytesInOutput": 5364
         },
         "../../../node_modules/ethers/node_modules/@ethersproject/providers/lib/_version.js": {
           "bytesInOutput": 386
@@ -80105,7 +79874,7 @@
           "bytesInOutput": 18545
         },
         "../../../node_modules/ethers/node_modules/@ethersproject/providers/lib/base-provider.js": {
-          "bytesInOutput": 119147
+          "bytesInOutput": 119140
         },
         "../../../node_modules/ethers/node_modules/@ethersproject/providers/lib/json-rpc-provider.js": {
           "bytesInOutput": 38855
@@ -80132,7 +79901,7 @@
           "bytesInOutput": 25411
         },
         "../../../node_modules/ethers/node_modules/@ethersproject/providers/lib/fallback-provider.js": {
-          "bytesInOutput": 32111
+          "bytesInOutput": 32167
         },
         "../../../node_modules/ethers/node_modules/@ethersproject/providers/lib/browser-ipc-provider.js": {
           "bytesInOutput": 441
@@ -80171,16 +79940,16 @@
           "bytesInOutput": 3155
         },
         "../../../node_modules/ethers/lib/utils.js": {
-          "bytesInOutput": 18461
+          "bytesInOutput": 18479
         },
         "../../../node_modules/ethers/lib/_version.js": {
           "bytesInOutput": 345
         },
         "../../../node_modules/ethers/lib/ethers.js": {
-          "bytesInOutput": 4219
+          "bytesInOutput": 4237
         },
         "../../../node_modules/ethers/lib/index.js": {
-          "bytesInOutput": 4340
+          "bytesInOutput": 4358
         },
         "../../../node_modules/@lit-protocol/vincent-tool-sdk/dist/src/lib/policyCore/policyParameters/decodePolicyParams.js": {
           "bytesInOutput": 4165
@@ -80297,13 +80066,13 @@
           "bytesInOutput": 8681
         },
         "../../../node_modules/viem/node_modules/abitype/dist/esm/human-readable/runtime/structs.js": {
-          "bytesInOutput": 2964
+          "bytesInOutput": 2968
         },
         "../../../node_modules/viem/node_modules/abitype/dist/esm/human-readable/parseAbi.js": {
           "bytesInOutput": 625
         },
         "../../../node_modules/viem/node_modules/abitype/dist/esm/human-readable/parseAbiParameters.js": {
-          "bytesInOutput": 1269
+          "bytesInOutput": 1273
         },
         "../../../node_modules/viem/node_modules/abitype/dist/esm/exports/index.js": {
           "bytesInOutput": 276
@@ -80324,7 +80093,7 @@
           "bytesInOutput": 212
         },
         "../../../node_modules/viem/_esm/errors/base.js": {
-          "bytesInOutput": 3184
+          "bytesInOutput": 3190
         },
         "../../../node_modules/viem/_esm/errors/abi.js": {
           "bytesInOutput": 12964
@@ -80351,19 +80120,19 @@
           "bytesInOutput": 2459
         },
         "../../../node_modules/viem/_esm/utils/encoding/toBytes.js": {
-          "bytesInOutput": 2647
+          "bytesInOutput": 2652
         },
         "../../../node_modules/@noble/hashes/esm/_u64.js": {
-          "bytesInOutput": 2080
+          "bytesInOutput": 2058
         },
         "../../../node_modules/@noble/hashes/esm/crypto.js": {
           "bytesInOutput": 285
         },
         "../../../node_modules/@noble/hashes/esm/utils.js": {
-          "bytesInOutput": 5745
+          "bytesInOutput": 5738
         },
         "../../../node_modules/@noble/hashes/esm/sha3.js": {
-          "bytesInOutput": 6410
+          "bytesInOutput": 6408
         },
         "../../../node_modules/viem/_esm/utils/hash/keccak256.js": {
           "bytesInOutput": 482
@@ -80378,7 +80147,7 @@
           "bytesInOutput": 479
         },
         "../../../node_modules/viem/_esm/utils/hash/toSignatureHash.js": {
-          "bytesInOutput": 322
+          "bytesInOutput": 324
         },
         "../../../node_modules/viem/_esm/utils/hash/toEventSelector.js": {
           "bytesInOutput": 282
@@ -80408,13 +80177,13 @@
           "bytesInOutput": 7172
         },
         "../../../node_modules/viem/_esm/utils/hash/toFunctionSelector.js": {
-          "bytesInOutput": 339
+          "bytesInOutput": 341
         },
         "../../../node_modules/viem/_esm/utils/abi/getAbiItem.js": {
           "bytesInOutput": 4652
         },
         "../../../node_modules/viem/_esm/utils/abi/encodeEventTopics.js": {
-          "bytesInOutput": 1986
+          "bytesInOutput": 1988
         },
         "../../../node_modules/viem/_esm/utils/filters/createFilterRequestScope.js": {
           "bytesInOutput": 605
@@ -80492,34 +80261,34 @@
           "bytesInOutput": 414
         },
         "../../../node_modules/@noble/hashes/esm/_md.js": {
-          "bytesInOutput": 4559
+          "bytesInOutput": 4562
         },
         "../../../node_modules/@noble/hashes/esm/sha2.js": {
-          "bytesInOutput": 11791
+          "bytesInOutput": 11790
         },
         "../../../node_modules/@noble/hashes/esm/hmac.js": {
           "bytesInOutput": 2503
         },
         "../../../node_modules/viem/node_modules/@noble/curves/esm/utils.js": {
-          "bytesInOutput": 4738
+          "bytesInOutput": 4749
         },
         "../../../node_modules/viem/node_modules/@noble/curves/esm/abstract/modular.js": {
-          "bytesInOutput": 9482
+          "bytesInOutput": 9491
         },
         "../../../node_modules/viem/node_modules/@noble/curves/esm/abstract/curve.js": {
-          "bytesInOutput": 9613
+          "bytesInOutput": 9635
         },
         "../../../node_modules/viem/node_modules/@noble/curves/esm/abstract/weierstrass.js": {
-          "bytesInOutput": 36553
+          "bytesInOutput": 36542
         },
         "../../../node_modules/viem/node_modules/@noble/curves/esm/_shortw_utils.js": {
           "bytesInOutput": 388
         },
         "../../../node_modules/viem/node_modules/@noble/curves/esm/abstract/hash-to-curve.js": {
-          "bytesInOutput": 5539
+          "bytesInOutput": 5559
         },
         "../../../node_modules/viem/node_modules/@noble/curves/esm/secp256k1.js": {
-          "bytesInOutput": 9347
+          "bytesInOutput": 9370
         },
         "../../../node_modules/viem/_esm/utils/signature/recoverPublicKey.js": {
           "bytesInOutput": 1664
@@ -80666,7 +80435,7 @@
           "bytesInOutput": 1142
         },
         "../../../node_modules/@noble/curves/esm/utils.js": {
-          "bytesInOutput": 4636
+          "bytesInOutput": 4647
         },
         "../../../node_modules/ox/_esm/core/version.js": {
           "bytesInOutput": 207
@@ -80675,7 +80444,7 @@
           "bytesInOutput": 246
         },
         "../../../node_modules/ox/_esm/core/Errors.js": {
-          "bytesInOutput": 3423
+          "bytesInOutput": 3429
         },
         "../../../node_modules/ox/_esm/core/Json.js": {
           "bytesInOutput": 519
@@ -80687,7 +80456,7 @@
           "bytesInOutput": 1324
         },
         "../../../node_modules/ox/_esm/core/Bytes.js": {
-          "bytesInOutput": 2802
+          "bytesInOutput": 2807
         },
         "../../../node_modules/ox/_esm/core/Hex.js": {
           "bytesInOutput": 6526
@@ -80723,7 +80492,7 @@
           "bytesInOutput": 439
         },
         "../../../node_modules/viem/_esm/utils/promise/createBatchScheduler.js": {
-          "bytesInOutput": 1806
+          "bytesInOutput": 1812
         },
         "../../../node_modules/viem/_esm/errors/ccip.js": {
           "bytesInOutput": 2007
@@ -80753,16 +80522,16 @@
           "bytesInOutput": 1641
         },
         "../../../node_modules/viem/_esm/utils/observe.js": {
-          "bytesInOutput": 1689
+          "bytesInOutput": 1691
         },
         "../../../node_modules/viem/_esm/utils/wait.js": {
           "bytesInOutput": 251
         },
         "../../../node_modules/viem/_esm/utils/poll.js": {
-          "bytesInOutput": 764
+          "bytesInOutput": 767
         },
         "../../../node_modules/viem/_esm/utils/promise/withCache.js": {
-          "bytesInOutput": 1459
+          "bytesInOutput": 1461
         },
         "../../../node_modules/viem/_esm/actions/public/getBlockNumber.js": {
           "bytesInOutput": 550
@@ -80807,10 +80576,10 @@
           "bytesInOutput": 1519
         },
         "../../../node_modules/viem/_esm/utils/promise/withDedupe.js": {
-          "bytesInOutput": 565
+          "bytesInOutput": 568
         },
         "../../../node_modules/viem/_esm/utils/promise/withRetry.js": {
-          "bytesInOutput": 958
+          "bytesInOutput": 960
         },
         "../../../node_modules/viem/_esm/utils/buildRequest.js": {
           "bytesInOutput": 5416
@@ -80825,7 +80594,7 @@
           "bytesInOutput": 514
         },
         "../../../node_modules/viem/_esm/utils/promise/withTimeout.js": {
-          "bytesInOutput": 970
+          "bytesInOutput": 972
         },
         "../../../node_modules/viem/_esm/utils/rpc/id.js": {
           "bytesInOutput": 401
@@ -80834,7 +80603,7 @@
           "bytesInOutput": 2841
         },
         "../../../node_modules/viem/_esm/clients/transports/http.js": {
-          "bytesInOutput": 2176
+          "bytesInOutput": 2178
         },
         "../../../node_modules/viem/_esm/utils/ens/errors.js": {
           "bytesInOutput": 1094
@@ -80930,7 +80699,7 @@
           "bytesInOutput": 3340
         },
         "../../../node_modules/viem/_esm/utils/transaction/serializeAccessList.js": {
-          "bytesInOutput": 937
+          "bytesInOutput": 942
         },
         "../../../node_modules/viem/_esm/utils/transaction/serializeTransaction.js": {
           "bytesInOutput": 8113
@@ -80939,7 +80708,7 @@
           "bytesInOutput": 878
         },
         "../../../node_modules/@noble/hashes/esm/legacy.js": {
-          "bytesInOutput": 4338
+          "bytesInOutput": 4352
         },
         "../../../node_modules/viem/_esm/constants/strings.js": {
           "bytesInOutput": 259
@@ -80981,10 +80750,10 @@
           "bytesInOutput": 680
         },
         "../../../node_modules/viem/_esm/actions/public/multicall.js": {
-          "bytesInOutput": 4657
+          "bytesInOutput": 4665
         },
         "../../../node_modules/viem/_esm/actions/public/simulateBlocks.js": {
-          "bytesInOutput": 3742
+          "bytesInOutput": 3744
         },
         "../../../node_modules/ox/node_modules/abitype/dist/esm/version.js": {
           "bytesInOutput": 227
@@ -81029,7 +80798,7 @@
           "bytesInOutput": 8772
         },
         "../../../node_modules/ox/node_modules/abitype/dist/esm/human-readable/runtime/structs.js": {
-          "bytesInOutput": 2988
+          "bytesInOutput": 2992
         },
         "../../../node_modules/ox/node_modules/abitype/dist/esm/human-readable/parseAbiItem.js": {
           "bytesInOutput": 862
@@ -81092,7 +80861,7 @@
           "bytesInOutput": 3682
         },
         "../../../node_modules/viem/_esm/actions/public/waitForTransactionReceipt.js": {
-          "bytesInOutput": 5147
+          "bytesInOutput": 5149
         },
         "../../../node_modules/viem/_esm/actions/public/watchBlocks.js": {
           "bytesInOutput": 4691
@@ -81119,13 +80888,13 @@
           "bytesInOutput": 708
         },
         "../../../node_modules/@noble/curves/esm/abstract/modular.js": {
-          "bytesInOutput": 11317
+          "bytesInOutput": 11326
         },
         "../../../node_modules/@noble/curves/esm/abstract/curve.js": {
-          "bytesInOutput": 9996
+          "bytesInOutput": 10010
         },
         "../../../node_modules/@noble/curves/esm/abstract/weierstrass.js": {
-          "bytesInOutput": 35045
+          "bytesInOutput": 35039
         },
         "../../../node_modules/@noble/curves/esm/_shortw_utils.js": {
           "bytesInOutput": 374
@@ -81134,13 +80903,13 @@
           "bytesInOutput": 2289
         },
         "../../../node_modules/@scure/base/lib/esm/index.js": {
-          "bytesInOutput": 6146
+          "bytesInOutput": 6150
         },
         "../../../node_modules/@scure/bip32/lib/esm/index.js": {
-          "bytesInOutput": 9589
+          "bytesInOutput": 9592
         },
         "../../../node_modules/@noble/hashes/esm/pbkdf2.js": {
-          "bytesInOutput": 1736
+          "bytesInOutput": 1745
         },
         "../../../node_modules/@scure/bip39/esm/index.js": {
           "bytesInOutput": 823
@@ -81233,7 +81002,7 @@
           "bytesInOutput": 1409
         },
         "../../../node_modules/zod/dist/esm/v3/helpers/util.js": {
-          "bytesInOutput": 4380
+          "bytesInOutput": 4385
         },
         "../../../node_modules/zod/dist/esm/v3/ZodError.js": {
           "bytesInOutput": 4034
@@ -81254,7 +81023,7 @@
           "bytesInOutput": 470
         },
         "../../../node_modules/zod/dist/esm/v3/types.js": {
-          "bytesInOutput": 123738
+          "bytesInOutput": 123741
         },
         "../../../node_modules/zod/dist/esm/v3/external.js": {
           "bytesInOutput": 3806
@@ -81269,7 +81038,7 @@
           "bytesInOutput": 1396
         },
         "../../../node_modules/@aa-sdk/core/dist/esm/utils/bigint.js": {
-          "bytesInOutput": 1847
+          "bytesInOutput": 1850
         },
         "../../../node_modules/@aa-sdk/core/dist/esm/utils/bytes.js": {
           "bytesInOutput": 440
@@ -81365,7 +81134,7 @@
           "bytesInOutput": 291
         },
         "../../../node_modules/@aa-sdk/core/dist/esm/actions/smartAccount/internal/runMiddlewareStack.js": {
-          "bytesInOutput": 1956
+          "bytesInOutput": 1958
         },
         "../../../node_modules/@aa-sdk/core/dist/esm/actions/smartAccount/signUserOperation.js": {
           "bytesInOutput": 908
@@ -81455,7 +81224,7 @@
           "bytesInOutput": 2148
         },
         "../../../node_modules/@aa-sdk/core/dist/esm/middleware/defaults/7702gasEstimator.js": {
-          "bytesInOutput": 1177
+          "bytesInOutput": 1612
         },
         "../../../node_modules/@aa-sdk/core/dist/esm/middleware/defaults/webauthnGasEstimator.js": {
           "bytesInOutput": 1787
@@ -81485,10 +81254,10 @@
           "bytesInOutput": 1331
         },
         "../../../node_modules/alchemy-sdk/dist/esm/api/utils.js": {
-          "bytesInOutput": 18486
+          "bytesInOutput": 18482
         },
         "../../../node_modules/axios/lib/helpers/bind.js": {
-          "bytesInOutput": 297
+          "bytesInOutput": 299
         },
         "../../../node_modules/axios/lib/utils.js": {
           "bytesInOutput": 13722
@@ -81509,7 +81278,7 @@
           "bytesInOutput": 1283
         },
         "../../../node_modules/axios/lib/core/InterceptorManager.js": {
-          "bytesInOutput": 2194
+          "bytesInOutput": 2196
         },
         "../../../node_modules/axios/lib/defaults/transitional.js": {
           "bytesInOutput": 369
@@ -81545,10 +81314,10 @@
           "bytesInOutput": 1468
         },
         "../../../node_modules/axios/lib/core/AxiosHeaders.js": {
-          "bytesInOutput": 8904
+          "bytesInOutput": 8905
         },
         "../../../node_modules/axios/lib/core/transformData.js": {
-          "bytesInOutput": 702
+          "bytesInOutput": 704
         },
         "../../../node_modules/axios/lib/cancel/isCancel.js": {
           "bytesInOutput": 265
@@ -81566,10 +81335,10 @@
           "bytesInOutput": 1238
         },
         "../../../node_modules/axios/lib/helpers/throttle.js": {
-          "bytesInOutput": 1038
+          "bytesInOutput": 1040
         },
         "../../../node_modules/axios/lib/helpers/progressEventReducer.js": {
-          "bytesInOutput": 1621
+          "bytesInOutput": 1623
         },
         "../../../node_modules/axios/lib/helpers/isURLSameOrigin.js": {
           "bytesInOutput": 707
@@ -81602,10 +81371,10 @@
           "bytesInOutput": 2335
         },
         "../../../node_modules/axios/lib/adapters/fetch.js": {
-          "bytesInOutput": 7655
+          "bytesInOutput": 7657
         },
         "../../../node_modules/axios/lib/adapters/adapters.js": {
-          "bytesInOutput": 2380
+          "bytesInOutput": 2384
         },
         "../../../node_modules/axios/lib/core/dispatchRequest.js": {
           "bytesInOutput": 1898
@@ -81620,7 +81389,7 @@
           "bytesInOutput": 7385
         },
         "../../../node_modules/axios/lib/cancel/CancelToken.js": {
-          "bytesInOutput": 3236
+          "bytesInOutput": 3238
         },
         "../../../node_modules/axios/lib/helpers/spread.js": {
           "bytesInOutput": 300
@@ -81644,7 +81413,7 @@
           "bytesInOutput": 2982
         },
         "../../../node_modules/@ethersproject/providers/node_modules/bech32/index.js": {
-          "bytesInOutput": 5376
+          "bytesInOutput": 5383
         },
         "../../../node_modules/@ethersproject/providers/lib.esm/_version.js": {
           "bytesInOutput": 238
@@ -81653,7 +81422,7 @@
           "bytesInOutput": 16074
         },
         "../../../node_modules/@ethersproject/providers/lib.esm/base-provider.js": {
-          "bytesInOutput": 76097
+          "bytesInOutput": 76093
         },
         "../../../node_modules/@ethersproject/providers/lib.esm/json-rpc-provider.js": {
           "bytesInOutput": 27128
@@ -81671,7 +81440,7 @@
           "bytesInOutput": 11816
         },
         "../../../node_modules/sturdy-websocket/dist/index.js": {
-          "bytesInOutput": 16155
+          "bytesInOutput": 16153
         },
         "../../../node_modules/es5-ext/global.js": {
           "bytesInOutput": 1057
@@ -81686,10 +81455,10 @@
           "bytesInOutput": 1472
         },
         "../../../node_modules/alchemy-sdk/dist/esm/alchemy-websocket-provider-c0a445c2.js": {
-          "bytesInOutput": 39419
+          "bytesInOutput": 39415
         },
         "../../../node_modules/alchemy-sdk/dist/esm/index-bec1853c.js": {
-          "bytesInOutput": 177184
+          "bytesInOutput": 177192
         },
         "../../../node_modules/alchemy-sdk/dist/esm/index.js": {
           "bytesInOutput": 196
@@ -81710,7 +81479,7 @@
           "bytesInOutput": 844
         },
         "../../../node_modules/@segment/analytics-next/node_modules/tslib/tslib.es6.mjs": {
-          "bytesInOutput": 5329
+          "bytesInOutput": 5327
         },
         "../../../node_modules/@segment/analytics-core/dist/esm/emitter/interface.js": {
           "bytesInOutput": 196
@@ -81722,13 +81491,13 @@
           "bytesInOutput": 197
         },
         "../../../node_modules/@segment/analytics-core/node_modules/tslib/tslib.es6.mjs": {
-          "bytesInOutput": 5343
+          "bytesInOutput": 5341
         },
         "../../../node_modules/dset/dist/index.mjs": {
-          "bytesInOutput": 565
+          "bytesInOutput": 569
         },
         "../../../node_modules/@segment/analytics-core/dist/esm/utils/pick.js": {
-          "bytesInOutput": 425
+          "bytesInOutput": 430
         },
         "../../../node_modules/@segment/analytics-core/dist/esm/validation/errors.js": {
           "bytesInOutput": 605
@@ -81746,13 +81515,13 @@
           "bytesInOutput": 1215
         },
         "../../../node_modules/@segment/analytics-generic-utils/dist/esm/create-deferred/create-deferred.js": {
-          "bytesInOutput": 1118
+          "bytesInOutput": 1108
         },
         "../../../node_modules/@segment/analytics-generic-utils/dist/esm/create-deferred/index.js": {
           "bytesInOutput": 246
         },
         "../../../node_modules/@segment/analytics-generic-utils/dist/esm/emitter/emitter.js": {
-          "bytesInOutput": 2565
+          "bytesInOutput": 2557
         },
         "../../../node_modules/@segment/analytics-generic-utils/dist/esm/emitter/index.js": {
           "bytesInOutput": 222
@@ -81764,7 +81533,7 @@
           "bytesInOutput": 576
         },
         "../../../node_modules/@segment/analytics-core/dist/esm/priority-queue/index.js": {
-          "bytesInOutput": 3735
+          "bytesInOutput": 3730
         },
         "../../../node_modules/@lukeed/uuid/dist/index.mjs": {
           "bytesInOutput": 812
@@ -81773,7 +81542,7 @@
           "bytesInOutput": 2234
         },
         "../../../node_modules/@segment/analytics-core/dist/esm/stats/index.js": {
-          "bytesInOutput": 3003
+          "bytesInOutput": 2983
         },
         "../../../node_modules/@segment/analytics-core/dist/esm/context/index.js": {
           "bytesInOutput": 3165
@@ -81788,10 +81557,10 @@
           "bytesInOutput": 965
         },
         "../../../node_modules/@segment/analytics-core/dist/esm/queue/delivery.js": {
-          "bytesInOutput": 2161
+          "bytesInOutput": 2163
         },
         "../../../node_modules/@segment/analytics-core/dist/esm/queue/event-queue.js": {
-          "bytesInOutput": 14073
+          "bytesInOutput": 14075
         },
         "../../../node_modules/@segment/analytics-core/dist/esm/analytics/index.js": {
           "bytesInOutput": 194
@@ -81806,7 +81575,7 @@
           "bytesInOutput": 553
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/arguments-resolver/index.js": {
-          "bytesInOutput": 4134
+          "bytesInOutput": 4129
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/environment/index.js": {
           "bytesInOutput": 327
@@ -81815,13 +81584,13 @@
           "bytesInOutput": 392
         },
         "../../../node_modules/unfetch/dist/unfetch.module.js": {
-          "bytesInOutput": 1472
+          "bytesInOutput": 1469
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/lib/get-global.js": {
           "bytesInOutput": 596
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/lib/fetch.js": {
-          "bytesInOutput": 544
+          "bytesInOutput": 539
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/generated/version.js": {
           "bytesInOutput": 240
@@ -81833,7 +81602,7 @@
           "bytesInOutput": 269
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/stats/remote-metrics.js": {
-          "bytesInOutput": 4410
+          "bytesInOutput": 4416
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/stats/index.js": {
           "bytesInOutput": 951
@@ -81842,7 +81611,7 @@
           "bytesInOutput": 644
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/page/get-page-context.js": {
-          "bytesInOutput": 2695
+          "bytesInOutput": 2701
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/lib/pick.js": {
           "bytesInOutput": 495
@@ -81872,7 +81641,7 @@
           "bytesInOutput": 987
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/lib/bind-all.js": {
-          "bytesInOutput": 638
+          "bytesInOutput": 634
         },
         "../../../node_modules/js-cookie/dist/js.cookie.mjs": {
           "bytesInOutput": 3316
@@ -81896,7 +81665,7 @@
           "bytesInOutput": 501
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/storage/universalStorage.js": {
-          "bytesInOutput": 1961
+          "bytesInOutput": 1957
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/storage/index.js": {
           "bytesInOutput": 1364
@@ -81911,16 +81680,16 @@
           "bytesInOutput": 378
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/buffer/index.js": {
-          "bytesInOutput": 11959
+          "bytesInOutput": 11924
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/callback/index.js": {
           "bytesInOutput": 217
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/auto-track.js": {
-          "bytesInOutput": 3282
+          "bytesInOutput": 3285
         },
         "../../../node_modules/obj-case/index.js": {
-          "bytesInOutput": 2391
+          "bytesInOutput": 2393
         },
         "../../../node_modules/@segment/facade/dist/address.js": {
           "bytesInOutput": 1383
@@ -81989,10 +81758,10 @@
           "bytesInOutput": 449
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/query-string/index.js": {
-          "bytesInOutput": 1778
+          "bytesInOutput": 1780
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/analytics/index.js": {
-          "bytesInOutput": 24931
+          "bytesInOutput": 24863
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/lib/get-process-env.js": {
           "bytesInOutput": 366
@@ -82007,16 +81776,16 @@
           "bytesInOutput": 718
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/plugins/env-enrichment/index.js": {
-          "bytesInOutput": 5988
+          "bytesInOutput": 5994
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/lib/load-script.js": {
-          "bytesInOutput": 2335
+          "bytesInOutput": 2333
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/core/stats/metric-helpers.js": {
           "bytesInOutput": 633
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/plugins/remote-loader/index.js": {
-          "bytesInOutput": 13241
+          "bytesInOutput": 13239
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/lib/on-page-change.js": {
           "bytesInOutput": 756
@@ -82031,13 +81800,13 @@
           "bytesInOutput": 1180
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/plugins/segmentio/normalize.js": {
-          "bytesInOutput": 2305
+          "bytesInOutput": 2301
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/lib/p-while.js": {
           "bytesInOutput": 1222
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/plugins/segmentio/schedule-flush.js": {
-          "bytesInOutput": 2913
+          "bytesInOutput": 2908
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/plugins/segmentio/index.js": {
           "bytesInOutput": 4162
@@ -82046,7 +81815,7 @@
           "bytesInOutput": 625
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/vendor/tsub/tsub.js": {
-          "bytesInOutput": 37964
+          "bytesInOutput": 37984
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/plugins/routing-middleware/index.js": {
           "bytesInOutput": 1197
@@ -82061,10 +81830,10 @@
           "bytesInOutput": 1143
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/plugins/ajs-destination/index.js": {
-          "bytesInOutput": 16680
+          "bytesInOutput": 16676
         },
         "../../../node_modules/@segment/analytics.js-video-plugins/dist/index.umd.js": {
-          "bytesInOutput": 19003
+          "bytesInOutput": 19001
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/plugins/legacy-video-plugins/index.js": {
           "bytesInOutput": 1182
@@ -82076,7 +81845,7 @@
           "bytesInOutput": 3031
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/browser/index.js": {
-          "bytesInOutput": 13245
+          "bytesInOutput": 13263
         },
         "../../../node_modules/@segment/analytics-next/dist/pkg/node/node.browser.js": {
           "bytesInOutput": 508
@@ -82208,13 +81977,13 @@
           "bytesInOutput": 8805
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/abitype/dist/esm/human-readable/runtime/structs.js": {
-          "bytesInOutput": 3021
+          "bytesInOutput": 3025
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/abitype/dist/esm/human-readable/parseAbi.js": {
           "bytesInOutput": 664
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/abitype/dist/esm/human-readable/parseAbiParameters.js": {
-          "bytesInOutput": 1339
+          "bytesInOutput": 1343
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/abitype/dist/esm/exports/index.js": {
           "bytesInOutput": 310
@@ -82235,7 +82004,7 @@
           "bytesInOutput": 263
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/errors/base.js": {
-          "bytesInOutput": 3244
+          "bytesInOutput": 3250
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/errors/abi.js": {
           "bytesInOutput": 13332
@@ -82262,13 +82031,13 @@
           "bytesInOutput": 2533
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/utils/encoding/toBytes.js": {
-          "bytesInOutput": 2733
+          "bytesInOutput": 2738
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@noble/hashes/esm/_assert.js": {
           "bytesInOutput": 1432
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@noble/hashes/esm/_u64.js": {
-          "bytesInOutput": 1097
+          "bytesInOutput": 1088
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@noble/hashes/esm/crypto.js": {
           "bytesInOutput": 334
@@ -82277,7 +82046,7 @@
           "bytesInOutput": 2886
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@noble/hashes/esm/sha3.js": {
-          "bytesInOutput": 7398
+          "bytesInOutput": 7396
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/utils/hash/keccak256.js": {
           "bytesInOutput": 540
@@ -82292,7 +82061,7 @@
           "bytesInOutput": 534
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/utils/hash/toSignatureHash.js": {
-          "bytesInOutput": 376
+          "bytesInOutput": 378
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/utils/hash/toEventSelector.js": {
           "bytesInOutput": 335
@@ -82322,13 +82091,13 @@
           "bytesInOutput": 7292
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/utils/hash/toFunctionSelector.js": {
-          "bytesInOutput": 394
+          "bytesInOutput": 396
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/utils/abi/getAbiItem.js": {
           "bytesInOutput": 4721
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/utils/abi/encodeEventTopics.js": {
-          "bytesInOutput": 2078
+          "bytesInOutput": 2080
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/utils/filters/createFilterRequestScope.js": {
           "bytesInOutput": 655
@@ -82406,10 +82175,10 @@
           "bytesInOutput": 468
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@noble/hashes/esm/_md.js": {
-          "bytesInOutput": 3934
+          "bytesInOutput": 3937
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@noble/hashes/esm/sha256.js": {
-          "bytesInOutput": 4350
+          "bytesInOutput": 4349
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@noble/hashes/esm/sha2.js": {
           "bytesInOutput": 234
@@ -82421,22 +82190,22 @@
           "bytesInOutput": 7760
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@noble/curves/esm/abstract/modular.js": {
-          "bytesInOutput": 8991
+          "bytesInOutput": 8996
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@noble/curves/esm/abstract/curve.js": {
-          "bytesInOutput": 8131
+          "bytesInOutput": 8153
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@noble/curves/esm/abstract/weierstrass.js": {
-          "bytesInOutput": 35248
+          "bytesInOutput": 35250
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@noble/curves/esm/_shortw_utils.js": {
           "bytesInOutput": 645
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@noble/curves/esm/abstract/hash-to-curve.js": {
-          "bytesInOutput": 5586
+          "bytesInOutput": 5608
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@noble/curves/esm/secp256k1.js": {
-          "bytesInOutput": 9452
+          "bytesInOutput": 9475
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/utils/signature/recoverPublicKey.js": {
           "bytesInOutput": 1731
@@ -82580,7 +82349,7 @@
           "bytesInOutput": 297
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/ox/_esm/core/Errors.js": {
-          "bytesInOutput": 3323
+          "bytesInOutput": 3329
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/ox/_esm/core/internal/bytes.js": {
           "bytesInOutput": 731
@@ -82589,7 +82358,7 @@
           "bytesInOutput": 829
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/ox/_esm/core/Bytes.js": {
-          "bytesInOutput": 1137
+          "bytesInOutput": 1142
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/ox/_esm/core/Hex.js": {
           "bytesInOutput": 3518
@@ -82625,7 +82394,7 @@
           "bytesInOutput": 489
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/utils/promise/createBatchScheduler.js": {
-          "bytesInOutput": 1863
+          "bytesInOutput": 1869
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/errors/ccip.js": {
           "bytesInOutput": 2068
@@ -82655,16 +82424,16 @@
           "bytesInOutput": 1703
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/utils/observe.js": {
-          "bytesInOutput": 1657
+          "bytesInOutput": 1659
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/utils/wait.js": {
           "bytesInOutput": 301
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/utils/poll.js": {
-          "bytesInOutput": 817
+          "bytesInOutput": 820
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/utils/promise/withCache.js": {
-          "bytesInOutput": 1517
+          "bytesInOutput": 1519
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/actions/public/getBlockNumber.js": {
           "bytesInOutput": 605
@@ -82703,10 +82472,10 @@
           "bytesInOutput": 592
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/utils/promise/withDedupe.js": {
-          "bytesInOutput": 617
+          "bytesInOutput": 620
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/utils/promise/withRetry.js": {
-          "bytesInOutput": 1010
+          "bytesInOutput": 1012
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/viem/_esm/utils/buildRequest.js": {
           "bytesInOutput": 5537
@@ -82967,7 +82736,7 @@
           "bytesInOutput": 4325
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/ox/_esm/core/Base64.js": {
-          "bytesInOutput": 1468
+          "bytesInOutput": 1473
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@noble/curves/esm/p256.js": {
           "bytesInOutput": 974
@@ -82991,7 +82760,7 @@
           "bytesInOutput": 34539
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@account-kit/smart-contracts/dist/esm/src/ma-v2/utils.js": {
-          "bytesInOutput": 4225
+          "bytesInOutput": 4386
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@account-kit/smart-contracts/dist/esm/src/ma-v2/account/predictAddress.js": {
           "bytesInOutput": 2296
@@ -83009,13 +82778,16 @@
           "bytesInOutput": 1549
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@account-kit/smart-contracts/dist/esm/src/ma-v2/account/modularAccountV2.js": {
-          "bytesInOutput": 5021
+          "bytesInOutput": 5023
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@account-kit/smart-contracts/dist/esm/src/ma-v2/client/client.js": {
           "bytesInOutput": 1443
         },
+        "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@account-kit/smart-contracts/dist/esm/src/ma-v2/abis/semiModularAccountBytecodeAbi.js": {
+          "bytesInOutput": 34234
+        },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@account-kit/smart-contracts/dist/esm/src/index.js": {
-          "bytesInOutput": 6123
+          "bytesInOutput": 6239
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/dist/exports/la-utils/la-helpers/getAlchemyChainConfig.js": {
           "bytesInOutput": 2572
@@ -83036,13 +82808,13 @@
           "bytesInOutput": 2941
         },
         "../../../node_modules/tslib/tslib.es6.js": {
-          "bytesInOutput": 11497
+          "bytesInOutput": 11528
         },
         "../../../node_modules/@lit-protocol/constants/src/lib/version.js": {
           "bytesInOutput": 358
         },
         "../../../node_modules/depd/lib/browser/index.js": {
-          "bytesInOutput": 1433
+          "bytesInOutput": 1436
         },
         "../../../node_modules/@lit-protocol/constants/src/lib/constants/constants.js": {
           "bytesInOutput": 50904
@@ -83105,10 +82877,10 @@
           "bytesInOutput": 1831
         },
         "../../../node_modules/sprintf-js/src/sprintf.js": {
-          "bytesInOutput": 8413
+          "bytesInOutput": 8434
         },
         "../../../node_modules/@openagenda/verror/dist/index.js": {
-          "bytesInOutput": 19142
+          "bytesInOutput": 19166
         },
         "../../../node_modules/@openagenda/verror/index.js": {
           "bytesInOutput": 259
@@ -83132,61 +82904,34 @@
           "bytesInOutput": 356
         },
         "src/lib/vincent-tool.ts": {
-          "bytesInOutput": 9052
-        },
-        "../../policies/send-counter-limit/dist/index.js": {
-          "bytesInOutput": 55
-        },
-        "../../policies/send-counter-limit/dist/generated/vincent-bundled-policy.js": {
-          "bytesInOutput": 374
-        },
-        "../../policies/send-counter-limit/dist/lib/vincent-policy.js": {
-          "bytesInOutput": 8983
-        },
-        "../../policies/send-counter-limit/dist/lib/helpers/index.js": {
-          "bytesInOutput": 3174
-        },
-        "../../policies/send-counter-limit/dist/lib/abi/counterSignatures.js": {
-          "bytesInOutput": 2133
-        },
-        "../../policies/send-counter-limit/dist/lib/schemas.js": {
-          "bytesInOutput": 2080
-        },
-        "../../policies/send-counter-limit/dist/generated/vincent-policy-metadata.json": {
-          "bytesInOutput": 109
+          "bytesInOutput": 6543
         },
         "../../policies/safe-multisig/dist/index.js": {
           "bytesInOutput": 55
         },
         "../../policies/safe-multisig/dist/generated/vincent-bundled-policy.js": {
-          "bytesInOutput": 378
+          "bytesInOutput": 374
         },
         "../../policies/safe-multisig/dist/lib/vincent-policy.js": {
-          "bytesInOutput": 7329
+          "bytesInOutput": 6906
         },
         "../../../sdk/dist/index.mjs": {
-          "bytesInOutput": 2219191
+          "bytesInOutput": 68717
         },
         "../../policies/safe-multisig/dist/lib/helpers/getRpcUrlFromLitChainIdentifier.js": {
           "bytesInOutput": 644
         },
         "../../policies/safe-multisig/dist/lib/schemas.js": {
-          "bytesInOutput": 4087
-        },
-        "../../policies/safe-multisig/dist/lib/safe-message-tracker-signatures.js": {
-          "bytesInOutput": 3203
-        },
-        "../../policies/safe-multisig/dist/lib/safe-message-tracker-contract-data.js": {
-          "bytesInOutput": 2943
+          "bytesInOutput": 4078
         },
         "../../policies/safe-multisig/dist/generated/vincent-policy-metadata.json": {
-          "bytesInOutput": 110
+          "bytesInOutput": 109
         },
         "src/lib/schemas.ts": {
           "bytesInOutput": 1330
         }
       },
-      "bytes": 13146898
+      "bytes": 11004024
     }
   }
 }

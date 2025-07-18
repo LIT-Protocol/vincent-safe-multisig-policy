@@ -4,7 +4,7 @@ import {
   supportedPoliciesForTool,
 } from "@lit-protocol/vincent-tool-sdk";
 import "@lit-protocol/vincent-tool-sdk/internal";
-import { bundledVincentPolicy as sendCounterLimitPolicy } from "../../../../policies/send-counter-limit/dist/index.js";
+
 import { bundledVincentPolicy as safeMultisigPolicy } from "../../../../policies/safe-multisig/dist/index.js";
 
 import {
@@ -16,15 +16,6 @@ import {
 } from "./schemas";
 
 import { laUtils } from "@lit-protocol/vincent-scaffold-sdk";
-
-const SendLimitPolicy = createVincentToolPolicy({
-  toolParamsSchema,
-  bundledVincentPolicy: sendCounterLimitPolicy,
-  toolParameterMappings: {
-    to: "to",
-    amount: "amount",
-  },
-});
 
 const SafeMultisigPolicy = createVincentToolPolicy({
   toolParamsSchema,
@@ -41,7 +32,6 @@ export const vincentTool = createVincentTool({
   packageName: "@lit-protocol/vincent-tool-native-send" as const,
   toolParamsSchema,
   supportedPolicies: supportedPoliciesForTool([
-    SendLimitPolicy,
     SafeMultisigPolicy,
   ]),
 
@@ -168,69 +158,6 @@ export const vincentTool = createVincentTool({
       console.log(
         "[@lit-protocol/vincent-tool-native-send/execute] Manually calling policy commit function..."
       );
-
-      try {
-        // Use the correct pattern from the reference code
-        const sendLimitPolicyContext =
-          policiesContext.allowedPolicies[
-          "@lit-protocol/vincent-policy-send-counter-limit"
-          ];
-
-        if (
-          sendLimitPolicyContext &&
-          sendLimitPolicyContext.commit &&
-          sendLimitPolicyContext.result
-        ) {
-          console.log(
-            "[@lit-protocol/vincent-tool-native-send/execute] ✅ Found send limit policy context, calling commit..."
-          );
-          console.log(
-            "[@lit-protocol/vincent-tool-native-send/execute] ✅ Policy evaluation result:",
-            sendLimitPolicyContext.result
-          );
-
-          // Extract the commit parameters from the policy evaluation results
-          const { currentCount, maxSends, remainingSends, timeWindowSeconds } =
-            sendLimitPolicyContext.result;
-          const commitParams = {
-            currentCount,
-            maxSends,
-            remainingSends,
-            timeWindowSeconds,
-          };
-
-          console.log(
-            "[@lit-protocol/vincent-tool-native-send/execute] ✅ Available in sendLimitPolicyContext:",
-            Object.keys(sendLimitPolicyContext)
-          );
-          console.log(
-            "[@lit-protocol/vincent-tool-native-send/execute] ✅ Calling commit with explicit parameters (ignoring TS signature)..."
-          );
-
-          const commitResult = await sendLimitPolicyContext.commit(
-            // @ts-ignore - TypeScript signature is wrong, framework actually expects parameters
-            commitParams
-          );
-          console.log(
-            "[@lit-protocol/vincent-tool-native-send/execute] ✅ Policy commit result:",
-            commitResult
-          );
-        } else {
-          console.log(
-            "[@lit-protocol/vincent-tool-native-send/execute] ❌ Send limit policy context not found in policiesContext.allowedPolicies"
-          );
-          console.log(
-            "[@lit-protocol/vincent-tool-native-send/execute] ❌ Available policies:",
-            Object.keys(policiesContext.allowedPolicies || {})
-          );
-        }
-      } catch (commitError) {
-        console.error(
-          "[@lit-protocol/vincent-tool-native-send/execute] ❌ Error calling policy commit:",
-          commitError
-        );
-        // Don't fail the transaction if commit fails
-      }
 
       let safeMultisigPolicyCommitTxHash: string | undefined;
       try {
