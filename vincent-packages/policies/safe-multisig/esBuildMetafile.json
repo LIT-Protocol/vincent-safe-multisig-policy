@@ -95,7 +95,7 @@
       ],
       "format": "esm"
     },
-    "../../../node_modules/zod/dist/cjs/v3/helpers/util.js": {
+    "../../../node_modules/zod/v3/helpers/util.cjs": {
       "bytes": 4401,
       "imports": [
         {
@@ -116,8 +116,8 @@
       ],
       "format": "cjs"
     },
-    "../../../node_modules/zod/dist/cjs/v3/ZodError.js": {
-      "bytes": 4542,
+    "../../../node_modules/zod/v3/ZodError.cjs": {
+      "bytes": 4576,
       "imports": [
         {
           "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
@@ -135,15 +135,15 @@
           "external": true
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/v3/helpers/util.js",
+          "path": "../../../node_modules/zod/v3/helpers/util.cjs",
           "kind": "require-call",
-          "original": "./helpers/util.js"
+          "original": "./helpers/util.cjs"
         }
       ],
       "format": "cjs"
     },
-    "../../../node_modules/zod/dist/cjs/v3/locales/en.js": {
-      "bytes": 5760,
+    "../../../node_modules/zod/v3/locales/en.cjs": {
+      "bytes": 5971,
       "imports": [
         {
           "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
@@ -161,20 +161,20 @@
           "external": true
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/v3/ZodError.js",
+          "path": "../../../node_modules/zod/v3/ZodError.cjs",
           "kind": "require-call",
-          "original": "../ZodError.js"
+          "original": "../ZodError.cjs"
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/v3/helpers/util.js",
+          "path": "../../../node_modules/zod/v3/helpers/util.cjs",
           "kind": "require-call",
-          "original": "../helpers/util.js"
+          "original": "../helpers/util.cjs"
         }
       ],
       "format": "cjs"
     },
-    "../../../node_modules/zod/dist/cjs/v3/errors.js": {
-      "bytes": 578,
+    "../../../node_modules/zod/v3/errors.cjs": {
+      "bytes": 579,
       "imports": [
         {
           "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
@@ -192,15 +192,15 @@
           "external": true
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/v3/locales/en.js",
+          "path": "../../../node_modules/zod/v3/locales/en.cjs",
           "kind": "require-call",
-          "original": "./locales/en.js"
+          "original": "./locales/en.cjs"
         }
       ],
       "format": "cjs"
     },
-    "../../../node_modules/zod/dist/cjs/v3/helpers/parseUtil.js": {
-      "bytes": 4270,
+    "../../../node_modules/zod/v3/helpers/parseUtil.cjs": {
+      "bytes": 4272,
       "imports": [
         {
           "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
@@ -218,19 +218,19 @@
           "external": true
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/v3/errors.js",
+          "path": "../../../node_modules/zod/v3/errors.cjs",
           "kind": "require-call",
-          "original": "../errors.js"
+          "original": "../errors.cjs"
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/v3/locales/en.js",
+          "path": "../../../node_modules/zod/v3/locales/en.cjs",
           "kind": "require-call",
-          "original": "../locales/en.js"
+          "original": "../locales/en.cjs"
         }
       ],
       "format": "cjs"
     },
-    "../../../node_modules/zod/dist/cjs/v3/helpers/typeAliases.js": {
+    "../../../node_modules/zod/v3/helpers/typeAliases.cjs": {
       "bytes": 77,
       "imports": [
         {
@@ -251,7 +251,7 @@
       ],
       "format": "cjs"
     },
-    "../../../node_modules/zod/dist/cjs/v3/helpers/errorUtil.js": {
+    "../../../node_modules/zod/v3/helpers/errorUtil.cjs": {
       "bytes": 418,
       "imports": [
         {
@@ -272,8 +272,8 @@
       ],
       "format": "cjs"
     },
-    "../../../node_modules/zod/dist/cjs/v3/types.js": {
-      "bytes": 140048,
+    "../../../node_modules/zod/v3/types.cjs": {
+      "bytes": 140100,
       "imports": [
         {
           "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
@@ -291,35 +291,35 @@
           "external": true
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/v3/ZodError.js",
+          "path": "../../../node_modules/zod/v3/ZodError.cjs",
           "kind": "require-call",
-          "original": "./ZodError.js"
+          "original": "./ZodError.cjs"
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/v3/errors.js",
+          "path": "../../../node_modules/zod/v3/errors.cjs",
           "kind": "require-call",
-          "original": "./errors.js"
+          "original": "./errors.cjs"
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/v3/helpers/errorUtil.js",
+          "path": "../../../node_modules/zod/v3/helpers/errorUtil.cjs",
           "kind": "require-call",
-          "original": "./helpers/errorUtil.js"
+          "original": "./helpers/errorUtil.cjs"
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/v3/helpers/parseUtil.js",
+          "path": "../../../node_modules/zod/v3/helpers/parseUtil.cjs",
           "kind": "require-call",
-          "original": "./helpers/parseUtil.js"
+          "original": "./helpers/parseUtil.cjs"
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/v3/helpers/util.js",
+          "path": "../../../node_modules/zod/v3/helpers/util.cjs",
           "kind": "require-call",
-          "original": "./helpers/util.js"
+          "original": "./helpers/util.cjs"
         }
       ],
       "format": "cjs"
     },
-    "../../../node_modules/zod/dist/cjs/v3/external.js": {
-      "bytes": 1070,
+    "../../../node_modules/zod/v3/external.cjs": {
+      "bytes": 1076,
       "imports": [
         {
           "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
@@ -337,40 +337,40 @@
           "external": true
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/v3/errors.js",
+          "path": "../../../node_modules/zod/v3/errors.cjs",
           "kind": "require-call",
-          "original": "./errors.js"
+          "original": "./errors.cjs"
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/v3/helpers/parseUtil.js",
+          "path": "../../../node_modules/zod/v3/helpers/parseUtil.cjs",
           "kind": "require-call",
-          "original": "./helpers/parseUtil.js"
+          "original": "./helpers/parseUtil.cjs"
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/v3/helpers/typeAliases.js",
+          "path": "../../../node_modules/zod/v3/helpers/typeAliases.cjs",
           "kind": "require-call",
-          "original": "./helpers/typeAliases.js"
+          "original": "./helpers/typeAliases.cjs"
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/v3/helpers/util.js",
+          "path": "../../../node_modules/zod/v3/helpers/util.cjs",
           "kind": "require-call",
-          "original": "./helpers/util.js"
+          "original": "./helpers/util.cjs"
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/v3/types.js",
+          "path": "../../../node_modules/zod/v3/types.cjs",
           "kind": "require-call",
-          "original": "./types.js"
+          "original": "./types.cjs"
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/v3/ZodError.js",
+          "path": "../../../node_modules/zod/v3/ZodError.cjs",
           "kind": "require-call",
-          "original": "./ZodError.js"
+          "original": "./ZodError.cjs"
         }
       ],
       "format": "cjs"
     },
-    "../../../node_modules/zod/dist/cjs/v3/index.js": {
-      "bytes": 1462,
+    "../../../node_modules/zod/index.cjs": {
+      "bytes": 1470,
       "imports": [
         {
           "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
@@ -388,45 +388,14 @@
           "external": true
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/v3/external.js",
+          "path": "../../../node_modules/zod/v3/external.cjs",
           "kind": "require-call",
-          "original": "./external.js"
+          "original": "./v3/external.cjs"
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/v3/external.js",
+          "path": "../../../node_modules/zod/v3/external.cjs",
           "kind": "require-call",
-          "original": "./external.js"
-        }
-      ],
-      "format": "cjs"
-    },
-    "../../../node_modules/zod/dist/cjs/index.js": {
-      "bytes": 1045,
-      "imports": [
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/buffer.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/process.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "../../../node_modules/zod/dist/cjs/v3/index.js",
-          "kind": "require-call",
-          "original": "./v3/index.js"
-        },
-        {
-          "path": "../../../node_modules/zod/dist/cjs/v3/index.js",
-          "kind": "require-call",
-          "original": "./v3/index.js"
+          "original": "./v3/external.cjs"
         }
       ],
       "format": "cjs"
@@ -513,7 +482,7 @@
           "external": true
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/index.js",
+          "path": "../../../node_modules/zod/index.cjs",
           "kind": "require-call",
           "original": "zod"
         },
@@ -590,7 +559,7 @@
           "external": true
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/index.js",
+          "path": "../../../node_modules/zod/index.cjs",
           "kind": "require-call",
           "original": "zod"
         },
@@ -746,7 +715,7 @@
           "external": true
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/index.js",
+          "path": "../../../node_modules/zod/index.cjs",
           "kind": "require-call",
           "original": "zod"
         },
@@ -782,7 +751,7 @@
           "external": true
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/index.js",
+          "path": "../../../node_modules/zod/index.cjs",
           "kind": "require-call",
           "original": "zod"
         },
@@ -7253,7 +7222,7 @@
           "external": true
         },
         {
-          "path": "../../../node_modules/zod/dist/cjs/index.js",
+          "path": "../../../node_modules/zod/index.cjs",
           "kind": "require-call",
           "original": "zod"
         },
@@ -24966,7 +24935,7 @@
       ],
       "format": "esm"
     },
-    "../../../node_modules/zod/dist/esm/v3/helpers/util.js": {
+    "../../../node_modules/zod/v3/helpers/util.js": {
       "bytes": 4055,
       "imports": [
         {
@@ -24987,11 +24956,11 @@
       ],
       "format": "esm"
     },
-    "../../../node_modules/zod/dist/esm/v3/ZodError.js": {
-      "bytes": 4316,
+    "../../../node_modules/zod/v3/ZodError.js": {
+      "bytes": 4349,
       "imports": [
         {
-          "path": "../../../node_modules/zod/dist/esm/v3/helpers/util.js",
+          "path": "../../../node_modules/zod/v3/helpers/util.js",
           "kind": "import-statement",
           "original": "./helpers/util.js"
         },
@@ -25013,16 +24982,16 @@
       ],
       "format": "esm"
     },
-    "../../../node_modules/zod/dist/esm/v3/locales/en.js": {
-      "bytes": 5393,
+    "../../../node_modules/zod/v3/locales/en.js": {
+      "bytes": 5602,
       "imports": [
         {
-          "path": "../../../node_modules/zod/dist/esm/v3/ZodError.js",
+          "path": "../../../node_modules/zod/v3/ZodError.js",
           "kind": "import-statement",
           "original": "../ZodError.js"
         },
         {
-          "path": "../../../node_modules/zod/dist/esm/v3/helpers/util.js",
+          "path": "../../../node_modules/zod/v3/helpers/util.js",
           "kind": "import-statement",
           "original": "../helpers/util.js"
         },
@@ -25044,11 +25013,11 @@
       ],
       "format": "esm"
     },
-    "../../../node_modules/zod/dist/esm/v3/errors.js": {
+    "../../../node_modules/zod/v3/errors.js": {
       "bytes": 243,
       "imports": [
         {
-          "path": "../../../node_modules/zod/dist/esm/v3/locales/en.js",
+          "path": "../../../node_modules/zod/v3/locales/en.js",
           "kind": "import-statement",
           "original": "./locales/en.js"
         },
@@ -25070,16 +25039,16 @@
       ],
       "format": "esm"
     },
-    "../../../node_modules/zod/dist/esm/v3/helpers/parseUtil.js": {
+    "../../../node_modules/zod/v3/helpers/parseUtil.js": {
       "bytes": 3601,
       "imports": [
         {
-          "path": "../../../node_modules/zod/dist/esm/v3/errors.js",
+          "path": "../../../node_modules/zod/v3/errors.js",
           "kind": "import-statement",
           "original": "../errors.js"
         },
         {
-          "path": "../../../node_modules/zod/dist/esm/v3/locales/en.js",
+          "path": "../../../node_modules/zod/v3/locales/en.js",
           "kind": "import-statement",
           "original": "../locales/en.js"
         },
@@ -25101,7 +25070,7 @@
       ],
       "format": "esm"
     },
-    "../../../node_modules/zod/dist/esm/v3/helpers/typeAliases.js": {
+    "../../../node_modules/zod/v3/helpers/typeAliases.js": {
       "bytes": 11,
       "imports": [
         {
@@ -25122,7 +25091,7 @@
       ],
       "format": "esm"
     },
-    "../../../node_modules/zod/dist/esm/v3/helpers/errorUtil.js": {
+    "../../../node_modules/zod/v3/helpers/errorUtil.js": {
       "bytes": 300,
       "imports": [
         {
@@ -25143,31 +25112,31 @@
       ],
       "format": "esm"
     },
-    "../../../node_modules/zod/dist/esm/v3/types.js": {
-      "bytes": 131165,
+    "../../../node_modules/zod/v3/types.js": {
+      "bytes": 131212,
       "imports": [
         {
-          "path": "../../../node_modules/zod/dist/esm/v3/ZodError.js",
+          "path": "../../../node_modules/zod/v3/ZodError.js",
           "kind": "import-statement",
           "original": "./ZodError.js"
         },
         {
-          "path": "../../../node_modules/zod/dist/esm/v3/errors.js",
+          "path": "../../../node_modules/zod/v3/errors.js",
           "kind": "import-statement",
           "original": "./errors.js"
         },
         {
-          "path": "../../../node_modules/zod/dist/esm/v3/helpers/errorUtil.js",
+          "path": "../../../node_modules/zod/v3/helpers/errorUtil.js",
           "kind": "import-statement",
           "original": "./helpers/errorUtil.js"
         },
         {
-          "path": "../../../node_modules/zod/dist/esm/v3/helpers/parseUtil.js",
+          "path": "../../../node_modules/zod/v3/helpers/parseUtil.js",
           "kind": "import-statement",
           "original": "./helpers/parseUtil.js"
         },
         {
-          "path": "../../../node_modules/zod/dist/esm/v3/helpers/util.js",
+          "path": "../../../node_modules/zod/v3/helpers/util.js",
           "kind": "import-statement",
           "original": "./helpers/util.js"
         },
@@ -25189,36 +25158,36 @@
       ],
       "format": "esm"
     },
-    "../../../node_modules/zod/dist/esm/v3/external.js": {
+    "../../../node_modules/zod/v3/external.js": {
       "bytes": 205,
       "imports": [
         {
-          "path": "../../../node_modules/zod/dist/esm/v3/errors.js",
+          "path": "../../../node_modules/zod/v3/errors.js",
           "kind": "import-statement",
           "original": "./errors.js"
         },
         {
-          "path": "../../../node_modules/zod/dist/esm/v3/helpers/parseUtil.js",
+          "path": "../../../node_modules/zod/v3/helpers/parseUtil.js",
           "kind": "import-statement",
           "original": "./helpers/parseUtil.js"
         },
         {
-          "path": "../../../node_modules/zod/dist/esm/v3/helpers/typeAliases.js",
+          "path": "../../../node_modules/zod/v3/helpers/typeAliases.js",
           "kind": "import-statement",
           "original": "./helpers/typeAliases.js"
         },
         {
-          "path": "../../../node_modules/zod/dist/esm/v3/helpers/util.js",
+          "path": "../../../node_modules/zod/v3/helpers/util.js",
           "kind": "import-statement",
           "original": "./helpers/util.js"
         },
         {
-          "path": "../../../node_modules/zod/dist/esm/v3/types.js",
+          "path": "../../../node_modules/zod/v3/types.js",
           "kind": "import-statement",
           "original": "./types.js"
         },
         {
-          "path": "../../../node_modules/zod/dist/esm/v3/ZodError.js",
+          "path": "../../../node_modules/zod/v3/ZodError.js",
           "kind": "import-statement",
           "original": "./ZodError.js"
         },
@@ -25240,49 +25209,18 @@
       ],
       "format": "esm"
     },
-    "../../../node_modules/zod/dist/esm/v3/index.js": {
-      "bytes": 99,
+    "../../../node_modules/zod/index.js": {
+      "bytes": 105,
       "imports": [
         {
-          "path": "../../../node_modules/zod/dist/esm/v3/external.js",
+          "path": "../../../node_modules/zod/v3/external.js",
           "kind": "import-statement",
-          "original": "./external.js"
+          "original": "./v3/external.js"
         },
         {
-          "path": "../../../node_modules/zod/dist/esm/v3/external.js",
+          "path": "../../../node_modules/zod/v3/external.js",
           "kind": "import-statement",
-          "original": "./external.js"
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/buffer.js",
-          "kind": "import-statement",
-          "external": true
-        },
-        {
-          "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/process.js",
-          "kind": "import-statement",
-          "external": true
-        }
-      ],
-      "format": "esm"
-    },
-    "../../../node_modules/zod/dist/esm/index.js": {
-      "bytes": 82,
-      "imports": [
-        {
-          "path": "../../../node_modules/zod/dist/esm/v3/index.js",
-          "kind": "import-statement",
-          "original": "./v3/index.js"
-        },
-        {
-          "path": "../../../node_modules/zod/dist/esm/v3/index.js",
-          "kind": "import-statement",
-          "original": "./v3/index.js"
+          "original": "./v3/external.js"
         },
         {
           "path": "/Users/whyit/code/lit-protocol/vincent-safe-multisig-policy/node_modules/esbuild-plugin-polyfill-node/polyfills/__dirname.js",
@@ -25311,7 +25249,7 @@
           "original": "viem"
         },
         {
-          "path": "../../../node_modules/zod/dist/esm/index.js",
+          "path": "../../../node_modules/zod/index.js",
           "kind": "import-statement",
           "original": "zod"
         },
@@ -46223,7 +46161,7 @@
       "bytes": 2836,
       "imports": [
         {
-          "path": "../../../node_modules/zod/dist/esm/index.js",
+          "path": "../../../node_modules/zod/index.js",
           "kind": "import-statement",
           "original": "zod"
         },
@@ -46429,7 +46367,7 @@
           "original": "viem"
         },
         {
-          "path": "../../../node_modules/zod/dist/esm/index.js",
+          "path": "../../../node_modules/zod/index.js",
           "kind": "import-statement",
           "original": "zod"
         },
@@ -46809,7 +46747,7 @@
       "bytes": 773,
       "imports": [
         {
-          "path": "../../../node_modules/zod/dist/esm/index.js",
+          "path": "../../../node_modules/zod/index.js",
           "kind": "import-statement",
           "original": "zod"
         },
@@ -50641,7 +50579,7 @@
           "original": "alchemy-sdk"
         },
         {
-          "path": "../../../node_modules/zod/dist/esm/index.js",
+          "path": "../../../node_modules/zod/index.js",
           "kind": "import-statement",
           "original": "zod"
         },
@@ -74247,7 +74185,7 @@
           "original": "viem/accounts"
         },
         {
-          "path": "../../../node_modules/zod/dist/esm/index.js",
+          "path": "../../../node_modules/zod/index.js",
           "kind": "import-statement",
           "original": "zod"
         },
@@ -78095,7 +78033,7 @@
       ],
       "format": "cjs"
     },
-    "../../../sdk/dist/index.mjs": {
+    "node_modules/@lit-protocol/vincent-policy-safe-multisig-sdk/dist/index.mjs": {
       "bytes": 59564,
       "imports": [
         {
@@ -78993,7 +78931,7 @@
       "bytes": 4128,
       "imports": [
         {
-          "path": "../../../node_modules/zod/dist/esm/index.js",
+          "path": "../../../node_modules/zod/index.js",
           "kind": "import-statement",
           "original": "zod"
         },
@@ -79034,7 +78972,7 @@
           "original": "ethers"
         },
         {
-          "path": "../../../sdk/dist/index.mjs",
+          "path": "node_modules/@lit-protocol/vincent-policy-safe-multisig-sdk/dist/index.mjs",
           "kind": "import-statement",
           "original": "@lit-protocol/vincent-policy-safe-multisig-sdk"
         },
@@ -79127,38 +79065,35 @@
         "../../../node_modules/esbuild-plugin-polyfill-node/polyfills/buffer.js": {
           "bytesInOutput": 143
         },
-        "../../../node_modules/zod/dist/cjs/v3/helpers/util.js": {
-          "bytesInOutput": 4827
+        "../../../node_modules/zod/v3/helpers/util.cjs": {
+          "bytesInOutput": 4819
         },
-        "../../../node_modules/zod/dist/cjs/v3/ZodError.js": {
-          "bytesInOutput": 4322
+        "../../../node_modules/zod/v3/ZodError.cjs": {
+          "bytesInOutput": 4345
         },
-        "../../../node_modules/zod/dist/cjs/v3/locales/en.js": {
-          "bytesInOutput": 5855
+        "../../../node_modules/zod/v3/locales/en.cjs": {
+          "bytesInOutput": 6054
         },
-        "../../../node_modules/zod/dist/cjs/v3/errors.js": {
-          "bytesInOutput": 861
+        "../../../node_modules/zod/v3/errors.cjs": {
+          "bytesInOutput": 853
         },
-        "../../../node_modules/zod/dist/cjs/v3/helpers/parseUtil.js": {
-          "bytesInOutput": 4839
+        "../../../node_modules/zod/v3/helpers/parseUtil.cjs": {
+          "bytesInOutput": 4831
         },
-        "../../../node_modules/zod/dist/cjs/v3/helpers/typeAliases.js": {
-          "bytesInOutput": 289
+        "../../../node_modules/zod/v3/helpers/typeAliases.cjs": {
+          "bytesInOutput": 281
         },
-        "../../../node_modules/zod/dist/cjs/v3/helpers/errorUtil.js": {
-          "bytesInOutput": 639
+        "../../../node_modules/zod/v3/helpers/errorUtil.cjs": {
+          "bytesInOutput": 631
         },
-        "../../../node_modules/zod/dist/cjs/v3/types.js": {
-          "bytesInOutput": 135382
+        "../../../node_modules/zod/v3/types.cjs": {
+          "bytesInOutput": 135423
         },
-        "../../../node_modules/zod/dist/cjs/v3/external.js": {
-          "bytesInOutput": 1409
+        "../../../node_modules/zod/v3/external.cjs": {
+          "bytesInOutput": 1401
         },
-        "../../../node_modules/zod/dist/cjs/v3/index.js": {
-          "bytesInOutput": 1966
-        },
-        "../../../node_modules/zod/dist/cjs/index.js": {
-          "bytesInOutput": 1406
+        "../../../node_modules/zod/index.cjs": {
+          "bytesInOutput": 1956
         },
         "../../../node_modules/@lit-protocol/vincent-tool-sdk/dist/src/lib/policyCore/policyConfig/context/policyConfigContext.js": {
           "bytesInOutput": 1281
@@ -79170,10 +79105,10 @@
           "bytesInOutput": 1140
         },
         "../../../node_modules/@lit-protocol/vincent-tool-sdk/dist/src/lib/policyCore/helpers/zod.js": {
-          "bytesInOutput": 2541
+          "bytesInOutput": 2542
         },
         "../../../node_modules/@lit-protocol/vincent-tool-sdk/dist/src/lib/policyCore/helpers/index.js": {
-          "bytesInOutput": 1850
+          "bytesInOutput": 1852
         },
         "../../../node_modules/@lit-protocol/vincent-tool-sdk/dist/src/lib/policyCore/vincentPolicy.js": {
           "bytesInOutput": 8747
@@ -80750,41 +80685,38 @@
         "../../../node_modules/@aa-sdk/core/dist/esm/actions/smartAccount/buildUserOperationFromTx.js": {
           "bytesInOutput": 1409
         },
-        "../../../node_modules/zod/dist/esm/v3/helpers/util.js": {
-          "bytesInOutput": 4385
+        "../../../node_modules/zod/v3/helpers/util.js": {
+          "bytesInOutput": 4376
         },
-        "../../../node_modules/zod/dist/esm/v3/ZodError.js": {
-          "bytesInOutput": 4034
+        "../../../node_modules/zod/v3/ZodError.js": {
+          "bytesInOutput": 4056
         },
-        "../../../node_modules/zod/dist/esm/v3/locales/en.js": {
-          "bytesInOutput": 5429
+        "../../../node_modules/zod/v3/locales/en.js": {
+          "bytesInOutput": 5627
         },
-        "../../../node_modules/zod/dist/esm/v3/errors.js": {
-          "bytesInOutput": 366
+        "../../../node_modules/zod/v3/errors.js": {
+          "bytesInOutput": 357
         },
-        "../../../node_modules/zod/dist/esm/v3/helpers/parseUtil.js": {
-          "bytesInOutput": 3866
+        "../../../node_modules/zod/v3/helpers/parseUtil.js": {
+          "bytesInOutput": 3857
         },
-        "../../../node_modules/zod/dist/esm/v3/helpers/typeAliases.js": {
-          "bytesInOutput": 183
+        "../../../node_modules/zod/v3/helpers/typeAliases.js": {
+          "bytesInOutput": 174
         },
-        "../../../node_modules/zod/dist/esm/v3/helpers/errorUtil.js": {
-          "bytesInOutput": 470
+        "../../../node_modules/zod/v3/helpers/errorUtil.js": {
+          "bytesInOutput": 461
         },
-        "../../../node_modules/zod/dist/esm/v3/types.js": {
-          "bytesInOutput": 123741
+        "../../../node_modules/zod/v3/types.js": {
+          "bytesInOutput": 123773
         },
-        "../../../node_modules/zod/dist/esm/v3/external.js": {
-          "bytesInOutput": 3806
+        "../../../node_modules/zod/v3/external.js": {
+          "bytesInOutput": 3797
         },
-        "../../../node_modules/zod/dist/esm/v3/index.js": {
-          "bytesInOutput": 261
-        },
-        "../../../node_modules/zod/dist/esm/index.js": {
-          "bytesInOutput": 244
+        "../../../node_modules/zod/index.js": {
+          "bytesInOutput": 252
         },
         "../../../node_modules/@aa-sdk/core/dist/esm/utils/schema.js": {
-          "bytesInOutput": 1396
+          "bytesInOutput": 1395
         },
         "../../../node_modules/@aa-sdk/core/dist/esm/utils/bigint.js": {
           "bytesInOutput": 1850
@@ -80943,7 +80875,7 @@
           "bytesInOutput": 1057
         },
         "../../../node_modules/@aa-sdk/core/dist/esm/client/schema.js": {
-          "bytesInOutput": 3131
+          "bytesInOutput": 3130
         },
         "../../../node_modules/@aa-sdk/core/dist/esm/middleware/defaults/feeEstimator.js": {
           "bytesInOutput": 1135
@@ -80961,7 +80893,7 @@
           "bytesInOutput": 1022
         },
         "../../../node_modules/@aa-sdk/core/dist/esm/client/smartAccountClient.js": {
-          "bytesInOutput": 4447
+          "bytesInOutput": 4428
         },
         "../../../node_modules/@aa-sdk/core/dist/esm/entrypoint/0.6.js": {
           "bytesInOutput": 1862
@@ -81213,7 +81145,7 @@
           "bytesInOutput": 196
         },
         "../../../node_modules/@account-kit/infra/dist/esm/schema.js": {
-          "bytesInOutput": 628
+          "bytesInOutput": 627
         },
         "../../../node_modules/@account-kit/infra/dist/esm/version.js": {
           "bytesInOutput": 223
@@ -81642,10 +81574,10 @@
           "bytesInOutput": 267
         },
         "../../../node_modules/@account-kit/logging/dist/esm/index.js": {
-          "bytesInOutput": 1403
+          "bytesInOutput": 1402
         },
         "../../../node_modules/@account-kit/infra/dist/esm/metrics.js": {
-          "bytesInOutput": 351
+          "bytesInOutput": 350
         },
         "../../../node_modules/@account-kit/infra/dist/esm/client/decorators/smartAccount.js": {
           "bytesInOutput": 1880
@@ -82467,7 +82399,7 @@
           "bytesInOutput": 252
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@account-kit/smart-contracts/dist/esm/src/msca/plugins/session-key/signer.js": {
-          "bytesInOutput": 4363
+          "bytesInOutput": 4362
         },
         "../../../node_modules/@lit-protocol/vincent-scaffold-sdk/node_modules/@account-kit/smart-contracts/dist/esm/src/ma-v2/abis/accountFactoryAbi.js": {
           "bytesInOutput": 15681
@@ -82655,17 +82587,17 @@
         "src/lib/vincent-policy.ts": {
           "bytesInOutput": 7194
         },
-        "../../../sdk/dist/index.mjs": {
+        "node_modules/@lit-protocol/vincent-policy-safe-multisig-sdk/dist/index.mjs": {
           "bytesInOutput": 68717
         },
         "src/lib/helpers/getRpcUrlFromLitChainIdentifier.ts": {
           "bytesInOutput": 644
         },
         "src/lib/schemas.ts": {
-          "bytesInOutput": 4078
+          "bytesInOutput": 4077
         }
       },
-      "bytes": 10990652
+      "bytes": 10989144
     }
   }
 }
