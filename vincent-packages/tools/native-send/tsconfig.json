@@ -6,7 +6,9 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "declarationMap": true,
+    "declaration": true
   },
   "include": ["global.d.ts", "src/**/*", "src/generated/**/*.json"],
   "references": [],

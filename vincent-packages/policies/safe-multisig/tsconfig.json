@@ -7,7 +7,9 @@
     "rootDir": "./src",
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "declarationMap": true,
+    "declaration": true
   },
   "include": ["global.d.ts", "src/**/*", "src/generated/**/*.json"],
   "references": [],
