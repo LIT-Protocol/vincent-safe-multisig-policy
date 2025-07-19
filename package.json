@@ -13,14 +13,21 @@
     "vincent:build": "node vincent-scripts/buildPackages.js && npm run vincent:e2e:reset",
     "vincent:e2e:reset": "node vincent-scripts/resetE2E.js",
     "vincent:e2e": "dotenv -e .env -- tsx vincent-e2e/src/e2e.ts",
-    "vincent:e2e:safe": "dotenv -e .env -- tsx vincent-e2e/src/e2e-safe.ts"
+    "vincent:e2e:safe": "dotenv -e .env -- tsx vincent-e2e/src/e2e-safe.ts",
+    "typedoc:build": "npx typedoc --skipErrorChecking --logLevel Verbose --options ./typedoc.site.config.js",
+    "typedoc:serve": "node scripts/typedocServer.mjs",
+    "typedoc:watch": "chokidar 'docs/src/**/*' 'docs/custom.css' './typedoc.site.config.js' './packages/libs/**/docs/json' --initial --await-write-finish --delay 250 -c 'npm run typedoc:build'"
   },
   "devDependencies": {
     "@lit-protocol/vincent-app-sdk": "^1.0.2",
     "@lit-protocol/vincent-scaffold-sdk": "^1.1.7",
     "chalk": "4.1.2",
     "dotenv-cli": "8.0.0",
+    "live-server": "^1.2.2",
     "tsx": "4.0.0",
+    "typedoc": "^0.28.7",
+    "typedoc-plugin-extras": "^4.0.1",
+    "typedoc-plugin-zod": "^1.4.2",
     "viem": "2.31.4"
   },
   "dependencies": {
