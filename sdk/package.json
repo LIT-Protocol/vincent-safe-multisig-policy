@@ -11,7 +11,8 @@
   "scripts": {
     "build": "node esbuild.config.js",
     "prepublishOnly": "npm run build",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "typedoc:build": "npx typedoc --skipErrorChecking --logLevel Verbose --options ./typedoc-configs/json.config.js"
   },
   "keywords": [
     "lit",
