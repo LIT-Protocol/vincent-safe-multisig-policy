@@ -1,6 +1,6 @@
 {
   "name": "@lit-protocol/vincent-policy-safe-multisig",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "A Vincent policy ",
   "main": "dist/index.js",
   "module": "dist/index.js",
