@@ -9,6 +9,7 @@ import { SupportedLitChainIdentifier } from '../types';
 
 /**
  * @function isChainSupportedBySafe
+ * @category API Methods
  * @description Checks if a given Lit Protocol chain identifier is supported by Safe Transaction Service.
  * This function provides a quick way to validate chain support before attempting to use Safe-related operations.
  * 

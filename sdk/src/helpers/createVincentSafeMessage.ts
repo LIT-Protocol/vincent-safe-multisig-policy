@@ -13,6 +13,7 @@ import { isChainSupportedBySafe } from './isChainSupportedBySafe';
 
 /**
  * @function createVincentSafeMessage
+ * @category API Methods
  * @description Creates a complete Vincent Safe message with all necessary components for Safe multisig execution.
  * This is a high-level convenience function that orchestrates the entire message creation process,
  * from parameter serialization to hash generation.

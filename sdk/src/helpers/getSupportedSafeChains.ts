@@ -7,6 +7,7 @@ import { SAFE_CHAIN_MAPPINGS } from './getSafeTransactionServiceUrl';
 
 /**
  * @function getSupportedSafeChains
+ * @category API Methods
  * @description Returns a list of all Lit Protocol chain identifiers that are supported by Safe Transaction Service.
  * This utility function can be used for validation or UI purposes.
  * 

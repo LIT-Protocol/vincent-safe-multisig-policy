@@ -21,6 +21,7 @@ import type { EIP712Message, ValidateSafeMessageParams, ValidateSafeMessageResul
 
 /**
  * @function validateSafeMessage
+ * @category API Methods
  * @description Performs comprehensive validation of a Safe message for Vincent tool execution.
  * This is the main validation function that orchestrates multiple validation steps to ensure
  * a Safe message is authentic, properly signed, and safe for execution.

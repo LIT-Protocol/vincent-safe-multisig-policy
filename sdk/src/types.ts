@@ -15,6 +15,7 @@ export type {
 
 /**
  * @type SupportedLitChainIdentifier
+ * @category Interfaces
  * @description Union type of all Lit Protocol chain identifiers that are supported by Safe Transaction Service.
  * This type ensures compile-time validation of chain identifiers and prevents usage of unsupported chains.
  * 
@@ -52,6 +53,7 @@ export type SupportedLitChainIdentifier =
 
 /**
  * @interface VincentToolExecution
+ * @category Interfaces
  * @description Represents the core parameters for a Vincent tool execution within a Safe multisig context.
  * This structure defines the essential data that gets signed and validated in the multisig workflow.
  */
@@ -74,6 +76,7 @@ export interface VincentToolExecution {
 
 /**
  * @interface EIP712Domain
+ * @category Interfaces
  * @description EIP-712 domain separator parameters that uniquely identify the signing context.
  * These parameters prevent signature replay attacks across different contracts or chains.
  */
@@ -90,6 +93,7 @@ export interface EIP712Domain {
 
 /**
  * @interface EIP712Message
+ * @category Interfaces
  * @description Complete EIP-712 typed data structure for Vincent tool execution signatures.
  * This follows the EIP-712 standard for structured data signing.
  */
