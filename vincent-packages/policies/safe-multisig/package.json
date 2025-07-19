@@ -1,6 +1,6 @@
 {
   "name": "@lit-protocol/vincent-policy-safe-multisig",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "A Vincent policy ",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -22,7 +22,7 @@
   "dependencies": {
     "@lit-protocol/vincent-scaffold-sdk": "^1.1.7",
     "@lit-protocol/vincent-tool-sdk": "^1.0.2",
-    "@lit-protocol/vincent-policy-safe-multisig-sdk": "^0.0.3",
+    "@lit-protocol/vincent-policy-safe-multisig-sdk": "^0.0.4",
     "ethers": "^5.7.2",
     "zod": "^3.22.4"
   },
