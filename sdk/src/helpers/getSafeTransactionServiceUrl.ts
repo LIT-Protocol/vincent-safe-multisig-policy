@@ -4,7 +4,7 @@
  * to the corresponding Safe Transaction Service API URLs.
  */
 
-import { LIT_CHAINS } from '@lit-protocol/constants';
+import { LIT_CHAINS } from './LIT_CHAINS';
 import type { SupportedLitChainIdentifier } from '../types';
 
 /**

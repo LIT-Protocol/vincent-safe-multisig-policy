@@ -1,7 +1,12 @@
 import { createVincentPolicy } from "@lit-protocol/vincent-tool-sdk";
 import { laUtils } from "@lit-protocol/vincent-scaffold-sdk";
 import { ethers } from "ethers";
-import { validateSafeMessage } from "@lit-protocol/vincent-policy-safe-multisig-sdk";
+import {
+  validateSafeMessage,
+  safeMessageTrackerContractAddress,
+  safeMessageTrackerContractData,
+  safeMessageTrackerSignatures,
+} from "@lit-protocol/vincent-policy-safe-multisig-sdk";
 
 import { getRpcUrlFromLitChainIdentifier } from "./helpers/getRpcUrlFromLitChainIdentifier";
 
@@ -16,8 +21,6 @@ import {
   toolParamsSchema,
   userParamsSchema,
 } from "./schemas";
-import { safeMessageTrackerSignatures, safeMessageTrackerContractAddress } from "./safe-message-tracker-signatures";
-import { safeMessageTrackerContractData } from "./safe-message-tracker-contract-data";
 
 declare const Lit: {
   Actions: {

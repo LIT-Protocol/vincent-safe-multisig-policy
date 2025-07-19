@@ -6,8 +6,8 @@
  */
 
 import { ethers } from "ethers";
-import { LIT_CHAINS } from "@lit-protocol/constants";
 
+import { LIT_CHAINS } from './LIT_CHAINS';
 import { buildEIP712Signature } from "./buildEIP712Signature";
 import { getSafeMessage } from "./getSafeMessage";
 import { getSafeThreshold } from "./getSafeThreshold";
@@ -100,11 +100,11 @@ export async function validateSafeMessage({
   logPrefix = logPrefix || "validateSafeMessage";
 
   // Validate chain support before proceeding
-  if (!isChainSupportedBySafe(litChainIdentifier)) {
+  if (!isChainSupportedBySafe(litChainIdentifier as keyof typeof LIT_CHAINS)) {
     return {
       success: false,
       error: `Chain '${litChainIdentifier}' is not supported by Safe Transaction Service. ` +
-              `Use getSupportedSafeChains() to get a list of supported chains.`,
+        `Use getSupportedSafeChains() to get a list of supported chains.`,
       details: { chainSupported: false }
     };
   }
@@ -117,7 +117,7 @@ export async function validateSafeMessage({
   const safeProvider = new ethers.providers.StaticJsonRpcProvider(safeRpcUrl);
 
   const retrievedSafeMessage = await getSafeMessage({
-    safeTransactionServiceUrl: getSafeTransactionServiceUrl({ litChainIdentifier }),
+    safeTransactionServiceUrl: getSafeTransactionServiceUrl({ litChainIdentifier: litChainIdentifier as keyof typeof LIT_CHAINS }),
     safeAddress,
     safeApiKey,
     messageHash: safeMessageHash,
@@ -159,7 +159,7 @@ export async function validateSafeMessage({
       },
       domain: {
         ...EIP712_DOMAIN,
-        chainId: LIT_CHAINS[litChainIdentifier].chainId,
+        chainId: LIT_CHAINS[litChainIdentifier as keyof typeof LIT_CHAINS].chainId,
         verifyingContract: safeAddress,
       },
       primaryType: "VincentToolExecution",

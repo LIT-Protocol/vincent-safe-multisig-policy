@@ -31,9 +31,9 @@ export type {
  * @see {@link getSupportedSafeChains} for runtime list of supported chains
  * @see {@link isChainSupportedBySafe} for runtime validation
  */
-export type SupportedLitChainIdentifier = 
+export type SupportedLitChainIdentifier =
   | 'arbitrum'
-  | 'aurora' 
+  | 'aurora'
   | 'avalanche'
   | 'base'
   | 'baseSepolia'

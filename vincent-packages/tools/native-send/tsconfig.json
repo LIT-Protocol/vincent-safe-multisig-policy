@@ -8,11 +8,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true
   },
-  "include": [
-    "global.d.ts",
-    "src/**/*",
-    "src/generated/**/*.json"
-  ],
+  "include": ["global.d.ts", "src/**/*", "src/generated/**/*.json"],
   "references": [],
   "exclude": [
     "src/**/*.spec.ts",

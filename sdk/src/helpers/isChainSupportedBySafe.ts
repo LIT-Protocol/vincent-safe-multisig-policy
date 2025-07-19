@@ -3,7 +3,7 @@
  * @description This module provides functionality to check if a chain is supported by Safe Transaction Service.
  */
 
-import { LIT_CHAINS } from '@lit-protocol/constants';
+import { LIT_CHAINS } from './LIT_CHAINS';
 import { getSupportedSafeChains } from './getSupportedSafeChains';
 import { SupportedLitChainIdentifier } from '../types';
 

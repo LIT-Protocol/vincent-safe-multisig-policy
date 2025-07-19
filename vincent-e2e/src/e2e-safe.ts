@@ -13,13 +13,11 @@ import { ethers } from "ethers";
 import { LIT_CHAINS } from '@lit-protocol/constants';
 import Safe from "@safe-global/protocol-kit";
 import SafeApiKit from "@safe-global/api-kit";
-import { createVincentSafeMessage, SupportedLitChainIdentifier } from "@lit-protocol/vincent-policy-safe-multisig-sdk";
+import { createVincentSafeMessage, SupportedLitChainIdentifier, safeMessageTrackerContractAddress, safeMessageTrackerContractData } from "@lit-protocol/vincent-policy-safe-multisig-sdk";
 
 import { vincentPolicyMetadata as safeMultisigPolicyMetadata } from "../../vincent-packages/policies/safe-multisig/dist/index.js";
 import { bundledVincentTool as nativeSendTool } from "../../vincent-packages/tools/native-send/dist/index.js";
 import { getRpcUrlFromLitChainIdentifier } from "../../vincent-packages/policies/safe-multisig/dist/lib/helpers/getRpcUrlFromLitChainIdentifier.js";
-
-import { safeMessageTrackerContractAddress, safeMessageTrackerContractData } from "../../vincent-packages/policies/safe-multisig/dist/lib/safe-message-tracker-contract-data.js";
 
 (async () => {
   /**

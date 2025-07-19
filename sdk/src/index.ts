@@ -55,12 +55,27 @@
  * // Query supported chains
  * const supportedChains = getSupportedSafeChains();
  * const isEthereumSupported = isChainSupportedBySafe('ethereum'); // true
+ * 
+ * // Access SafeMessageTracker contract data
+ * import { 
+ *   safeMessageTrackerContractAddress,
+ *   safeMessageTrackerContractData,
+ *   safeMessageTrackerSignatures
+ * } from '@lit-protocol/vincent-safe-multisig-policy-sdk';
+ * 
+ * console.log('Contract Address:', safeMessageTrackerContractAddress);
+ * // Use contract data for ethers.js interactions
+ * // Use method signatures for Vincent policy implementations
+ * const consumeMethod = safeMessageTrackerSignatures.SafeMessageTracker.methods.consume;
  * ```
  * 
  * @see {@link createVincentSafeMessage} for message creation
  * @see {@link validateSafeMessage} for message validation
  * @see {@link getSupportedSafeChains} for supported chain list
  * @see {@link isChainSupportedBySafe} for individual chain support check
+ * @see {@link safeMessageTrackerContractAddress} for SafeMessageTracker contract address
+ * @see {@link safeMessageTrackerContractData} for SafeMessageTracker contract ABI
+ * @see {@link safeMessageTrackerSignatures} for SafeMessageTracker method signatures
  */
 
 export * from './helpers/createVincentSafeMessage';
@@ -73,3 +88,6 @@ export type {
     VincentToolExecution,
     SupportedLitChainIdentifier
 } from './types';
+
+export * from './safe-message-tracker-contract-data';
+export { safeMessageTrackerSignatures } from './safe-message-tracker-signatures';

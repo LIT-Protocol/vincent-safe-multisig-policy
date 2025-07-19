@@ -16,6 +16,7 @@ npm install @lit-protocol/vincent-policy-safe-multisig-sdk
 - **Create EIP-712 Safe Messages**: Easily construct Vincent-compliant Safe messages for multisig execution
 - **Validate Safe Messages**: Perform full validation of Safe messages, including signature, threshold, and EIP-712 structure checks
 - **Chain Support Utilities**: Query which Lit chains are supported by Safe Transaction Service
+- **SafeMessageTracker Contract Data**: Pre-configured contract address and ABI for message tracking
 - **TypeScript Support**: Full TypeScript type definitions for all interfaces and functions
 
 ## Quick Start
@@ -25,7 +26,10 @@ import {
   createVincentSafeMessage,
   validateSafeMessage,
   getSupportedSafeChains,
-  isChainSupportedBySafe
+  isChainSupportedBySafe,
+  safeMessageTrackerContractAddress,
+  safeMessageTrackerContractData,
+  safeMessageTrackerSignatures
 } from '@lit-protocol/vincent-policy-safe-multisig-sdk';
 
 // Create a new Safe message for Vincent tool execution
@@ -122,6 +126,52 @@ Checks if a specific Lit chain identifier is supported by Safe Transaction Servi
 - `chainId` (string): Lit chain identifier to check
 
 **Returns:** `boolean`
+
+### Contract Data
+
+#### `safeMessageTrackerContractAddress`
+The deployed address of the SafeMessageTracker contract.
+
+**Type:** `string` (Ethereum address)
+
+#### `safeMessageTrackerContractData`
+The ABI data for the SafeMessageTracker contract, ready for use with ethers.js or other web3 libraries.
+
+**Type:** `const` array containing contract ABI
+
+#### `safeMessageTrackerSignatures`
+Pre-formatted method signatures for the SafeMessageTracker contract, optimized for Vincent policy implementations.
+
+**Type:** `const` object containing method and event signatures
+
+**Contract Functions:**
+- `consume(messageHashes: bytes32[])`: Mark message hashes as consumed
+- `consumedMessages(address, bytes32)`: Check if a message has been consumed
+- `getConsumedAt(consumer: address, messageHash: bytes32)`: Get timestamp when message was consumed
+
+**Example Usage:**
+```typescript
+import { ethers } from 'ethers';
+import { 
+  safeMessageTrackerContractAddress,
+  safeMessageTrackerContractData,
+  safeMessageTrackerSignatures
+} from '@lit-protocol/vincent-policy-safe-multisig-sdk';
+
+// Using contract data for full ethers.js contract instance
+const provider = new ethers.providers.JsonRpcProvider('...');
+const contract = new ethers.Contract(
+  safeMessageTrackerContractAddress,
+  safeMessageTrackerContractData[0].SafeMessageTracker,
+  provider
+);
+
+// Check if a message has been consumed
+const consumedAt = await contract.getConsumedAt(consumerAddress, messageHash);
+
+// Using method signatures for Vincent policy implementations
+const consumeMethodSignature = safeMessageTrackerSignatures.SafeMessageTracker.methods.consume;
+```
 
 ## Supported Chains
 
