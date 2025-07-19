@@ -11,15 +11,19 @@ module.exports = {
   extends: "./typedoc.config.base.js",
   $schema: "https://typedoc.org/schema.json",
   readme: "./docs/src/Overview.md",
-  projectDocuments: ["docs/src/Overview.md", "docs/src/Developers/Intro.md"],
-  categoryOrder: ["Developers", "API Docs"],
+  projectDocuments: ["docs/src/Overview.md", "docs/src/Intro.md"],
+  categoryOrder: ["Developers", "Users", "Contact", "Packages"],
   entryPointStrategy: "merge",
   entryPoints: ["./sdk/docs/json"],
-  name: "Safe Multisig Vincent Policy",
+  name: "Vincent Docs",
   out: "./docs/dist/site",
   includeVersion: false,
   navigation: {
     includeCategories: true,
+  },
+  sidebarLinks: {
+    Overview: "documents/Overview.html",
+    "Getting Started": "documents/Getting_Started.html",
   },
   headings: {
     readme: false,

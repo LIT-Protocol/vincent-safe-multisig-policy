@@ -27,6 +27,7 @@
     "live-server": "^1.2.2",
     "tsx": "4.0.0",
     "typedoc": "^0.28.7",
+    "typedoc-material-theme": "^1.4.0",
     "typedoc-plugin-extras": "^4.0.1",
     "typedoc-plugin-zod": "^1.4.2",
     "viem": "2.31.4"

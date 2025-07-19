@@ -82,11 +82,17 @@ export * from './helpers/createVincentSafeMessage';
 export * from './helpers/validateSafeMessage';
 export * from './helpers/getSupportedSafeChains';
 export * from './helpers/isChainSupportedBySafe';
+export * from './helpers/getSafeMessageString';
+export * from './helpers/generateSafeMessageHash';
+export * from './helpers/deterministicStringify';
+export * from './helpers/getSafeTransactionServiceUrl';
 export type {
     EIP712Domain,
     EIP712Message,
     VincentToolExecution,
-    SupportedLitChainIdentifier
+    SupportedLitChainIdentifier,
+    ValidateSafeMessageParams,
+    ValidateSafeMessageResult
 } from './types';
 
 export * from './safe-message-tracker-contract-data';
