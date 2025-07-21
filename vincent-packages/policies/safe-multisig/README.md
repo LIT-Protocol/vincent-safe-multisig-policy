@@ -1,129 +1,45 @@
-# Vincent Policy Safe Multisig
+# Safe Multisig Vincent Policy
 
-A policy that can be attached to Vincent tools to require Safe multisig approval before tool execution.
+This Policy is apart of the [Vincent ecosystem](https://docs.heyvincent.ai/) and is used to enforce Safe Multisig governance over Vincent Tool executions. When paired with Vincent Tools, this Policy restricts the execution of Vincent Tools to only be permitted when a threshold number of Safe signers have approved the execution with a specific set of parameters.
 
-## Overview
+### Key Features
 
-This Safe Multisig Vincent Policy is part of the Vincent Tools ecosystem and is built using the Vincent Tool SDK. It ensures that Vincent tools can only be executed after a Safe multisig wallet has approved the operation utilizing a signed EIP-712 message, providing an additional layer of security and governance for tool execution using a Vincent Agent Wallet.
+- **Multi-signature Validation**: Requires a threshold number of signatures from Safe wallet owners
+- **EIP-712 Message Signing**: Uses typed structured data to define the Vincent Tool execution request
+- **Replay Protection**: Implements nonce-based replay attack prevention and tracks message consumption via the [SafeMessageTracker](https://github.com/LIT-Protocol/vincent-safe-multisig-policy/blob/main/contracts/src/SafeMessageTracker.sol) contract
+- **Chain-agnostic**: Supports the blockchain networks that are supported by both Lit and Safe
 
-## Features
+## How It Works
 
-- Requires Safe multisig approval via EIP-712 message signatures
-- Validates signatures against the Safe Transaction Service
-- Prevents replay attacks by tracking consumed message hashes
-- Supports all chains compatible with Safe Transaction Service and Lit Protocol
-- Integrates with the Safe API for real-time validation
+1. **Message Creation**: An execution of a Vincent Tool is encoded as an EIP-712 message
+   - Included in this message are properties such as the Vincent App ID and Version the Tool will be executed for, the Vincent Agent Wallet that will be used for signing transactions, and the parameters that will be used to execute the Vincent Tool
+2. **Signature Collection**: Safe owners sign the EIP-712 message using their wallets until the threshold number of signatures is reached as defined by the Safe
+3. **Vincent Tool Execution**: A Vincent App executes the Vincent Tool on behalf of the Vincent Agent Wallet, with the approved parameters as defined in the EIP-712 message
+4. **Validation**: Before the Tool logic is executed, the Vincent system executes the Multisig Policy which performs the following steps to validate whether the Vincent Tool is permitted to execute by the Safe Multisig:
+   1. Queries the `SafeMessageTracker` contract to check if the Safe message hash provided to the Tool as a parameter has been marked as consumed for the Vincent Agent Wallet the Tool is being executed on behalf of
+   2. Fetches the Safe message from the Safe Transaction Service using the Safe message hash, validating the message exists for the Safe
+   3. Validates the Safe message has reached the threshold number of signatures as defined by the Safe
+   4. Re-builds the EIP-712 message that represents the Tool execution request using the parameters given to the Tool and the context of what Vincent App the Tool is being executed for - This happens within the Lit Nodes Trusted Execution Environment, preventing tampering or malicious activity
+   5. Validates the signed EIP-712 message retrieved from the Safe Transaction Service matches the EIP-712 message that was built in the previous step, this steps also validates:
+      - The Tool parameters signed in the EIP-712 message match what was provided to the Vincent Tool
+      - The Tool is being executed for the Vincent App Id, App Version, and Agent Wallet Address as defined in the EIP-712 message
+      - The EIP-712 message has not expired
+   6. Lastly, each signature retrieved from the Safe Transaction Service is validated against the Safe contract to ensure the signature is valid and for the correct Safe address
+5. **Allow the Tool execution**: If all the previous steps pass, the Tool execution is permitted and the Tool logic is executed
+6. **Mark the Safe message as consumed**: After the Tool is executed, the Safe message is marked as consumed in the `SafeMessageTracker` contract to prevent replay attacks
 
-## Installation
+## How to Use this Policy
 
-```bash
-npm install @lit-protocol/vincent-policy-safe-multisig
-```
+Depending on your role in the Vincent ecosystem, there are different steps to use this Policy. Checkout the following guides depending on your role:
 
-## Usage
+- [Vincent Tool Developer](https://github.com/LIT-Protocol/vincent-safe-multisig-policy/blob/main/docs/Guides/VincentToolDeveloper.md)
+- [Vincent App Owner](https://github.com/LIT-Protocol/vincent-safe-multisig-policy/blob/main/docs/Guides/VincentAppOwner.md)
+- Vincent App User - Coming Soon!
 
-This policy can be integrated with Vincent Tools to enforce Safe multisig approval:
+## Testing and Contributing
 
-```typescript
-import {
-  createVincentToolPolicy,
-  createVincentTool,
-  supportedPoliciesForTool,
-} from '@lit-protocol/vincent-tool-sdk';
-import { bundledVincentPolicy } from '@lit-protocol/vincent-policy-safe-multisig';
-
-const toolParamsSchema = z.object({
-  amount: z.string(),
-  recipient: z.string(),
-  safeConfig: z.object({
-    safeApiKey: z.string(),
-    safeMessageHash: z.string(),
-  }),
-});
-
-const safeMultisigPolicy = createVincentToolPolicy({
-  toolParamsSchema,
-  bundledVincentPolicy,
-  toolParameterMappings: { 
-    safeConfig: 'safeConfig'
-  },
-});
-
-export const mySecureTool = createVincentTool({
-  toolParamsSchema,
-  supportedPolicies: supportedPoliciesForTool([safeMultisigPolicy]),
-  // ... rest of tool implementation
-});
-```
-
-## Policy Configuration
-
-### User Parameters
-
-- `safeAddress`: The Safe multisig contract address
-- `litChainIdentifier`: The blockchain where the Safe is deployed (must be supported by Safe Transaction Service)
-
-### Tool Parameters
-
-- `safeConfig.safeApiKey`: API key for Safe Transaction Service access
-- `safeConfig.safeMessageHash`: Hash of the EIP-712 Safe message signed by multisig owners
-
-## Supported Chains
-
-The policy supports all chains compatible with the Safe Transaction Service:
-
-- Arbitrum
-- Aurora
-- Avalanche
-- Base
-- Base Sepolia
-- BSC
-- Celo
-- Chiado
-- Ethereum
-- Mantle
-- Optimism
-- Polygon
-- Scroll
-- Sepolia
-- Sonic Mainnet
-- zkEVM
-- zkSync
-
-## Building and Testing
-
-### Setup the `.env` File
-
-Create a `.env` file in the root of the project by copying the sample file:
-
-```bash
-cp .env.vincent-sample .env
-```
-
-Then configure the following required environment variables:
-
-1. **PINATA_JWT**: JWT token from Pinata for IPFS pinning
-2. **SAFE_WALLET_ADDRESS**: Address of your Safe multisig wallet
-
-The following environment variables are required for running the e2e tests:
-
-1. **TEST_FUNDER_PRIVATE_KEY**: Private key of an account with testnet funds
-2. **SAFE_API_KEY**: API key from Safe Transaction Service
-3. **SAFE_SIGNER_PRIVATE_KEY_1**: Private key of Safe signer 1 for testing
-4. **SAFE_SIGNER_PRIVATE_KEY_2**: Private key of Safe signer 2 for testing
-
-### Building
-
-Run `npm run vincent:build` to build the policy.
-
-### Testing
-
-Run `npm run vincent:e2e:safe` to run the e2e tests.
-
-## Contributing
-
-Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on how to contribute to this project.
+If you are a developer, or want to run the end-to-end test for this Policy, checkout the [Testing and Contributing](https://github.com/LIT-Protocol/vincent-safe-multisig-policy/blob/main/docs/Guides/TestingAndContributing.md) guide.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the [MIT License](https://github.com/LIT-Protocol/vincent-safe-multisig-policy/blob/main/LICENSE).
