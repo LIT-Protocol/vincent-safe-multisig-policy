@@ -1,15 +1,14 @@
 /**
- * Generated Contract Method Signatures for SafeMessageTracker
+ * Generated Contract Data for SafeMessageTracker
  * This file is auto-generated. DO NOT EDIT UNLESS YOU KNOW WHAT YOU'RE DOING.
  */
 
 export const safeMessageTrackerContractAddress = '0x74bf9d40a7451bcc2bcbda95edc2c3310f356802';
 
-export const safeMessageTrackerSignatures = {
-  "SafeMessageTracker": {
-    "address": "0x74bf9d40a7451bcc2bcbda95edc2c3310f356802",
-    "methods": {
-      "consume": {
+export const safeMessageTrackerContractData = [
+  {
+    "SafeMessageTracker": [
+      {
         "type": "function",
         "name": "consume",
         "inputs": [
@@ -22,7 +21,7 @@ export const safeMessageTrackerSignatures = {
         "outputs": [],
         "stateMutability": "nonpayable"
       },
-      "consumedMessages": {
+      {
         "type": "function",
         "name": "consumedMessages",
         "inputs": [
@@ -46,7 +45,7 @@ export const safeMessageTrackerSignatures = {
         ],
         "stateMutability": "view"
       },
-      "getConsumedAt": {
+      {
         "type": "function",
         "name": "getConsumedAt",
         "inputs": [
@@ -69,9 +68,7 @@ export const safeMessageTrackerSignatures = {
           }
         ],
         "stateMutability": "view"
-      }
-    },
-    "events": [
+      },
       {
         "type": "event",
         "name": "MessageConsumed",
@@ -96,9 +93,7 @@ export const safeMessageTrackerSignatures = {
           }
         ],
         "anonymous": false
-      }
-    ],
-    "errors": [
+      },
       {
         "type": "error",
         "name": "EmptyMessageHashes",
@@ -127,4 +122,4 @@ export const safeMessageTrackerSignatures = {
       }
     ]
   }
-} as const;
+] as const;

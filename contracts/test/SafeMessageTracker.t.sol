@@ -13,7 +13,7 @@ contract SafeMessageTrackerTest is Test {
     bytes32 public messageHash2 = keccak256("message2");
     bytes32 public messageHash3 = keccak256("message3");
 
-    event MessageConsumed(address indexed consumer, bytes32 indexed messageHash, uint64 indexed consumedAt);
+    event MessageConsumed(address indexed consumer, bytes32 indexed messageHash, uint256 indexed consumedAt);
 
     function setUp() public {
         tracker = new SafeMessageTracker();
@@ -21,7 +21,7 @@ contract SafeMessageTrackerTest is Test {
 
     // Basic functionality tests
     function test_getConsumedAt_returnsZeroForUnusedMessage() public view {
-        uint64 consumedAt = tracker.getConsumedAt(consumer1, messageHash1);
+        uint256 consumedAt = tracker.getConsumedAt(consumer1, messageHash1);
         assertEq(consumedAt, 0);
     }
 
@@ -71,15 +71,14 @@ contract SafeMessageTrackerTest is Test {
         vm.warp(3000);
 
         vm.prank(consumer1);
+        vm.expectEmit(true, true, true, true);
+        emit MessageConsumed(consumer1, messageHash1, 3000);
         tracker.consume(messageHashes);
 
         vm.prank(consumer2);
         vm.expectEmit(true, true, true, true);
         emit MessageConsumed(consumer2, messageHash1, 3000);
         tracker.consume(messageHashes);
-
-        assertTrue(tracker.getConsumedAt(consumer1, messageHash1) > 0);
-        assertTrue(tracker.getConsumedAt(consumer2, messageHash1) > 0);
         
         assertEq(tracker.getConsumedAt(consumer1, messageHash1), 3000);
         assertEq(tracker.getConsumedAt(consumer2, messageHash1), 3000);

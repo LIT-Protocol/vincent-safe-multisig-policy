@@ -1,26 +1,26 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
 /// @title SafeMessageTracker
 /// @notice Tracks SAFE message consumption per Agent Wallet PKP
 contract SafeMessageTracker {
     /// @dev Emitted when a SAFE message hash is marked as consumed
-    event MessageConsumed(address indexed consumer, bytes32 indexed messageHash, uint64 indexed consumedAt);
+    event MessageConsumed(address indexed consumer, bytes32 indexed messageHash, uint256 indexed consumedAt);
 
     /// @dev Thrown when an msg.sender tries to consume a message hash that has already been marked as consumed by themselves
-    error MessageAlreadyConsumed(address consumer, bytes32 messageHash, uint64 consumedAt);
+    error MessageAlreadyConsumed(address consumer, bytes32 messageHash, uint256 consumedAt);
 
     /// @dev Thrown when an msg.sender tries to consume an empty array of message hashes
     error EmptyMessageHashes();
 
     /// @notice Maps message consumer => message hash => timestamp of consumption
-    mapping(address => mapping(bytes32 => uint64)) public consumedMessages;
+    mapping(address => mapping(bytes32 => uint256)) public consumedMessages;
 
     /// @notice Returns the timestamp a given message hash was consumed, or 0 if unused
     /// @param consumer The address of the message consumer
     /// @param messageHash The hash of the message to check
     /// @return The timestamp of consumption, or 0 if unused
-    function getConsumedAt(address consumer, bytes32 messageHash) external view returns (uint64) {
+    function getConsumedAt(address consumer, bytes32 messageHash) external view returns (uint256) {
         return consumedMessages[consumer][messageHash];
     }
 
@@ -33,7 +33,7 @@ contract SafeMessageTracker {
             revert EmptyMessageHashes();
         }
 
-        uint64 timestamp = uint64(block.timestamp);
+        uint256 timestamp = block.timestamp;
 
         for (uint256 i = 0; i < messageHashes.length; i++) {
             bytes32 messageHash = messageHashes[i];

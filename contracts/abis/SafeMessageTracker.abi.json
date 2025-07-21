@@ -30,8 +30,8 @@
     "outputs": [
       {
         "name": "",
-        "type": "uint64",
-        "internalType": "uint64"
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "stateMutability": "view"
@@ -54,8 +54,8 @@
     "outputs": [
       {
         "name": "",
-        "type": "uint64",
-        "internalType": "uint64"
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "stateMutability": "view"
@@ -78,9 +78,9 @@
       },
       {
         "name": "consumedAt",
-        "type": "uint64",
+        "type": "uint256",
         "indexed": true,
-        "internalType": "uint64"
+        "internalType": "uint256"
       }
     ],
     "anonymous": false
@@ -106,8 +106,8 @@
       },
       {
         "name": "consumedAt",
-        "type": "uint64",
-        "internalType": "uint64"
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ]
   }
