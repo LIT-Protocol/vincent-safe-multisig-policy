@@ -78188,7 +78188,7 @@
       "format": "cjs"
     },
     "../../../sdk/dist/index.mjs": {
-      "bytes": 59564,
+      "bytes": 59580,
       "imports": [
         {
           "path": "../../../node_modules/ethers/lib/index.js",
@@ -82916,7 +82916,7 @@
           "bytesInOutput": 6906
         },
         "../../../sdk/dist/index.mjs": {
-          "bytesInOutput": 68717
+          "bytesInOutput": 68733
         },
         "../../policies/safe-multisig/dist/lib/helpers/getRpcUrlFromLitChainIdentifier.js": {
           "bytesInOutput": 644
@@ -82931,7 +82931,7 @@
           "bytesInOutput": 1330
         }
       },
-      "bytes": 11004024
+      "bytes": 11004040
     }
   }
 }

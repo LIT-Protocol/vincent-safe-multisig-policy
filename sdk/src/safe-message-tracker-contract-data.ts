@@ -3,7 +3,7 @@
  * This file is auto-generated. DO NOT EDIT UNLESS YOU KNOW WHAT YOU'RE DOING.
  */
 
-export const safeMessageTrackerContractAddress = '0xef62643b52b1f2e57a855403c8e1b3641cb94be7';
+export const safeMessageTrackerContractAddress = '0x74bf9d40a7451bcc2bcbda95edc2c3310f356802';
 
 export const safeMessageTrackerContractData = [
   {
@@ -39,8 +39,8 @@ export const safeMessageTrackerContractData = [
         "outputs": [
           {
             "name": "",
-            "type": "uint64",
-            "internalType": "uint64"
+            "type": "uint256",
+            "internalType": "uint256"
           }
         ],
         "stateMutability": "view"
@@ -63,8 +63,8 @@ export const safeMessageTrackerContractData = [
         "outputs": [
           {
             "name": "",
-            "type": "uint64",
-            "internalType": "uint64"
+            "type": "uint256",
+            "internalType": "uint256"
           }
         ],
         "stateMutability": "view"
@@ -87,9 +87,9 @@ export const safeMessageTrackerContractData = [
           },
           {
             "name": "consumedAt",
-            "type": "uint64",
+            "type": "uint256",
             "indexed": true,
-            "internalType": "uint64"
+            "internalType": "uint256"
           }
         ],
         "anonymous": false
@@ -115,8 +115,8 @@ export const safeMessageTrackerContractData = [
           },
           {
             "name": "consumedAt",
-            "type": "uint64",
-            "internalType": "uint64"
+            "type": "uint256",
+            "internalType": "uint256"
           }
         ]
       }
